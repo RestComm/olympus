@@ -1,0 +1,173 @@
+<div class="row">
+	<div class="col-sm-2 col-md-1 sidebar">
+		<ul class="nav nav-sidebar sidemenu">
+			<li onclick="toggleContacts();"><a id="btnContacts" style="padding-left: 0; padding-right: 0;" href="" onclick="return false;"><i class="glyphicon glyphicon-user"></i><small>CONTACTS</small></a></li>
+			<li role="presentation" class="divider"></li>
+			<li class="disabled" onclick="toggleChat();"><a id="btnText" style="padding-left: 0; padding-right: 0;" href="" onclick="return false;"><span id="unreadTxt" class="badge pull-right" style="margin-bottom: -20px; margin-right: -10px; display: none;">0</span><i class="glyphicon glyphicon-comment"></i><small>CHAT</small></a></li>
+			<li class="disabled"><a id="btnCall" href="" style="padding-left: 0; padding-right: 0;" onclick="makeCall(selectedContact); return false;"><i class="glyphicon glyphicon-earphone" style="transform: rotate(100deg);"></i><small>CALL</small></a></li>
+			<!--li class="disabled"><a id="btnAudio" href="" style="padding-left: 0; padding-right: 0;" onclick="toggleCall(selectedContact, false); return false;"><i class="glyphicon glyphicon-volume-up"></i><small>AUDIO</small></a></li-->
+			<li onclick="return false; e.preventDefault();" style="padding-left: 0; padding-right: 0;" class="disabled" id="tKeypad" data-container="body" data-toggle="popover" data-placement="right" data-content="<table class='keypad'><tr><td class='btn btn-primary' id='btnDTMF1'>1</td><td class='btn btn-primary' id='btnDTMF2'>2</td><td class='btn btn-primary' id='btnDTMF3'>3</td></tr><tr><td class='btn btn-primary' id='btnDTMF4'>4</td><td class='btn btn-primary' id='btnDTMF5'>5</td><td class='btn btn-primary' id='btnDTMF6'>6</td></tr><tr><td class='btn btn-primary' id='btnDTMF7'>7</td><td class='btn btn-primary' id='btnDTMF8'>8</td><td class='btn btn-primary' id='btnDTMF9'>9</td></tr><tr><td class='btn btn-primary' id='btnDTMF*'>*</td><td class='btn btn-primary' id='btnDTMF0'>0</td><td class='btn btn-primary' id='btnDTMF#'>#</td></tr></table>" data-html="true"><a id="btnKeypad" href="" style="padding-left: 0; padding-right: 0;" onclick="return false;"><i class="glyphicon glyphicon-th"></i><small>KEYPAD</small></a></li>
+			<li class="disabled"><a id="btnFile" href="" style="padding-left: 0; padding-right: 0;" onclick="return false;"><i class="glyphicon glyphicon-paperclip"></i><small>UPLOAD</small></a></li>
+			<li class="disabled" style="margin-top: 50px;" style="padding-left: 0; padding-right: 0;" onclick="hangUpCall();"><a id="btnHang" style="padding-left: 0; padding-right: 0;" href="" onclick="return false;"><i class="glyphicon glyphicon-phone-alt"></i><small>HANGUP</small></a></li>
+
+		</ul>
+	</div>
+
+	<!-- Contacts List -->
+	<div class="col-sm-3 col-sm-offset-2 col-md-2 col-md-offset-1 contacts" style="margin-top: 20px; border-right: 1px solid #AAA; display: none;">
+		<h3 class="page-header"><i class="glyphicon glyphicon-list-alt"></i> <span style="color:#555;">Contacts</span><span style="color:#CCC;">List</span></h3>
+		<div class="input-group">
+			<input id="inputContact" class="form-control" type="text" onkeyup="typeContact(event)">
+			<span class="input-group-btn">
+				<button id="btnAddContact" class="btn btn-primary" type="button" onclick="addContact()" disabled="true">Add</button>
+			</span>
+		</div>
+		<br>
+		<dl id="contact_alice" class="">
+			<dt><i class="glyphicon glyphicon-heart"></i> Alice</dt>
+			<dd><a class="contact-entry" data-contact="alice" href="" onclick="selectContact('alice'); return false;">alice@telestax.com</a></dd>
+		</dl>
+		<dl id="contact_bob" class="">
+			<dt><i class="glyphicon glyphicon-heart"></i> Bob</dt>
+			<dd><a class="contact-entry" data-contact="bob" href="" onclick="selectContact('bob'); return false;">bob@telestax.com</a></dd>
+		</dl>
+		<dl id="contact_1234" class="">
+			<dt><i class="glyphicon glyphicon-play-circle"></i> Hello Play Demo</dt>
+			<dd><a class="contact-entry" data-contact="+1234" href="" onclick="selectContact('1234'); return false;">+1234</a></dd>
+		</dl>
+		<dl class="">
+			<dt><i class="glyphicon glyphicon-bullhorn"></i> Hello Say Demo</dt>
+			<dd><a class="contact-entry" data-contact="+1235" href="" onclick="selectContact('1235'); return false;">+1235</a></dd>
+		</dl>
+		<dl class="">
+			<dt><i class="glyphicon glyphicon-hand-up"></i> Hello Gather Demo</dt>
+			<dd><a class="contact-entry" data-contact="+1236" href="" onclick="selectContact('1236'); return false;">+1236</a></dd>
+		</dl>
+		<dl class="">
+			<dt><i class="glyphicon glyphicon-headphones"></i> Conference Client</dt>
+			<dd><a class="contact-entry" data-contact="+1310" href="" onclick="selectContact('1310'); return false;">+1310</a></dd>
+		</dl>
+		<dl class="">
+			<dt><i class="glyphicon glyphicon-lock"></i> Conference Admin</dt>
+			<dd><a class="contact-entry" data-contact="+1311" href="" onclick="selectContact('1311'); return false;">+1311</a></dd>
+		</dl>
+	</div>
+
+	<!--<div class="col-sm-8 col-sm-offset-2 col-md-9 col-md-offset-2 main" style="margin-top: 20px;">-->
+	<div class="col-sm-8 col-sm-offset-2 col-md-11 col-md-offset-1 main" style="margin-top: 20px;">
+		<h2 class="page-header"><span id="roomName" style="color:#555;">Welcome</span><span style="color:#CCC;">Room</span> <!--small class="pull-right"> 5<i class="glyphicon glyphicon-user" style="font-size: 0.85em;"></i> </small--></h2>
+
+		<div id="incomingCall" class="row" style="display: none;">
+			<div class="col-md-5" style="margin-left: 10px; border: 2px solid #BBB; border-radius: 10px; padding: 20px;">
+				<h2 class="page-header" style="margin-top: 0;"><span id="roomName" style="color:#555;">Incoming</span><span style="color:#CCC;">Call</span></h2>
+				<img src="http://www.csmd.edu/pdf/malePlaceholder.jpg" style="height: 70px" class="pull-left">
+				<h3 style=" margin-left: 80px;"><span id="incCallName">Participant</span> <small><span class="text-muted hide">address@domain.com</span></small></h3>
+				<span style=" margin-left: 10px;">
+				<button class="btn btn-sm btn-success" onclick="acceptCall(true);"><i class="glyphicon glyphicon-facetime-video"></i> Video</button>
+				<button class="btn btn-sm btn-success" onclick="acceptCall(false);"><i class="glyphicon glyphicon-volume-up"></i> Audio</button>
+				<button class="btn btn-sm btn-danger" onclick="rejectCall();"><i class="glyphicon glyphicon-remove-circle"></i> Reject</button>
+				</span>
+			</div>
+		</div>
+
+		<div id="lvContainer">
+			<video id="localVideo" class="col-md-6" autoplay="autoplay"></video>
+		</div>
+		<div id="rvContainer">
+			<!--div class="jumbotron col-md-6 col-md-offset-6">
+				<h1>Welcome to TelScale Olympus!</h1>
+				<p>bla bla bla</p>
+				<p><a class="btn btn-primary btn-lg" href="#" role="button">Get Started</a></p>
+			</div-->
+		</div>
+		<!--
+		<div class="row">
+			<div class="col-md-6 col-md-offset-3 text-center" style="margin-bottom: 15px;">
+				<img src="http://www.csmd.edu/pdf/malePlaceholder.jpg">
+				<h4 class="no-margins">Zebedee Chizoba <small><span class="text-muted">zbd@speakers.com</span></small></h4>
+				
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-3 col-sm-3">
+				<img src="http://www.komputerswiat.pl/media/2014/219/3560983/0000001-zaj.jpg">
+				<h4 class="no-margins">Amand Elias</h4>
+				<span class="text-muted">amand@curious.com</span>
+			</div>
+			<div class="col-xs-3 col-sm-3">
+				<img src="http://www.freeonlinegames.com/games/127470/medium.jpg">
+				<h4 class="no-margins">Caomh Maximus</h4>
+				<span class="text-muted">doge@bitcoin.org</span>
+			</div>
+			<div class="col-xs-3 col-sm-3 placeholder">
+				<img src="http://www.komputerswiat.pl/media/2013/153/2964671/gk_z.jpg">
+				<h4 class="no-margins">Cosmo Callias</h4>
+				<span class="text-muted">grumpy@internet.org</span>
+			</div>
+			<div class="col-xs-3 col-sm-3 placeholder">
+				<img src="http://www.catersnews.com/wp-content/uploads/2014/06/24062013101643894.jpg">
+				<h4 class="no-margins">Aali Federico</h4>
+				<span class="text-muted">+351 21490049</span>
+			</div>
+		</div>
+		-->
+	</div>
+	<div class="col-md-2 chat chatbar" id="chat" style="display: none;">
+		<i class="page-header glyphicon glyphicon-remove pull-right" style="opacity: 0.3; margin-top: 34px; cursor: pointer;" onclick="toggleChat()"></i>
+		<h2 class="page-header"><span style="color:#555; padding-left: 5px;">Text</span><span style="color:#CCC;">Chat</span></h2>
+		<div id="chat_content" class="messages-container">
+		</div>
+	</div>
+</div>
+
+<!-- Audio Resources -->
+<audio id="ringing" loop src="resources/audio/ringing.wav" ></audio>
+<audio id="chat_notification" src="resources/audio/chat_notification.wav" ></audio>
+<audio id="snd_dtmf0" title="0" src="resources/audio/dtmf0.wav" ></audio>
+<audio id="snd_dtmf1" title="1" src="resources/audio/dtmf1.wav" ></audio>
+<audio id="snd_dtmf2" title="2" src="resources/audio/dtmf2.wav" ></audio>
+<audio id="snd_dtmf3" title="3" src="resources/audio/dtmf3.wav" ></audio>
+<audio id="snd_dtmf4" title="4" src="resources/audio/dtmf4.wav" ></audio>
+<audio id="snd_dtmf5" title="5" src="resources/audio/dtmf5.wav" ></audio>
+<audio id="snd_dtmf6" title="6" src="resources/audio/dtmf6.wav" ></audio>
+<audio id="snd_dtmf7" title="7" src="resources/audio/dtmf7.wav" ></audio>
+<audio id="snd_dtmf8" title="8" src="resources/audio/dtmf8.wav" ></audio>
+<audio id="snd_dtmf9" title="9" src="resources/audio/dtmf9.wav" ></audio>
+<audio id="snd_dtmfs" title="*" src="resources/audio/star.wav" ></audio>
+<audio id="snd_dtmfp" title="#" src="resources/audio/pound.wav" ></audio>
+
+<!-- FIXME: Delete me. Just added so addContact(..) works properly -->
+<table id="#contact_list"><tbody></tbody></table>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	/*
+	$(".contact-entry").popover({ 
+	placement : 'right',
+	html : true,
+	container: 'body',
+	trigger: 'focus',
+	content: '<button class="btn btn-sm btn-default" onclick="quickCall(tempContact, true);"><i class="glyphicon glyphicon-facetime-video"></i></button> '+
+			'<button class="btn btn-sm btn-default" onclick="quickCall(tempContact, false);"><i class="glyphicon glyphicon-volume-up"></i></button> '+
+			'<button class="btn btn-sm btn-default" onclick="quickChat(tempContact);"><i class="glyphicon glyphicon-comment"></i></button>'
+	})
+	.click(function(e) {
+		window.tempContact = $(this).attr('data-contact');
+		e.preventDefault();
+	});
+	*/
+
+	$("#tKeypad").popover().click(function(e){
+		e.preventDefault();
+		$('td[id^="btnDTMF"]').on( "click", function() {
+			clickDTMF(this.id.charAt(7));
+		});
+	});
+	$("#tKeypad").popover('disable');
+
+	function clickDTMF(dtmf) {
+		mobicentsWebRTCPhoneController.sendDTMF(dtmf);
+		$('audio[title="' + dtmf + '"]')[0].play();
+	}
+});
+</script>

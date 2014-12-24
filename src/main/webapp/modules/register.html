@@ -1,0 +1,126 @@
+<div class="page-header" ng-init="showAdvanced = false;">
+    <h1 class="text-center">
+        <span class="icon-stack" style="padding-right: 60px;">
+           <i class="glyphicon glyphicon-cloud" style="font-size: 1.5em; color: #e8592a;"></i>
+           <i class="glyphicon glyphicon-flash" style="font-size: 1.5em; color: #cdcdcd;"></i>
+        </span>
+        OLYMPUS <small>Meetings in the clouds!</small></h1>
+</div>
+<form>
+<div class="well" ng-class="(showAdvanced) ? 'col-sm-10 col-sm-offset-1' : 'col-sm-5 col-sm-offset-4'">
+    <div ng-class="(showAdvanced) ? 'col-sm-5' : 'col-sm-12'">
+        <form role="form">
+            <h2 class="text-center text-muted"><i class="glyphicon glyphicon-comment"></i> Login</h2>
+            <div class="form-group">
+                <label for="server" class="control-label">Server Address and Port</span></label>
+                <div class="input-group" ng-class="(validServer) ? '' : 'has-error'">
+                    <div class="input-group-addon"><i class="glyphicon glyphicon-globe"></i></div>
+                    <input id="serverAddress" class="form-control" type="text" placeholder="Server IP or Hostname" ng-model="serverAddress" ng-change="mirrorServer()">
+                    <div class="input-group-addon">:</div>
+                    <input id="serverPort" class="form-control" type="text" placeholder="Port" ng-model="serverPort" ng-change="mirrorServer()">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="sipUserName" class="control-label">User and Password</span></label>
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="glyphicon glyphicon-user"></i></div>
+                    <input id="sipUserName" class="form-control" type="text" placeholder="Username" ng-model="sip.username" ng-change="mirrorUsername()" autofocus>
+                    <div class="input-group-addon" ng-if="!simplified">@</div>
+                    <input id="sipDomain" class="form-control" type="text" placeholder="Domain" ng-model="sip.domain" ng-show="!simplified">
+                </div>
+            </div>
+            <div class="form-group" ng-show="showAll">
+                <label for="sipLogin" class="control-label">Authentication</label>
+                <div class="input-group col-sm-12">
+                    <div class="input-group-addon" style="width: 40px;"><i class="glyphicon glyphicon-user"></i></div>
+                    <input id="sipLogin" class="form-control" type="text" placeholder="SIP Login" ng-model="sip.login">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-group col-sm-12">
+                    <div class="input-group-addon" style="width: 40px;"><i class="glyphicon glyphicon-lock"></i></div>
+                    <input id="sipPassword" class="form-control" type="password" placeholder="SIP Password" ng-model="sip.password">
+                </div>
+            </div>
+            <div class="form-group" ng-show="showAll">
+                <label for="sipDisplayName" class="control-label">Display Name</label>
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="glyphicon glyphicon-bullhorn"></i></div>
+                    <input id="sipDisplayName" class="form-control" type="text" placeholder="Display Name" ng-model="sip.displayName">
+                </div>
+            </div>
+            <div ng-hide="showAdvanced">
+                <a class="btn btn-sm btn-link pull-right" ng-click="showAdvanced = !showAdvanced">ADVANCED SETTINGS >></a>
+            </div>
+        </form>
+    </div>
+    <!--
+    <div class="col-sm-1" style="transform: rotate(90deg); vertical-align: middle;">
+        <button class="btn btn-default" ng-click="showAdvanced = !showAdvanced">ADVANCED SETTINGS</button>
+    </div>
+    -->
+    <div class="col-sm-7" ng-show="showAdvanced">
+        <h2 class="text-center text-muted" style="padding-bottom: 50px;"><i class="glyphicon glyphicon-cog"></i> Advanced</h2>
+        <form class="form-horizontal" role="form">
+            <div class="form-group">
+                <label for="stunServer" class="col-sm-3 control-label">STUN Server</label>
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="glyphicon glyphicon-flash" ng-dblclick="showAll = true"></i></div>
+                    <input id="stunServer" class="form-control" type="text" placeholder="STUN Server Address" ng-model="stun.address">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="turnServer" class="col-sm-3 control-label">TURN Server</label>
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="glyphicon glyphicon-retweet"></i></div>
+                    <input id="turnServer" class="form-control" type="text" placeholder="TURN Server Address" ng-model="turn.address">
+                </div>
+            </div>
+            <div class="form-group form-inline">
+                <label for="turnLogin" class="col-sm-3 control-label">TURN Auth</label>
+                <div class="input-group col-sm-4" style="width: 37%;">
+                    <div class="input-group-addon" style="width: 40px;"><i class="glyphicon glyphicon-user"></i></div>
+                    <input id="turnLogin" class="form-control" type="text" placeholder="TURN Login" ng-model="turn.login">
+                </div>
+                <div class="input-group col-sm-4" style="width: 37%;">
+                    <div class="input-group-addon" style="width: 40px;"><i class="glyphicon glyphicon-lock"></i></div>
+                    <input id="turnPassword" class="form-control" type="password" placeholder="TURN Password" ng-model="turn.password">
+                </div>
+            </div>
+            <div class="form-group" ng-show="showAll">
+                <label for="inputEmail3" class="col-sm-3 control-label">Outbound Proxy</label>
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="glyphicon glyphicon-filter"></i></div>
+                    <input id="sipOutboundProxy" class="form-control" type="text" placeholder="Outbound Proxy Address" ng-model="outboundProxy.address">
+                </div>
+            </div>
+            <hr ng-show="showAll">
+            <div class="form-group form-inline" ng-show="showAll">
+                <label for="audioCodecsFilter" class="col-sm-3 control-label">A/V Codecs</label>
+                <div class="input-group col-sm-4" style="width: 37%;">
+                    <div class="input-group-addon" style="width: 40px;"><i class="glyphicon glyphicon-volume-up"></i></div>
+                    <input id="audioCodecsFilter" class="form-control" type="text" placeholder="Audio Codecs" ng-model="communicationSettings.audioCodecs">
+                </div>
+                <div class="input-group col-sm-4" style="width: 37%;">
+                    <div class="input-group-addon" style="width: 40px;"><i class="glyphicon glyphicon-facetime-video"></i></div>
+                    <input id="videoCodecsFilter" class="form-control" type="text" placeholder="Video Codecs" ng-model="communicationSettings.videoCodecs">
+                </div>
+            </div>
+            <div class="form-group" ng-show="showAll">
+                <label for="localVideoFormat" class="col-sm-3 control-label">Local Video Format</label>
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="glyphicon glyphicon-film"></i></div>
+                    <input id="localVideoFormat" class="form-control" type="text" placeholder="Local Video Format" ng-model="communicationSettings.localVideoFormat" onchange="mobicentsWebRTCPhoneController.onChangeLocalVideoFormatViewEventHandler();">
+                </div>
+            </div>
+            <div ng-show="showAdvanced">
+                <a class="btn btn-sm btn-link" ng-click="showAdvanced = !showAdvanced">&lt;&lt; ADVANCED SETTINGS</a>
+            </div>
+        </form>
+    </div>
+    <button id="Register" class="btn btn-lg btn-primary btn-block" type="submit" onclick="mobicentsWebRTCPhoneController.onClickConnectButtonViewEventHandler();" ng-disabled="!validServer">Sign in</button>
+</div>
+</form>
+<!--             <p class="lead">Pin a fixed-height footer to the bottom of the viewport in desktop browsers with this custom HTML and CSS. A fixed navbar has been added with <code>padding-top: 60px;</code> on the <code>body > .container</code>.</p>
+<p>Back to <a href="../sticky-footer">the default sticky footer</a> minus the navbar.</p>
+-->

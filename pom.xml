@@ -1,0 +1,162 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<artifactId>mobicents-parent</artifactId>
+		<groupId>org.mobicents</groupId>
+		<version>2.24</version>
+	</parent>
+
+	<groupId>org.mobicents.webrtc</groupId>
+	<artifactId>webrtc-ui</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+
+	<packaging>war</packaging>
+
+	<name>OLYMPUS // Mobicents WebRTC UI Application</name>
+
+	<build>
+		<finalName>olympus</finalName>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+					<warSourceDirectory>
+						${basedir}/src/main/webapp
+					</warSourceDirectory>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>deploy-jboss</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<version>1.1</version>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<configuration>
+									<tasks>
+										<copy verbose="true" todir="${JBOSS_HOME}/standalone/deployments/${project.artifactId}.${project.packaging}">
+											<fileset dir="${project.build.directory}/${project.build.finalName}" >
+												<include name="**/*" />
+											</fileset>
+										</copy>
+										<touch file="${JBOSS_HOME}/standalone/deployments/${project.artifactId}.${project.packaging}.dodeploy" />
+									</tasks>
+								</configuration>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>deploy-tomcat</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<version>1.1</version>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<configuration>
+									<tasks>
+										<copy verbose="true" file="${project.build.directory}/${project.build.finalName}.${project.packaging}" tofile="${CATALINA_HOME}/webapps/${project.artifactId}.${project.packaging}" />
+									</tasks>
+								</configuration>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+	<!-- repositories -->
+	<repositories>
+		<repository>
+			<id>telscale-releases-repository</id>
+			<name>TelScale Releases Repository</name>
+			<url>http://telestax.artifactoryonline.com/telestax/releases</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+				<updatePolicy>never</updatePolicy>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>telscale-snapshots-repository</id>
+			<name>TelScale Snapshots Repository</name>
+			<url>http://telestax.artifactoryonline.com/telestax/snapshots</url>
+			<releases>
+				<enabled>false</enabled>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>mobicents-public-repository-group</id>
+			<name>Mobicens Public Maven Repository Group</name>
+			<url>https://oss.sonatype.org/content/groups/public</url>
+			<layout>default</layout>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>jboss-public-repository-group</id>
+			<name>JBoss Public Maven Repository Group</name>
+			<url>https://repository.jboss.org/nexus/content/groups/public/</url>
+			<layout>default</layout>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+			</snapshots>
+		</repository>
+	</repositories>
+</project>
