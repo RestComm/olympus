@@ -1,0 +1,14 @@
+{
+  "name": "angular-routing",
+  "version": "0.1.2",
+  "main": "angular-routing.js",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "components"
+  ],
+  "dependencies": {
+    "angular": "~1.2.x",
+    "angular-route": "~1.2.x"
+  }
+}

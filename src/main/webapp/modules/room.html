@@ -1,128 +1,147 @@
 <div class="row">
-	<div class="col-sm-2 col-md-1 sidebar">
-		<ul class="nav nav-sidebar sidemenu">
-			<li onclick="toggleContacts();"><a id="btnContacts" style="padding-left: 0; padding-right: 0;" href="" onclick="return false;"><i class="glyphicon glyphicon-user"></i><small>CONTACTS</small></a></li>
-			<li role="presentation" class="divider"></li>
-			<li class="disabled" onclick="toggleChat();"><a id="btnText" style="padding-left: 0; padding-right: 0;" href="" onclick="return false;"><span id="unreadTxt" class="badge pull-right" style="margin-bottom: -20px; margin-right: -10px; display: none;">0</span><i class="glyphicon glyphicon-comment"></i><small>CHAT</small></a></li>
-			<li class="disabled"><a id="btnCall" href="" style="padding-left: 0; padding-right: 0;" onclick="makeCall(selectedContact); return false;"><i class="glyphicon glyphicon-earphone" style="transform: rotate(100deg);"></i><small>CALL</small></a></li>
-			<!--li class="disabled"><a id="btnAudio" href="" style="padding-left: 0; padding-right: 0;" onclick="toggleCall(selectedContact, false); return false;"><i class="glyphicon glyphicon-volume-up"></i><small>AUDIO</small></a></li-->
-			<li onclick="return false; e.preventDefault();" style="padding-left: 0; padding-right: 0;" class="disabled" id="tKeypad" data-container="body" data-toggle="popover" data-placement="right" data-content="<table class='keypad'><tr><td class='btn btn-primary' id='btnDTMF1'>1</td><td class='btn btn-primary' id='btnDTMF2'>2</td><td class='btn btn-primary' id='btnDTMF3'>3</td></tr><tr><td class='btn btn-primary' id='btnDTMF4'>4</td><td class='btn btn-primary' id='btnDTMF5'>5</td><td class='btn btn-primary' id='btnDTMF6'>6</td></tr><tr><td class='btn btn-primary' id='btnDTMF7'>7</td><td class='btn btn-primary' id='btnDTMF8'>8</td><td class='btn btn-primary' id='btnDTMF9'>9</td></tr><tr><td class='btn btn-primary' id='btnDTMF*'>*</td><td class='btn btn-primary' id='btnDTMF0'>0</td><td class='btn btn-primary' id='btnDTMF#'>#</td></tr></table>" data-html="true"><a id="btnKeypad" href="" style="padding-left: 0; padding-right: 0;" onclick="return false;"><i class="glyphicon glyphicon-th"></i><small>KEYPAD</small></a></li>
-			<li class="disabled"><a id="btnFile" href="" style="padding-left: 0; padding-right: 0;" onclick="return false;"><i class="glyphicon glyphicon-paperclip"></i><small>UPLOAD</small></a></li>
-			<li class="disabled" style="margin-top: 50px;" style="padding-left: 0; padding-right: 0;" onclick="hangUpCall();"><a id="btnHang" style="padding-left: 0; padding-right: 0;" href="" onclick="return false;"><i class="glyphicon glyphicon-phone-alt"></i><small>HANGUP</small></a></li>
+  <div class="col-sm-2 col-md-1 sidebar">
+    <oly-sidebar></oly-sidebar>
+  </div>
 
-		</ul>
-	</div>
+  <!-- Contacts List -->
+  <div class="col-sm-3 col-sm-offset-2 col-md-2 col-md-offset-1 contacts animated ng-hide" style="margin-top: 20px; border-right: 1px solid #AAA;" my-show="showContacts" after-hide="afterHide()" after-show="afterShow()">
+    <h3 class="page-header"><i class="glyphicon glyphicon-list-alt"></i> <span style="color:#555;">Contacts</span><span style="color:#CCC;">List</span></h3>
+    <div class="input-group">
+      <input id="inputContact" class="form-control" type="text" ng-model="newContact.address" ng-keyup="$event.keyCode == 13 && isValidContact() && addContact()" placeholder="Contact Address">
+      <span class="input-group-btn">
+        <button id="btnAddContact" class="btn btn-primary" type="button" ng-click="addContact()" ng-disabled="!isValidContact()">Add</button>
+      </span>
+    </div>
+    <div style="margin-top: 2px;">
+      <input id="inputContact" class="form-control input-sm" type="text" ng-model="newContact.name" placeholder="Contact Name (optional)" ng-show="newContact.address">
+    </div>
+    <br>
+    <dl ng-repeat="contact in contacts|filter:newContact.address">
+      <dt><i class="fa fa-{{contact.icon}}"></i> {{contact.name}}</dt>
+      <dd><a href="" class="contact-entry" ng-dblclick="isClient(contact) ? chatContact(contact.address) : callContact(contact.address, false)" data-content-template="modules/templates/oly-contact-card.html" title="{{contact.name}} // {{contact.address}}" data-animation="am-flip-x" data-auto-close="1" bs-popover data-container="body" data-placement="right">{{contact.address}}</a>
+        <div ng-show="contact.isCollapsed">
+          <button ng-if="isClient(contact)" class="btn btn-success btn-xs" ng-click="callContact(contact.address, true)"><i class="glyphicon glyphicon-facetime-video"></i></button>
+          <button class="btn btn-primary btn-xs" ng-click="callContact(contact.address, false)"><i class="glyphicon glyphicon-earphone"></i></button>
+          <button ng-if="isClient(contact)" class="btn btn-default btn-xs" ng-click="chatContact(contact.address)"><i class="glyphicon glyphicon-comment"></i></button>
+        </div>
+      </dd>
+    </dl>
+  </div>
 
-	<!-- Contacts List -->
-	<div class="col-sm-3 col-sm-offset-2 col-md-2 col-md-offset-1 contacts" style="margin-top: 20px; border-right: 1px solid #AAA; display: none;">
-		<h3 class="page-header"><i class="glyphicon glyphicon-list-alt"></i> <span style="color:#555;">Contacts</span><span style="color:#CCC;">List</span></h3>
-		<div class="input-group">
-			<input id="inputContact" class="form-control" type="text" onkeyup="typeContact(event)">
-			<span class="input-group-btn">
-				<button id="btnAddContact" class="btn btn-primary" type="button" onclick="addContact()" disabled="true">Add</button>
-			</span>
-		</div>
-		<br>
-		<dl id="contact_alice" class="">
-			<dt><i class="glyphicon glyphicon-heart"></i> Alice</dt>
-			<dd><a class="contact-entry" data-contact="alice" href="" onclick="selectContact('alice'); return false;">alice@telestax.com</a></dd>
-		</dl>
-		<dl id="contact_bob" class="">
-			<dt><i class="glyphicon glyphicon-heart"></i> Bob</dt>
-			<dd><a class="contact-entry" data-contact="bob" href="" onclick="selectContact('bob'); return false;">bob@telestax.com</a></dd>
-		</dl>
-		<dl id="contact_1234" class="">
-			<dt><i class="glyphicon glyphicon-play-circle"></i> Hello Play Demo</dt>
-			<dd><a class="contact-entry" data-contact="+1234" href="" onclick="selectContact('1234'); return false;">+1234</a></dd>
-		</dl>
-		<dl class="">
-			<dt><i class="glyphicon glyphicon-bullhorn"></i> Hello Say Demo</dt>
-			<dd><a class="contact-entry" data-contact="+1235" href="" onclick="selectContact('1235'); return false;">+1235</a></dd>
-		</dl>
-		<dl class="">
-			<dt><i class="glyphicon glyphicon-hand-up"></i> Hello Gather Demo</dt>
-			<dd><a class="contact-entry" data-contact="+1236" href="" onclick="selectContact('1236'); return false;">+1236</a></dd>
-		</dl>
-		<dl class="">
-			<dt><i class="glyphicon glyphicon-headphones"></i> Conference Client</dt>
-			<dd><a class="contact-entry" data-contact="+1310" href="" onclick="selectContact('1310'); return false;">+1310</a></dd>
-		</dl>
-		<dl class="">
-			<dt><i class="glyphicon glyphicon-lock"></i> Conference Admin</dt>
-			<dd><a class="contact-entry" data-contact="+1311" href="" onclick="selectContact('1311'); return false;">+1311</a></dd>
-		</dl>
-	</div>
+  <div class="main" ng-class="contactsVisible ? 'col-md-9' : 'col-md-11 col-md-offset-1'">
+    <!-- Room Title / Incoming Call Banner -->
+    <div id="incomingCall" class="row">
+      <div class="col-md-5">
+        <h2 class="page-header"><span id="roomName" style="color:#555;">Welcome</span><span style="color:#CCC;">Room</span></h2>
+      </div>
+      <div class="col-md-7 incoming-call-container inline-headers" ng-show="incomingCall">
+        <div class="row" style="margin-top:29px;">
+          <div class="col-md-1">
+            <img src="resources/images/male-placeholder.jpg" style="height: 60px; margin: 0 0 0 -15px; border-radius: 10px; padding: 2px;" class="pull-left">
+          </div>
+          <div class="col-md-5">
+            <h4 style="margin: 6px 0 0 5px;"><span style="color:#555;">Incoming</span><span style="color:#CCC;">Call</span></h4>
+            <div><h3 style="margin: 3px 0 0 5px;"><span style="color:#555;">{{incomingCall.callerPhoneNumber}}</span> <small style="color:#CCC;" ng-show="incomingCall.callerPhoneNumber">({{incomingCall.callerPhoneNumber}})</small></h3></div>
+          </div>
+          <div class="col-md-6">
+            <div class="pull-right" role="group" aria-label="..." style="margin-top: 13px;">
+              <button class="btn btn-success" ng-click="acceptCall(true);"><i class="glyphicon glyphicon-facetime-video"></i> Video</button>
+              <button class="btn btn-success" ng-click="acceptCall(false);"><i class="glyphicon glyphicon-volume-up"></i> Audio</button>
+              <button class="btn btn-danger" ng-click="rejectCall();"><i class="glyphicon glyphicon-remove-circle"></i> Decline</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-	<!--<div class="col-sm-8 col-sm-offset-2 col-md-9 col-md-offset-2 main" style="margin-top: 20px;">-->
-	<div class="col-sm-8 col-sm-offset-2 col-md-11 col-md-offset-1 main" style="margin-top: 20px;">
-		<h2 class="page-header"><span id="roomName" style="color:#555;">Welcome</span><span style="color:#CCC;">Room</span> <!--small class="pull-right"> 5<i class="glyphicon glyphicon-user" style="font-size: 0.85em;"></i> </small--></h2>
+    <!-- Local Video Window -->
+    <!--<video id="localVideo" class="col-md-6" autoplay="autoplay"></video>-->
+    <div id="localVideoSpan" fullscreen="localFS" only-watched-property style="display: inline;">
+    <webcam class="block" ng-if="loggedUser" placeholder="resources/images/loading.gif" audio="true" video="true" video-width="videoConstraints.mandatory.minWidth" video-height="videoConstraints.mandatory.minHeight" video-constraints="videoConstraints" on-stream="onStream(stream)" on-error="onError(err)" on-streaming="onStreaming()">
+      <div class="title"><button class="btn btn-link btn-xs pull-left" ng-show="false" ng-click="fsLocal()" data-title="Full Screen" data-delay="500,100" data-container="body" bs-tooltip><i class="fa fa-expand"></i></button>{{loggedUser}}'s Camera<span class="pull-right" ng-hide="noVideo"><i class="glyphicon glyphicon-record" ng-style="{ 'color': (inCall ? '#C00000' : 'lightgray') }" ng-class="{ 'flashing': inCall }" ng-show="streaming"></i></span></div>
+      <img src="resources/images/male-placeholder.jpg" ng-show="noVideo">
+      <div class="video-controls" ng-show="inCall">
+        <button class="btn btn-link" ng-click="localMuteAudio()">
+          <i class="fa" ng-class="inCall.localAudioMuted ? 'fa-microphone-slash muted' : 'fa-microphone'"></i>
+        </button>
+        <button class="btn btn-link" ng-click="localMuteVideo()">
+          <i class="fa" ng-class="inCall.localVideoMuted ? 'fa-eye-slash muted' : 'fa-eye'"></i>
+        </button>
+        <button class="btn btn-link" ng-click="callHangup()" ng-show="false"><i class="glyphicon glyphicon-earphone" style="transform: rotate(118deg);"></i></button>
+      </div>
+    </webcam>
+    </div>
 
-		<div id="incomingCall" class="row" style="display: none;">
-			<div class="col-md-5" style="margin-left: 10px; border: 2px solid #BBB; border-radius: 10px; padding: 20px;">
-				<h2 class="page-header" style="margin-top: 0;"><span id="roomName" style="color:#555;">Incoming</span><span style="color:#CCC;">Call</span></h2>
-				<img src="http://www.csmd.edu/pdf/malePlaceholder.jpg" style="height: 70px" class="pull-left">
-				<h3 style=" margin-left: 80px;"><span id="incCallName">Participant</span> <small><span class="text-muted hide">address@domain.com</span></small></h3>
-				<span style=" margin-left: 10px;">
-				<button class="btn btn-sm btn-success" onclick="acceptCall(true);"><i class="glyphicon glyphicon-facetime-video"></i> Video</button>
-				<button class="btn btn-sm btn-success" onclick="acceptCall(false);"><i class="glyphicon glyphicon-volume-up"></i> Audio</button>
-				<button class="btn btn-sm btn-danger" onclick="rejectCall();"><i class="glyphicon glyphicon-remove-circle"></i> Reject</button>
-				</span>
-			</div>
-		</div>
+    <!-- Remote Video Window -->
+    <div class="block" ng-show="inCall" ng-style="{'height': getRemoteHeight()}">
+      <div class="title"><button class="btn btn-link btn-xs pull-left" ng-click="fsRemote()" data-title="Full Screen" data-delay="500,100" data-container="body" bs-tooltip><i class="fa fa-expand"></i></button>{{ (inCall.incomingCallFlag ? inCall.callerPhoneNumber : inCall.calleePhoneNumber) || "&nbsp;"}}</div>
+      <div class="video-controls" ng-show="inCall">
+        <button class="btn btn-link" ng-click="remoteMuteAudio()" ng-show="inCall.intStatus === 'ESTABLISHED'">
+          <i class="fa" ng-class="inCall.remoteAudioMuted ? 'fa-microphone-slash muted' : 'fa-microphone'"></i>
+        </button>
+        <button class="btn btn-link" ng-click="remoteMuteVideo()" ng-show="inCall.intStatus === 'ESTABLISHED'">
+          <i class="fa" ng-class="inCall.remoteVideoMuted ? 'fa-eye-slash muted' : 'fa-eye'"></i>
+        </button>
+        <button class="btn btn-link" ng-click="callHangup()"><i class="glyphicon glyphicon-earphone" style="transform: rotate(118deg);"></i></button>
+      </div>
+      <img src="resources/images/male-placeholder.jpg" ng-hide="remoteVideo">
+      <video ng-src="{{remoteVideo}}" style="width: {{videoConstraints.mandatory.minWidth}}px; height: {{videoConstraints.mandatory.minHeight}}px;" autoplay="autoplay" ng-show="remoteVideo" fullscreen="remoteFS" only-watched-property></video>
+      <div class="video-status"> {{inCall.intStatus}} </div>
+    </div>
+  </div>
+</div>
 
-		<div id="lvContainer">
-			<video id="localVideo" class="col-md-6" autoplay="autoplay"></video>
-		</div>
-		<div id="rvContainer">
-			<!--div class="jumbotron col-md-6 col-md-offset-6">
-				<h1>Welcome to TelScale Olympus!</h1>
-				<p>bla bla bla</p>
-				<p><a class="btn btn-primary btn-lg" href="#" role="button">Get Started</a></p>
-			</div-->
-		</div>
-		<!--
-		<div class="row">
-			<div class="col-md-6 col-md-offset-3 text-center" style="margin-bottom: 15px;">
-				<img src="http://www.csmd.edu/pdf/malePlaceholder.jpg">
-				<h4 class="no-margins">Zebedee Chizoba <small><span class="text-muted">zbd@speakers.com</span></small></h4>
-				
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-xs-3 col-sm-3">
-				<img src="http://www.komputerswiat.pl/media/2014/219/3560983/0000001-zaj.jpg">
-				<h4 class="no-margins">Amand Elias</h4>
-				<span class="text-muted">amand@curious.com</span>
-			</div>
-			<div class="col-xs-3 col-sm-3">
-				<img src="http://www.freeonlinegames.com/games/127470/medium.jpg">
-				<h4 class="no-margins">Caomh Maximus</h4>
-				<span class="text-muted">doge@bitcoin.org</span>
-			</div>
-			<div class="col-xs-3 col-sm-3 placeholder">
-				<img src="http://www.komputerswiat.pl/media/2013/153/2964671/gk_z.jpg">
-				<h4 class="no-margins">Cosmo Callias</h4>
-				<span class="text-muted">grumpy@internet.org</span>
-			</div>
-			<div class="col-xs-3 col-sm-3 placeholder">
-				<img src="http://www.catersnews.com/wp-content/uploads/2014/06/24062013101643894.jpg">
-				<h4 class="no-margins">Aali Federico</h4>
-				<span class="text-muted">+351 21490049</span>
-			</div>
-		</div>
-		-->
-	</div>
-	<div class="col-md-2 chat chatbar" id="chat" style="display: none;">
-		<i class="page-header glyphicon glyphicon-remove pull-right" style="opacity: 0.3; margin-top: 34px; cursor: pointer;" onclick="toggleChat()"></i>
-		<h2 class="page-header"><span style="color:#555; padding-left: 5px;">Text</span><span style="color:#CCC;">Chat</span></h2>
-		<div id="chat_content" class="messages-container">
-		</div>
-	</div>
+<div class="chat-container">
+<div style="width: 250px; margin: 0 10px -5px 0; text-align: initial; pointer-events: auto; z-index: 1;" class="block" ng-repeat="ac in activeChats|orderBy:void:true" ng-if="ac.status !== 'hid'">
+  <div id="{{ ac.id }}" class="title" ng-class="{'title-unread': (ac.unread > 0)}">
+    <p style="display: inline-flex; max-width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 0;">{{ ac.id }}</p> <span class="badge" style="font-size: 0.6em;" ng-show="ac.unread > 0">{{ac.unread}}</span>
+    <span class="pull-left">
+      <div class="btn-group" dropdown is-open="status.isopen">
+        <button type="button" class="btn btn-link btn-xs dropdown-toggle" dropdown-toggle bs-dropdown="chatDropdown" data-template="modules/templates/oly-chat-dropdown.html" data-placement="bottom-left auto" data-container="body"><i class="glyphicon glyphicon-menu-hamburger"></i></button>
+      </div>
+    </span>
+    <span class="pull-right">
+      <button class="btn btn-link btn-xs" ng-click="minimizeChat(ac.id)"><i class="glyphicon " ng-class="ac.status === 'min' ? 'glyphicon-menu-up' : 'glyphicon-menu-down'"></i></button>
+      <button class="btn btn-link btn-xs" ng-click="closeChat(ac.id)"><i class="glyphicon glyphicon-remove"></i></button>
+    </span>
+  </div>
+  <!-- Animated.. but not there yet.
+  <div class="content" style="height: 233px;" ng-class="ac.status === 'min' ? 'animated bounceOutDown hidden' : 'animated bounceInDown' ">Some text...</div>
+  <div class="content" style="height: 30; background-color: #5cb85c;" ng-class="ac.status === 'min' ? 'animated bounceOutDown hidden' : 'animated bounceInDown' ">
+  -->
+  <div class="content" scroll style="height: 233px; width: 250px; overflow-y: scroll;" ng-show="ac.status === 'normal'">
+    <ol class="discussion">
+      <li ng-repeat="entry in ac.history" ng-class="{'other': entry.direction === 'in', 'self': entry.direction === 'out', 'group': (ac.history[$index+1].direction === entry.direction && ac.history[$index+1].time - entry.time <= timeToGroup)}" ng-style="{'margin-right: 40px; margin-bottom: -10px;' : (ac.history[$index+1].direction === entry.direction && ac.history[$index+1].time - entry.time >= timeToGroup)}">
+        <div class="avatar">
+          <div style="background-color: {{getChatColor(entry.direction === 'in' ? ac.id : loggedUser)}}">{{entry.direction === 'in' ? (ac.id|limitTo:1|uppercase) : (loggedUser|limitTo:1|uppercase) }}</div>
+        </div>
+        <div class="messages" style="width: 100%;">
+          <p class="{{entry.status}}" ng-bind-html="entry.text | emoticons:{linkTarget:'_blank'}"></p>
+          <time ng-if="ac.history[$index+1].direction !== entry.direction || ac.history[$index + 1].time - entry.time >= timeToGroup">{{entry.direction === 'in' ? (ac.id + ' • ') : ''}}<span am-time-ago="entry.time" title="{{entry.time | amDateFormat:'ddd, DD MMM YYYY, HH:mm:ss'}}"></span></time>
+        </div>
+      </li>
+    </ol>
+  </div>
+  <div class="content typearea" ng-show="ac.status === 'normal'">
+    <div class="row">
+      <div class="col-md-4">
+        <form>
+          <div class="input-group">
+            <input type="text" class="form-control" ng-model="ac.writeText" placeholder="Type Message...">
+            <span class="input-group-btn">
+              <button class="btn btn-link" style="padding: 0 10px;" ng-click="sendMessage(ac)"><i class="fa fa-chevron-circle-right" style="font-size: 1.5em;"></i></button>
+            </span>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 </div>
 
 <!-- Audio Resources -->
-<audio id="ringing" loop src="resources/audio/ringing.wav" ></audio>
-<audio id="chat_notification" src="resources/audio/chat_notification.wav" ></audio>
+<audio id="snd_ringing" loop src="resources/audio/ringing.mp3" type="audio/mpeg"></audio>
+<audio id="snd_message" src="resources/audio/chat_notification.wav" ></audio>
 <audio id="snd_dtmf0" title="0" src="resources/audio/dtmf0.wav" ></audio>
 <audio id="snd_dtmf1" title="1" src="resources/audio/dtmf1.wav" ></audio>
 <audio id="snd_dtmf2" title="2" src="resources/audio/dtmf2.wav" ></audio>
@@ -135,39 +154,3 @@
 <audio id="snd_dtmf9" title="9" src="resources/audio/dtmf9.wav" ></audio>
 <audio id="snd_dtmfs" title="*" src="resources/audio/star.wav" ></audio>
 <audio id="snd_dtmfp" title="#" src="resources/audio/pound.wav" ></audio>
-
-<!-- FIXME: Delete me. Just added so addContact(..) works properly -->
-<table id="#contact_list"><tbody></tbody></table>
-
-<script type="text/javascript">
-$(document).ready(function(){
-	/*
-	$(".contact-entry").popover({ 
-	placement : 'right',
-	html : true,
-	container: 'body',
-	trigger: 'focus',
-	content: '<button class="btn btn-sm btn-default" onclick="quickCall(tempContact, true);"><i class="glyphicon glyphicon-facetime-video"></i></button> '+
-			'<button class="btn btn-sm btn-default" onclick="quickCall(tempContact, false);"><i class="glyphicon glyphicon-volume-up"></i></button> '+
-			'<button class="btn btn-sm btn-default" onclick="quickChat(tempContact);"><i class="glyphicon glyphicon-comment"></i></button>'
-	})
-	.click(function(e) {
-		window.tempContact = $(this).attr('data-contact');
-		e.preventDefault();
-	});
-	*/
-
-	$("#tKeypad").popover().click(function(e){
-		e.preventDefault();
-		$('td[id^="btnDTMF"]').on( "click", function() {
-			clickDTMF(this.id.charAt(7));
-		});
-	});
-	$("#tKeypad").popover('disable');
-
-	function clickDTMF(dtmf) {
-		mobicentsWebRTCPhoneController.sendDTMF(dtmf);
-		$('audio[title="' + dtmf + '"]')[0].play();
-	}
-});
-</script>

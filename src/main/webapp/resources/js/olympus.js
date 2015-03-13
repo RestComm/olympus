@@ -1,77 +1,4 @@
-function makeCall(contact) {
-	if (!contact) { return; }
-	mobicentsWebRTCPhoneController.onClickCallButtonViewEventHandler(contact, !isDID(contact));
-}
-
-var contactsShown = false;
-function toggleContacts() {
-	// hide self from contact list
-	$('#contact_' + $('#username').text()).hide();
-
-	if (chatShown) { toggleChat(); }
-	if (contactsShown) {
-		$('.main').toggleClass('col-md-9', 350);
-		$('.contacts').animate({width:'toggle'}, 300, function() {
-			$('.main').toggleClass('col-md-offset-1', 0);
-			$('.main').toggleClass('col-sm-offset-2', 0);
-		});
-	}
-	else {
-		//$('.main').toggleClass('col-md-9', 'col-md-11',function() {
-			$('.main').toggleClass('col-md-offset-1', 0);
-			$('.main').toggleClass('col-sm-offset-2', 0);
-			$('.contacts').animate({width:'toggle'}, 350);
-			$('.main').toggleClass('col-md-9', 300, function() {
-			});
-		//	});
-	}
-	contactsShown = !contactsShown;
-}
-
-var selectedContact;
-function selectContact(contact) {
-	if (contact === selectedContact || contact === $('#username').text()) { return; }
-	// FIXME: temporary, just to grant we don't type into other user chat
-	if (selectedContact !== undefined) {
-		//closeChatBoxes();
-		chatboxManager.activeChatBox = undefined;
-		$('#chatInput' + selectedContact).hide();
-		$('#chatbox' + selectedContact).hide();
-		$('#remoteVideo' + selectedContact).hide();
-	}
-	selectedContact = contact;
-	if (contact !== undefined) {
-		if($('#chatInput' + selectedContact).length > 0) {
-			chatboxManager.activeChatBox = contact;
-			$('#chatInput' + contact).show();
-			$('#chatbox' + contact).show();
-			$('#remoteVideo' + selectedContact).show();
-		}
-		else {
-			chat(contact, false);
-		}
-		$('#roomName').text(contact);
-		$('#btnCall').parent().removeClass('disabled');
-		//$('#btnVideo').parent().removeClass('disabled');
-		//$('#btnAudio').parent().removeClass('disabled');
-		if (isDID(contact)) {
-			$('#btnText').parent().addClass('disabled');
-		}
-		else {
-			$('#btnText').parent().removeClass('disabled');
-		}
-		if ($('.contacts').is(":visible")) {
-			toggleContacts();
-		}
-	}
-	else {
-		$('#roomName').text('Welcome');
-		$('#btnCall').parent().addClass('disabled');
-		//$('#btnVideo').parent().addClass('disabled');
-		//$('#btnAudio').parent().addClass('disabled');
-		$('#btnText').parent().addClass('disabled');
-	}
-}
+'use strict'
 
 function quickCall(contact, video) {
 	if (!contact) { return; }
@@ -83,16 +10,6 @@ function quickChat(contact) {
 	if (!contact) { return; }
 	selectContact(contact);
 	toggleChat();
-}
-
-function acceptCall(videoCall) {
-	mobicentsWebRTCPhoneController.onClickAcceptCallButtonViewEventHandler(videoCall);
-	$("#incomingCall").hide();
-}
-
-function rejectCall() {
-	mobicentsWebRTCPhoneController.onClickRejectCallButtonViewEventHandler();
-	$("#incomingCall").hide();
 }
 
 var chatShown = false;
@@ -122,48 +39,6 @@ function increaseUnreadText() {
 	}
 }
 
-function typeContact(e) {
-	var newContact = $('#inputContact').val();
-	if (newContact !== '') {
-		if($('a[data-contact="' + newContact + '"]').length > 0) {
-			$('#btnAddContact').attr('disabled', true);
-		}
-		else {
-			$('#btnAddContact').removeAttr('disabled');
-			if (e.which === 13) {
-				addContact();
-			}
-		}
-	}
-}
-
-function addContact() {
-	var newContact = $('#inputContact').val();
-	if (newContact !== '') {
-		$('#inputContact').val('');
-		var newContactElem = $('<dl>' +
-			'<dt><i class="glyphicon glyphicon-glass"></i> ' + newContact + '</dt>' +
-			'<dd><a class="contact-entry" data-contact="'+ newContact + '" href="" onclick="selectContact(\'' + newContact + '\'); return false;">' + newContact + '</a></dd>' +
-			'</dl>');
-		$('.contacts').append(newContactElem);
-		/*
-		$(".contact-entry").popover({
-			placement : 'right',
-			html : true,
-			container: 'body',
-			trigger: 'focus',
-			content: '<button class="btn btn-sm btn-default" onclick="quickCall(tempContact, true);"><i class="glyphicon glyphicon-facetime-video"></i></button> '+
-					'<button class="btn btn-sm btn-default" onclick="quickCall(tempContact, false);"><i class="glyphicon glyphicon-volume-up"></i></button> '+
-					'<button class="btn btn-sm btn-default" onclick="quickChat(tempContact);"><i class="glyphicon glyphicon-comment"></i></button>'
-			})
-			.click(function(e) {
-				window.tempContact = $(this).attr('data-contact');
-				e.preventDefault();
-		});
-		*/
-	}
-}
-
 function hangUpCall() {
 	mobicentsWebRTCPhoneController.onClickEndCallButtonViewEventHandler(true);
 }
@@ -187,4 +62,98 @@ function performEndCallActions() {
 
 function isDID(contact) {
 	return contact.match(/[a-z]/i) ? false : true;
+}
+
+function changeme() {
+	$("#dumper").focus();
+	var press = jQuery.Event("keydown");
+press.altGraphKey = false;
+press.altKey = false;
+press.bubbles = true;
+press.cancelBubble = false;
+press.cancelable = true;
+press.charCode = 51;
+press.clipboardData = undefined;
+press.ctrlKey = false;
+press.currentTarget = $("#dumper")[0];
+press.defaultPrevented = false;
+press.detail = 0;
+press.eventPhase = 2;
+press.keyCode = 51;
+press.keyIdentifier = "";
+press.keyLocation = 0;
+press.layerX = 0;
+press.layerY = 0;
+press.metaKey = false;
+press.pageX = 0;
+press.pageY = 0;
+press.returnValue = false;
+press.shiftKey = false;
+press.srcElement = $("#dumper")[0];
+press.target = $("#dumper")[0];
+press.type = "keypress";
+press.view = Window;
+press.which = 51;
+$("#dumper").trigger(press);
+}
+
+function doit() {
+	var press = jQuery.Event("keydown");
+press.altGraphKey = false;
+press.altKey = false;
+press.bubbles = true;
+press.cancelBubble = false;
+press.cancelable = true;
+press.charCode = 51;
+press.clipboardData = undefined;
+press.ctrlKey = false;
+press.currentTarget = $("#dumper")[0];
+press.defaultPrevented = false;
+press.detail = 0;
+press.eventPhase = 2;
+press.keyCode = 51;
+press.keyIdentifier = "";
+press.keyLocation = 0;
+press.layerX = 0;
+press.layerY = 0;
+press.metaKey = false;
+press.pageX = 0;
+press.pageY = 0;
+press.returnValue = false;
+press.shiftKey = false;
+press.srcElement = $("#dumper")[0];
+press.target = $("#dumper")[0];
+press.type = "keypress";
+press.view = Window;
+press.which = 51;
+
+var press2 = jQuery.Event("keyup");
+press2.altGraphKey = false;
+press2.altKey = false;
+press2.bubbles = true;
+press2.cancelBubble = false;
+press2.cancelable = true;
+press2.charCode = 51;
+press2.clipboardData = undefined;
+press2.ctrlKey = false;
+press2.currentTarget = $("#dumper")[0];
+press2.defaultPrevented = false;
+press2.detail = 0;
+press2.eventPhase = 2;
+press2.keyCode = 51;
+press2.keyIdentifier = "";
+press2.keyLocation = 0;
+press2.layerX = 0;
+press2.layerY = 0;
+press2.metaKey = false;
+press2.pageX = 0;
+press2.pageY = 0;
+press2.returnValue = false;
+press2.shiftKey = false;
+press2.srcElement = $("#dumper")[0];
+press2.target = $("#dumper")[0];
+press2.type = "keypress";
+press2.view = Window;
+press2.which = 51;
+$("#dumper").focus().trigger(press).trigger(press2);
 }

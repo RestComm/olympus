@@ -2,7 +2,9 @@
 
 var olyMod = angular.module('mcWebRTC');
 
-olyMod.controller('RegisterCtrl', function ($scope, $rootScope, $location, $timeout) {
+olyMod.controller('RegisterCtrl', function ($scope, $rootScope, $location, $timeout, $animate, wrtcEventListener) {
+
+  $rootScope.loggedUser = '';
 
   $scope.simplified = true;
   $scope.showAdvanced = false;
@@ -11,10 +13,10 @@ olyMod.controller('RegisterCtrl', function ($scope, $rootScope, $location, $time
   $scope.serverPort = '5082';
 
   $scope.sip = {
-    displayName: 'bob',
-    username: 'bob',
+    displayName: 'Alice Alissys',
+    username: 'alice',
     domain: $scope.serverAddress,
-    login: 'bob',
+    login: 'alice',
     password: '1234'
   };
 
@@ -23,9 +25,6 @@ olyMod.controller('RegisterCtrl', function ($scope, $rootScope, $location, $time
   };
 
   $scope.turn = {
-    address: 'https://api.xirsys.com/getIceServers',
-    login: 'deruelle',
-    password: 'bec47bdc-3257-4b84-b992-de9cf5e96dee'
   };
 
   $scope.outboundProxy = {
@@ -54,13 +53,89 @@ olyMod.controller('RegisterCtrl', function ($scope, $rootScope, $location, $time
   };
 
   var validate = function(str) {
-    return /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$|^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$|^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$/.test(str);
-  }
+    return (/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9RTCPeerConnection: ,][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$|^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$|^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$/).test(str);
+  };
 
-/*
-  angular.element(document).ready(function () {
-    mobicentsWebRTCPhoneController.onLoadViewEventHandler();
+  $scope.connect = function() {
+    $scope.registering = true;
+
+    // FIXME: This is only valid for api.xirsys.com...
+    if($scope.turn.address && $scope.turn.address.indexOf('https://api.xirsys.com/') === 0) {
+      if(!$scope.turn.login || !$scope.turn.password) {
+        return;
+      }
+
+      // because Firefox is picky...
+      $.ajaxSetup({beforeSend: function(xhr) {
+        if (xhr.overrideMimeType) {
+          xhr.overrideMimeType('application/json');
+        }
+      }});
+
+      $.ajax({
+        type: 'POST',
+        url: $scope.turn.address,
+        data: {
+          domain: 'www.' + 'telestax.com', // FIXME: what should go here ?
+          room: 'default',
+          application: 'restcomm-webrtc',
+          ident: $scope.turn.login,
+          secret: $scope.turn.password,
+          username: $scope.sip.username,
+          secure: '1'
+        },
+        success: function (data) {
+          $scope.iceServers = data.d;
+          delete $scope.turn.address;
+          delete $scope.turn.login;
+          delete $scope.turn.password;
+        },
+        async: false
+      });
+    }
+
+    // TODO: Make scope config match this, so we don't need to re-format it here
+    var wrtcConfiguration = {
+      communicationMode: WebRTCommClient.prototype.SIP,
+      sip: {
+        sipUserAgent: 'TelScale RTM Olympus/1.0.0',
+        sipRegisterMode: true,
+        sipOutboundProxy: $scope.outboundProxy.address,
+        sipDomain: $scope.sip.domain,
+        sipDisplayName: $scope.sip.displayName,
+        sipUserName: $scope.sip.username,
+        sipLogin: $scope.sip.login,
+        sipPassword: $scope.sip.password
+      },
+      RTCPeerConnection: {
+        iceServers: $scope.iceServers,
+        stunServer: $scope.stun.address,
+        turnServer: $scope.turn.address,
+        turnLogin: $scope.turn.login,
+        turnPassword: $scope.turn.password
+      }
+    };
+
+    $rootScope.wrtcClient = new WebRTCommClient(wrtcEventListener);
+    $rootScope.wrtcClient.open(wrtcConfiguration);
+  };
+
+  $scope.registering = false;
+  $scope.shakeit = false;
+
+  $scope.$on('REGISTRATION_STATUS', function(event, status/*, error*/) {
+    $timeout(
+      function() {
+        $scope.registering = false;
+        if (status === 0) {
+          $rootScope.loggedUser = $scope.sip.displayName;
+          $location.path('room');
+        }
+        else {
+          $scope.registerFailed = true;
+          $scope.shakeit = true;
+        }
+      });
   });
-*/
 
 });

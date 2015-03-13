@@ -1,167 +1,170 @@
 <!DOCTYPE HTML>
 <html lang="en" ng-app="mcWebRTC" class="no-js">
-	<head>
-		<link rel="icon" type="image/png" href="resources/images/favicon.png">
+  <head>
+    <meta charset="utf-8">
+    <link rel="icon" type="image/png" href="resources/images/favicon.png">
 
-		<link href="lib/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+    <link href="lib/font-awesome/css/font-awesome.min.css" rel="stylesheet">
 
-		<style type="text/css">
-			/* Sticky footer styles
-			-------------------------------------------------- */
-			html {
-				position: relative;
-				min-height: 100%;
-			}
-			body {
-				/* Margin bottom by footer height */
-				margin-bottom: 30px;
-			}
-			.footer {
-				position: absolute;
-				bottom: 0;
-				width: 100%;
-				/* Set the fixed height of the footer here */
-				height: 30px;
-				background-color: #f5f5f5;
-			}
-
-
-			/* Custom page CSS
-			-------------------------------------------------- */
-			/* Not required for template or sticky footer method. */
-
-			body > .container {
-				padding: 40px 15px 0;
-			}
-			.container .text-muted {
-				margin: 20px 0;
-			}
-
-			.footer > .container {
-				padding-right: 15px;
-				padding-left: 15px;
-			}
-
-			code {
-				font-size: 80%;
-			}
-		</style>
-
-		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-		<!--[if lt IE 9]>
-			<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-			<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-		<![endif]-->
-
-		<link href="resources/css/olympus.css" rel="stylesheet" />
-
-		<title>Mobicents OLYMPUS</title>
-	</head>
-	<body onunload='mobicentsWebRTCPhoneController.onUnloadViewEventHandler();' style="background-image: url('resources/images/background.png')" style="overflow: hidden;">
-
-		<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-			<div class="container-fluid">
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-						<span class="sr-only">Toggle navigation</span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-					</button>
-					<a class="navbar-brand" href="#" onclick="return false;"><img src="resources/images/telestax-logo-dark.png" style="display: inline" /> <span style="font-size: 1.5em; vertical-align: bottom;"> OLYMPUS</span></a>
-				</div>
-				<div id="navbar" class="collapse navbar-collapse">
-					<ul class="navbar-nav list-inline" style="margin-top: 10px;">
-						<li style="margin-left: 10px;"><a href=""><i class="glyphicon glyphicon-user" style="font-size: 3em;"></i><br>INVITE</a></li>
-						<li style="margin-left: 15px;"><a href=""><i class="glyphicon glyphicon-comment" style="font-size: 3em;"></i><br>CHAT</a></li>
-						<li style="margin-left: 15px;"><a href=""><i class="glyphicon glyphicon-facetime-video" style="font-size: 3em;"></i><br>VIDEO</a></li>
-						<li style="margin-left: 15px;"><a href=""><i class="glyphicon glyphicon-volume-up" style="font-size: 3em;"></i><br>AUDIO</a></li>
-						<li style="margin-left: 15px;"><a href="" id="tKeypad2" data-container="body" data-toggle="popover" data-placement="bottom" data-content="<table class='keypad'><tr><td class='btn btn-primary'>1</td><td class='btn btn-primary'>2</td><td class='btn btn-primary'>3</td></tr><tr><td class='btn btn-primary'>4</td><td class='btn btn-primary'>5</td><td class='btn btn-primary'>6</td></tr><tr><td class='btn btn-primary'>7</td><td class='btn btn-primary'>8</td><td class='btn btn-primary'>9</td></tr><tr><td class='btn btn-primary'>*</td><td class='btn btn-primary'>0</td><td class='btn btn-primary'>#</td></tr></table>" data-html="true"><i class="glyphicon glyphicon-th" style="font-size: 3em;"></i><br>KEYS</a></li>
-						<li class="pull-right" style="margin-right: 10px;"><a href="" onclick="mobicentsWebRTCPhoneController.onClickDisconnectButtonViewEventHandler();"><i class="glyphicon glyphicon-earphone" style="transform: rotate(113deg) translateX(2px); font-size: 3em;"></i><br>HANG</a></li>
-					</ul>
-					<span class="navbar-text pull-right no-margins" style="font-size: 1.2em;">
-						<span id="user" style="margin-top: 15px; vertical-align: sub; display: none;">
-							<i class="glyphicon glyphicon-user"></i> <a id="username" href="#" class="navbar-link">John Doe</a>
-						</span>
-						&nbsp; <span id="unregister" style="display: none;"><a href="#" onclick="mobicentsWebRTCPhoneController.onClickDisconnectButtonViewEventHandler();" class="btn btn-danger btn-sm"><i class="glyphicon glyphicon-off"></i> Sign Out</a></span>
-					</span>
-				</div><!--/.nav-collapse -->
-			</div>
-		</nav>
-
-		<!-- Begin page content -->
-		<div id="registration" class="container" ng-view ng-hide="0">
-		</div>
-
-		<div class="container-fluid" id="room">
-		</div>
+    <style type="text/css">
+      /* Sticky footer styles
+      -------------------------------------------------- */
+      html {
+        position: relative;
+        min-height: 100%;
+      }
+      body {
+        /* Margin bottom by footer height */
+        margin-bottom: 30px;
+      }
+      .footer {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        /* Set the fixed height of the footer here */
+        height: 30px;
+        background-color: #f5f5f5;
+        z-index: 1;
+      }
 
 
-		<div class="footer">
-			<div class="container">
-				<p class="text-muted text-right" style="margin: 5px; font-weight: bold; opacity: 0.4;">POWERED BY RESTCOMM (C) TELESTAX 2014</p>
-			</div>
-		</div>
+      /* Custom page CSS
+      -------------------------------------------------- */
+      /* Not required for template or sticky footer method. */
 
-		<div id="messageModal" class="modal fade">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-						<h4 class="modal-title">Ooops! Something went wrong...</h4>
-					</div>
-					<div class="modal-body">
-						<p id="modal_message">...&hellip;</p>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-					</div>
-				</div>
-			</div>
-		</div>
+      body > .container {
+        padding: 40px 15px 0;
+      }
+      .container .text-muted {
+        margin: 20px 0;
+      }
 
-		<script src="lib/jquery/jquery-1.11.1.js"></script>
-		<script src="lib/jquery-ui/jquery-ui.min.js"></script>
-		<script src="lib/moment/moment.min.js"></script>
-		<script src="lib/livestamp/livestamp.min.js"></script>
-		<!-- custom -->
-		<script src="lib/chatbox/chatbox.js"></script>
-		<script src="resources/js/telscale-rtm.js"></script>
-		<script src="resources/js/jain-sip.js"></script> 
-		<script src="resources/js/WebRTComm.js"></script>
-		<script src="resources/js/TelScaleRTMController.js"></script>
+      .footer > .container {
+        padding-right: 15px;
+        padding-left: 15px;
+      }
 
-		<script src="resources/js/olympus.js"></script>
-		<script>
-			mobicentsWebRTCPhoneController = new MobicentsWebRTCPhoneController(this);
-		</script>
-		<!-- AngularJS Libraries -->
-		<script src="lib/angular/angular.js"></script>
-		<script src="lib/angular/angular-route.js"></script>
-		<script src="lib/angular/angular-resource.js"></script>
-		<script src="lib/angular/angular-animate.js"></script>
-		<script src="lib/bootstrap/js/bootstrap.js"></script>
-		<script src="lib/angular-bootstrap/ui-bootstrap-tpls-0.11.2.js"></script>
+      code {
+        font-size: 80%;
+      }
+    </style>
 
-		<script src="resources/js/app.js"></script>
-		<script src="resources/js/controllers.js"></script>
-		<script src="resources/js/controllers/register.js"></script>
-		<script src="resources/js/directives.js"></script>
-		<script src="resources/js/filters.js"></script>
-		<script src="resources/js/services.js"></script>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
 
-		<script type="text/javascript">
-			$(document).ready(function () {
-				// Load modules
-				//$('#registration').load('modules/register.html');
-				$('#room').load('modules/room.html');
-				$('#user').hide();
-				$('#unregister').hide();
-				$('#registration').hide();
-				//$('#left-sidebar').hide();
-				$('#room').hide();
-			});
-		</script>
+    <link href="lib/animate.css/animate.css" rel="stylesheet">
+    <link href="lib/ng-emoticons/dist/ng-emoticons.min.css" rel="stylesheet">
+    <link href="resources/css/olympus.css" rel="stylesheet" />
 
-	</body>
+    <title>&lt;OLYMPUS/&gt;</title>
+  </head>
+  <body class="{{ loggedUser ? 'loggedIn' : 'login' }}" ng-cloak>
+    <oly-console ng-show="showConsole"></oly-console>
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation" ng-show="loggedUser">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href=""><img src="resources/images/telestax-logo-dark.png" style="display: inline" /> <span class="brand-text"> OLYMPUS</span></a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <!-- <oly-sidebar></oly-sidebar> -->
+          <!--
+          <ul class="navbar-nav list-inline" style="margin-top: 10px;">
+            <li style="margin-left: 10px;"><a href=""><i class="glyphicon glyphicon-user" style="font-size: 3em;"></i><br>INVITE</a></li>
+            <li style="margin-left: 15px;"><a href=""><i class="glyphicon glyphicon-comment" style="font-size: 3em;"></i><br>CHAT</a></li>
+            <li style="margin-left: 15px;"><a href=""><i class="glyphicon glyphicon-facetime-video" style="font-size: 3em;"></i><br>VIDEO</a></li>
+            <li style="margin-left: 15px;"><a href=""><i class="glyphicon glyphicon-volume-up" style="font-size: 3em;"></i><br>AUDIO</a></li>
+            <li style="margin-left: 15px;"><a href="" id="tKeypad2" data-container="body" data-toggle="popover" data-placement="bottom" data-content="<table class='keypad'><tr><td class='btn btn-primary'>1</td><td class='btn btn-primary'>2</td><td class='btn btn-primary'>3</td></tr><tr><td class='btn btn-primary'>4</td><td class='btn btn-primary'>5</td><td class='btn btn-primary'>6</td></tr><tr><td class='btn btn-primary'>7</td><td class='btn btn-primary'>8</td><td class='btn btn-primary'>9</td></tr><tr><td class='btn btn-primary'>*</td><td class='btn btn-primary'>0</td><td class='btn btn-primary'>#</td></tr></table>" data-html="true"><i class="glyphicon glyphicon-th" style="font-size: 3em;"></i><br>KEYS</a></li>
+            <li class="pull-right" style="margin-right: 10px;"><a href=""><i class="glyphicon glyphicon-earphone" style="transform: rotate(113deg) translateX(2px); font-size: 3em;"></i><br>HANG</a></li>
+          </ul>
+          -->
+          <span class="navbar-text pull-right no-margins" style="font-size: 1.2em; margin-top: 10px;" ng-show="loggedUser !== ''">
+            <span id="user" style="margin-top: 15px; vertical-align: sub;">
+              <i class="glyphicon glyphicon-user"></i> <a id="username" href="" class="navbar-link">{{loggedUser}}</a>
+            </span>
+            &nbsp; <span id="unregister" style=""><button ng-click="signOut()" class="btn btn-danger btn-sm"><i class="glyphicon glyphicon-off"></i> Sign Out</button></span>
+          </span>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+    <div class="notifications-container" ng-show="loggedUser"></div>
+    <!-- Begin page content -->
+    <div id="registration" class="container-fluid" style="margin-top: 20px;" ng-view>
+    </div>
+
+<!--
+    <div class="container-fluid" id="room">
+    </div>
+-->
+
+    <div class="footer">
+      <div class="container">
+        <p class="text-muted text-right" style="margin: 5px; font-weight: bold; opacity: 0.4;">POWERED BY RESTCOMM (C) TELESTAX 2015</p>
+      </div>
+    </div>
+
+    <div id="messageModal" class="modal fade">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <h4 class="modal-title">Ooops! Something went wrong...</h4>
+          </div>
+          <div class="modal-body">
+            <p id="modal_message">...&hellip;</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="lib/jquery/dist/jquery.js"></script>
+
+    <script src="resources/js/mobicents-libs/jain-sip.js"></script>
+    <script src="resources/js/mobicents-libs/WebRTComm.js"></script>
+
+    <script src="resources/js/olympus.js"></script>
+
+    <!-- AngularJS Libraries -->
+    <script src="lib/angular/angular.js"></script>
+    <script src="lib/angular-sanitize/angular-sanitize.min.js"></script>
+    <script src="lib/angular-route/angular-route.js"></script>
+    <script src="lib/angular-resource/angular-resource.js"></script>
+    <script src="lib/angular-animate/angular-animate.js"></script>
+    <script src="lib/bootstrap/dist/js/bootstrap.js"></script>
+
+    <!-- <script src="lib/angular-bootstrap/ui-bootstrap-tpls.js"></script> -->
+
+    <script src="lib/angular-strap/dist/angular-strap.js"></script>
+    <script src="lib/angular-strap/dist/angular-strap.tpl.js"></script>
+
+    <!-- <script src="lib/webcam-directive/dist/webcam.min.js"></script> -->
+    <script src="lib/webcam-directive/app/scripts/webcam.js"></script>
+    <script src="lib/moment/moment.js"></script>
+    <script src="lib/angular-moment/angular-moment.js"></script>
+
+    <script src="lib/ng-emoticons/src/ng-emoticons.js"></script>
+
+    <script src="lib/angular-fullscreen/src/angular-fullscreen.js"></script>
+
+    <script src="resources/js/app.js"></script>
+    <script src="resources/js/controllers.js"></script>
+    <script src="resources/js/controllers/register.js"></script>
+    <script src="resources/js/controllers/room.js"></script>
+    <script src="resources/js/directives.js"></script>
+    <script src="resources/js/filters.js"></script>
+    <script src="resources/js/services.js"></script>
+
+  </body>
 </html>

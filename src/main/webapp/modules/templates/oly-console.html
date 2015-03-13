@@ -1,0 +1,4 @@
+<div class="logs-container" ng-class="{'console-enter': showConsole, 'console-leave': !showConsole}">
+  <button class="btn btn-link pull-right" ng-click="showConsole = false"><i class="fa fa-remove"></i></button>
+  <p ng-class="log.level|lowercase" ng-repeat="log in logs | orderBy:id:reverse">{{log.time | amDateFormat:'YYYY-MM-DD HH:mm:ss'}} {{log.message}}</p>
+</div>

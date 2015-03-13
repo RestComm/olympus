@@ -1,3 +1,7 @@
 <web-app>
     <display-name>Olympus</display-name>
+
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
 </web-app>

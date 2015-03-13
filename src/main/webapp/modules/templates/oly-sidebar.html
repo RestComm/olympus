@@ -1,0 +1,39 @@
+<ul class="nav nav-sidebar sidemenu">
+  <li ng-click="toggleContactList();">
+    <a id="btnContacts" href=""><i class="glyphicon glyphicon-user"></i><small>CONTACTS</small></a>
+  </li>
+
+  <li role="presentation" class="divider"></li>
+
+  <li class="disabled">
+    <a id="btnLayout"  href="" onclick="return false;"><span id="unreadTxt" class="badge pull-right" style="margin-bottom: -20px; margin-right: -10px; display: none;">0</span><i class="fa fa-columns"></i><small>LAYOUT</small></a>
+  </li>
+
+  <!-- In the future.. for number calls ?
+  <li class="disabled">
+    <a id="btnCall" href=""  onclick="makeCall(selectedContact); return false;"><i class="glyphicon glyphicon-earphone" style="transform: rotate(100deg);"></i><small>CALL</small></a>
+  </li>
+  -->
+
+  <li class="{{inCall ? '' : 'disabled'}}" id="tKeypad">
+    <a id="btnKeypad" href="" data-template="modules/templates/oly-keypad.html" title="DTMF Keypad" data-animation="am-flip-x" data-auto-close="1" bs-popover data-container="body" data-placement="right" ng-keydown="keypress($event)" disabled="disabled"><i class="glyphicon glyphicon-th"></i><small>KEYPAD</small></a>
+  </li>
+
+  <!--
+  <li class="disabled">
+    <a id="btnFile" href=""  onclick="return false;"><i class="glyphicon glyphicon-paperclip"></i><small>UPLOAD</small></a>
+  </li>
+
+  <li class="disabled" style="margin-top: 50px; padding-left: 0; padding-right: 0;">
+    <a id="btnHang" href=""><i class="glyphicon glyphicon-phone-alt"></i><small>HANGUP</small></a>
+  </li>
+  -->
+
+  <li style="margin-top: 50px; padding-left: 0; padding-right: 0;">
+    <a id="btnLogs" href="" ng-click="toggleConsole()"><i class="fa fa-inbox"></i><small>LOGS</small></a>
+  </li>
+
+  <li class="disabled">
+    <a id="btnSettings" href=""><i class="fa fa-cog"></i><small>SETTINGS</small></a>
+  </li>
+</ul>

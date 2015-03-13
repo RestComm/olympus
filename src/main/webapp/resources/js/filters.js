@@ -97,3 +97,29 @@ olyFilters.filter('bytes', function() {
   };
 });
 
+/*
+olyFilters.filter('groupMessages', function() {
+  return function(messages, time) {
+    var allMessages = [];
+    var curGroup = [];
+    if (messages) {
+      for (var i = 0; i < messages.length; i++) {
+        curGroup.push(messages[i]);
+        if (messages[i+1]) {
+          if (messages[i].direction === messages[i+1].direction) {
+            // do nothing
+          }
+          else {
+            allMessages.push(curGroup);
+            curGroup = [];
+          }
+        }
+        else {
+          allMessages.push(curGroup);
+        }
+      }
+    }
+    return allMessages;
+  };
+});
+*/

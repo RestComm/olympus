@@ -1,0 +1,39 @@
+{
+  "name": "olympus",
+  "version": "0.0.0",
+  "authors": [
+    "Alexandre Mendonça <brainslog@gmail.com>"
+  ],
+  "description": "Mobicents Olympus WebRTC Client",
+  "main": "index.html",
+  "keywords": [
+    "mobicents",
+    "webrtc"
+  ],
+  "license": "LGPLv3",
+  "homepage": "https://github.com/mobicents/olympus",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "angular": "~1.3.11",
+    "angular-routing": "~0.1.2",
+    "bootstrap": "~3.3.2",
+    "angular-bootstrap": "~0.12.0",
+    "angular-animate": "~1.3.11",
+    "angular-resource": "~1.3.11",
+    "webcam-directive": "~2.0.0",
+    "moment": "~2.9.0",
+    "angular-moment": "~0.9.0",
+    "bootstrap": "~3.3.2",
+    "font-awesome": "~4.3.0",
+    "angular-strap": "~2.2.0",
+    "ng-emoticons": "~1.1.0",
+    "angular-fullscreen": "~1.0.1"
+  }
+}

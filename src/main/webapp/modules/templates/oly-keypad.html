@@ -1,0 +1,29 @@
+<div class="popover">
+  <!-- We need full popover template so we can hide it (disable) when not in call -->
+  <div class="arrow" ng-show="inCall"></div>
+  <h3 class="popover-title" ng-bind="title" ng-show="inCall && title"></h3>
+  <div class="popover-content" ng-show="inCall">
+    <table class="keypad">
+      <tr>
+        <td class="btn btn-primary" id="btnDTMF1" ng-click="playDTMF('1')" ng-keydown="keypressDTMF($event)" tabindex="0">1</td>
+        <td class="btn btn-primary" id="btnDTMF2" ng-click="playDTMF('2')" ng-keydown="keypressDTMF($event)" tabindex="0">2</td>
+        <td class="btn btn-primary" id="btnDTMF3" ng-click="playDTMF('3')" ng-keydown="keypressDTMF($event)" tabindex="0">3</td>
+      </tr>
+      <tr>
+        <td class="btn btn-primary" id="btnDTMF4" ng-click="playDTMF('4')" ng-keydown="keypressDTMF($event)" tabindex="0">4</td>
+        <td class="btn btn-primary" id="btnDTMF5" ng-click="playDTMF('5')" ng-keydown="keypressDTMF($event)" tabindex="0">5</td>
+        <td class="btn btn-primary" id="btnDTMF6" ng-click="playDTMF('6')" ng-keydown="keypressDTMF($event)" tabindex="0">6</td>
+      </tr>
+      <tr>
+        <td class="btn btn-primary" id="btnDTMF7" ng-click="playDTMF('7')" ng-keydown="keypressDTMF($event)" tabindex="0">7</td>
+        <td class="btn btn-primary" id="btnDTMF8" ng-click="playDTMF('8')" ng-keydown="keypressDTMF($event)" tabindex="0">8</td>
+        <td class="btn btn-primary" id="btnDTMF9" ng-click="playDTMF('9')" ng-keydown="keypressDTMF($event)" tabindex="0">9</td>
+      </tr>
+      <tr>
+        <td class="btn btn-primary" id="btnDTMF*" ng-click="playDTMF('*')" ng-keydown="keypressDTMF($event)" tabindex="0">*</td>
+        <td class="btn btn-primary" id="btnDTMF0" ng-click="playDTMF('0')" ng-keydown="keypressDTMF($event)" tabindex="0">0</td>
+        <td class="btn btn-primary" id="btnDTMF#" ng-click="playDTMF('#')" ng-keydown="keypressDTMF($event)" tabindex="0">#</td>
+      </tr>
+    </table>
+  </div>
+</div>

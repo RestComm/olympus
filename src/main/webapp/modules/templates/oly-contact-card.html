@@ -1,0 +1,10 @@
+<div>
+  <button class="btn btn-success btn-sm" ng-click="callContact(contact.address, true)" data-title="Video Call" data-delay="500,100" bs-tooltip><i class="fa fa-video-camera fa-2x"></i></button>
+
+  <button class="btn btn-primary btn-sm" ng-click="callContact(contact.address, false)" data-title="Audio Call" data-delay="500,100" bs-tooltip><i class="fa fa-phone fa-2x"></i></button>
+  <button ng-if="isClient(contact)" class="btn btn-default btn-sm" ng-click="chatContact(contact.address)" data-title="Chat" data-delay="500,100" bs-tooltip><i class="fa fa-comments-o fa-2x"></i></button>
+  <button ng-if="isClient(contact)" class="btn btn-default btn-sm" style="opacity: 0.2;" ng-click="chatContact(contact.address)" data-title="Email" data-delay="500,100" bs-tooltip disabled="disabled"><i class="fa fa-envelope fa-2x"></i></button>
+  <br>
+  <button class="btn btn-danger btn-xs pull-right" style="margin: 10px;" ng-hide="contact.deleteConfirm" ng-click="preDeleteContact(contact)" data-title="Delete Contact" data-delay="500,100" bs-tooltip><i class="fa fa-trash"></i></button>
+  <button class="btn btn-danger btn-xs pull-right" style="margin: 10px;" ng-show="contact.deleteConfirm" ng-click="deleteContact(contact)" data-title="Delete Contact" data-delay="500,100" bs-tooltip><i class="fa fa-trash"></i> Delete</button>
+</div>
