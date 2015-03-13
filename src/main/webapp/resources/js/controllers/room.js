@@ -184,7 +184,9 @@ olyMod.controller('RoomCtrl', function ($scope, $rootScope, $filter, $location, 
   }
 
   $scope.callContact = function(contact, video) {
-    this.$hide();
+    if(this.$hide) {
+      this.$hide();
+    }
     var callConfiguration = {
         displayName: $rootScope.loggedUser,
         localMediaStream: $rootScope.myStream,
@@ -224,9 +226,15 @@ olyMod.controller('RoomCtrl', function ($scope, $rootScope, $filter, $location, 
   };
 
   $scope.chatContact = function(contact) {
+    if(this.$hide) {
+      this.$hide();
+    }
     var chatId = contact.substr(0, contact.indexOf('@') === -1 ? 999 : contact.indexOf('@'));
     if(!$scope.activeChats[chatId]) {
       $scope.activeChats[chatId] = {id: contact,  status: 'normal', history: []};
+    }
+    else {
+      $scope.activeChats[chatId].status = 'normal';
     }
   };
 

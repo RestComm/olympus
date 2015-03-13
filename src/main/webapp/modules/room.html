@@ -86,7 +86,7 @@
       </div>
       <img src="resources/images/male-placeholder.jpg" ng-hide="remoteVideo">
       <video ng-src="{{remoteVideo}}" style="width: {{videoConstraints.mandatory.minWidth}}px; height: {{videoConstraints.mandatory.minHeight}}px;" autoplay="autoplay" ng-show="remoteVideo" fullscreen="remoteFS" only-watched-property></video>
-      <div class="video-status"> {{inCall.intStatus}} </div>
+      <div class="video-status" ng-show="inCall.intStatus !== 'ESTABLISHED'"> {{inCall.intStatus}} </div>
     </div>
   </div>
 </div>
