@@ -1,14 +1,14 @@
 /**
  * @class PrivateJainSipMessageConnector
  * @private
- * @classdesc Private framework class handling  SIP client/user message control
+ * @classdesc Private framework class handling  SIP client/user message control 
  * @constructor
  * @param {PrivateJainSipClientConnector} clientConnector clientConnector owner object
  * @param {WebRTCommMessage} webRTCommMessage WebRTCommMessage "connected" object
  * @param {string} sipCallId   SIP Call ID
  * @throw {String} Exception "bad argument"
- * @author Laurent STRULLU (laurent.strullu@orange.com)
- * @author Jean Deruelle (jean.deruelle@Å§elestax.com)
+ * @author Laurent STRULLU (laurent.strullu@orange.com) 
+ * @author Jean Deruelle (jean.deruelle@ŧelestax.com)
  */
 PrivateJainSipMessageConnector = function(clientConnector, webRTCommMessage, sipCallId)
 {
@@ -46,15 +46,15 @@ PrivateJainSipMessageConnector.prototype.SIP_MESSAGE_RECEIVED_STATE = "SIP_MESSA
 /**
  * Get message id
  * @public
- * @returns {String} sipCallId
- */
+ * @returns {String} sipCallId  
+ */ 
 PrivateJainSipMessageConnector.prototype.getId= function() {
-    return this.sipCallId;
+    return this.sipCallId;  
 };
 
 /**
  * Send Authenticated SIP MESSAGE request
- * @param {Request} jainSipMessageRequest
+ * @param {Request} jainSipMessageRequest 
  * @param {AuthorizationHeader} jainSipAuthorizationHeader
  * @private
  */
@@ -83,7 +83,7 @@ PrivateJainSipMessageConnector.prototype.sendAuthenticatedSipMessageRequest = fu
         var contentType = jainSipMessageRequest.getContentTypeHeader();
         newJainSipMessageRequest.setContent(content, contentType);
     }
-
+    
     this.clientConnector.jainSipMessageFactory.addHeader(newJainSipMessageRequest, jainSipAuthorizationHeader);
     jainSipMessageTransaction = this.clientConnector.jainSipProvider.getNewClientTransaction(newJainSipMessageRequest);
     newJainSipMessageRequest.setTransaction(jainSipMessageTransaction);
@@ -92,15 +92,15 @@ PrivateJainSipMessageConnector.prototype.sendAuthenticatedSipMessageRequest = fu
 
 /**
  * PrivateJainSipClientConnector interface implementation: handle SIP Request event
- * @public
- * @param {RequestEvent} requestEvent
+ * @public 
+ * @param {RequestEvent} requestEvent 
  */
 PrivateJainSipMessageConnector.prototype.onJainSipClientConnectorSipRequestEvent = function(requestEvent) {
     console.debug("PrivateJainSipMessageConnector:onJainSipClientConnectorSipRequestEvent() requestEvent : " + requestEvent);
 
     this.sipMessageState = this.SIP_MESSAGE_RECEIVED_STATE;
 
-    // Send SIP 200 OK response
+    // Send SIP 200 OK response   
     var jainSipRequest = requestEvent.getRequest();
     var jainSip200OKResponse = jainSipRequest.createResponse(200, "OK");
     jainSip200OKResponse.addHeader(this.clientConnector.jainSipContactHeader);
@@ -131,7 +131,7 @@ PrivateJainSipMessageConnector.prototype.onJainSipClientConnectorSipRequestEvent
     }
     else
     {
-        // No linked call to the event message, forward the message to the client
+        // No linked call to the event message, forward the message to the client   
         if (this.webRTCommMessage.webRTCommClient.eventListener.onWebRTCommMessageReceivedEvent)
         {
             var that = this;
@@ -145,20 +145,20 @@ PrivateJainSipMessageConnector.prototype.onJainSipClientConnectorSipRequestEvent
             }, 1);
         }
     }
-
+    
     this.close();
 };
 
 /**
  * PrivateJainSipClientConnector interface implementation: handle SIP response event
- * @public
- * @param {ResponseEvent} responseEvent
+ * @public 
+ * @param {ResponseEvent} responseEvent 
  */
 PrivateJainSipMessageConnector.prototype.onJainSipClientConnectorSipResponseEvent = function(responseEvent) {
     console.debug("PrivateJainSipMessageConnector:onJainSipClientConnectorSipResponseEvent() responseEvent : " + responseEvent.getResponse().getStatusLine().getReasonPhrase());
     var jainSipResponse = responseEvent.getResponse();
     var statusCode = parseInt(jainSipResponse.getStatusCode());
-
+    
     if (this.sipMessageState === this.SIP_MESSAGE_SENDING_STATE || this.sipMessageState === this.SIP_MESSAGE_407_STATE)
     {
         if (statusCode >= 100 && statusCode < 300) {
@@ -179,8 +179,8 @@ PrivateJainSipMessageConnector.prototype.onJainSipClientConnectorSipResponseEven
                 }
             }
             else
-            {
-                // No linked call to the event message, forward the message to the client
+            {            	
+                // No linked call to the event message, forward the message to the client   
                 if (this.webRTCommMessage.webRTCommClient.eventListener.onWebRTCommMessageSentEvent)
                 {
                     var that = this;
@@ -198,7 +198,7 @@ PrivateJainSipMessageConnector.prototype.onJainSipClientConnectorSipResponseEven
             if (statusCode === 407)
             {
         	this.sipMessageState = this.SIP_MESSAGE_407_STATE;
-
+    		
                 // Send Authenticated SIP INVITE
         	var jainSipOriginalMessageRequest = responseEvent.getOriginalTransaction().getOriginalRequest();
                 var jainSipAuthorizationHeader = this.clientConnector.jainSipHeaderFactory.createAuthorizationHeader(jainSipResponse, jainSipOriginalMessageRequest, 						   this.clientConnector.configuration.sipPassword, this.clientConnector.configuration.sipLogin);
@@ -207,7 +207,7 @@ PrivateJainSipMessageConnector.prototype.onJainSipClientConnectorSipResponseEven
             } else {
             	this.sipMessageState = this.SIP_MESSAGE_SEND_FAILED_STATE;
             }
-
+        	
             if (this.webRTCommMessage.webRTCommCall)
             {
             	if (this.webRTCommMessage.webRTCommCall.eventListener.onWebRTCommMessageSendErrorEvent)
@@ -226,7 +226,7 @@ PrivateJainSipMessageConnector.prototype.onJainSipClientConnectorSipResponseEven
             else
             {
             	if (this.webRTCommMessage.webRTCommClient.eventListener.onWebRTCommMessageSendErrorEvent)
-                // No linked call to the event message, forward the message to the client
+                // No linked call to the event message, forward the message to the client                  
                 {
                     var that = this;
                     setTimeout(function() {
@@ -244,13 +244,13 @@ PrivateJainSipMessageConnector.prototype.onJainSipClientConnectorSipResponseEven
     else
     {
         console.error("PrivateJainSipMessageConnector:onJainSipClientConnectorSipResponseEvent() : bad state : " + this.sipMessageState);
-    }
+    }    
     this.close();
 };
 
 /**
  * PrivateJainSipClientConnector interface implementation: handle SIP timeout event
- * @public
+ * @public 
  * @param {TimeoutEvent} timeoutEvent
  */
 PrivateJainSipMessageConnector.prototype.onJainSipClientConnectorSipTimeoutEvent = function(timeoutEvent) {
@@ -276,7 +276,7 @@ PrivateJainSipMessageConnector.prototype.onJainSipClientConnectorSipTimeoutEvent
         }
         else
         {
-            // No linked call to the event message, forward the message to the client
+            // No linked call to the event message, forward the message to the client   
             if (this.webRTCommMessage.webRTCommClient.eventListener.onWebRTCommMessageSendErrorEvent)
             {
                 var that = this;
@@ -295,23 +295,23 @@ PrivateJainSipMessageConnector.prototype.onJainSipClientConnectorSipTimeoutEvent
     {
         console.error("PrivateJainSipMessageConnector:onJainSipClientConnectorSipTimeoutEvent() : bad state : " + this.sipMessageState);
     }
-
+        
     this.close();
 };
 
 /**
  * Asynchronous action : close message connector in each case.
- * @public
- */
-PrivateJainSipMessageConnector.prototype.close =function(){
+ * @public 
+ */ 
+PrivateJainSipMessageConnector.prototype.close =function(){	
     console.debug("PrivateJainSipMessageConnector:close(): this.sipCallState="+this.sipMessageState);
-    this.clientConnector.removeSessionConnector(this.sipCallId);
+    this.clientConnector.removeSessionConnector(this.sipCallId);		
 };
 
 
 /**
  * Send SIP MESSAGE request
- * @public
+ * @public 
  */
 PrivateJainSipMessageConnector.prototype.send = function() {
     console.debug("PrivateJainSipMessageConnector:send()");
@@ -320,7 +320,7 @@ PrivateJainSipMessageConnector.prototype.send = function() {
         var toSipUri = this.webRTCommMessage.to;
         if (toSipUri.indexOf("@") === -1)
         {
-            //No domain, add caller one
+            //No domain, add caller one 
             toSipUri += "@" + this.clientConnector.configuration.sipDomain;
         }
         var fromSipUriString = this.clientConnector.configuration.sipUserName + "@" + this.clientConnector.configuration.sipDomain;
@@ -375,7 +375,7 @@ PrivateJainSipMessageConnector.prototype.send = function() {
     }
 };
 /*
- * TeleStax, Open Source Cloud Communications  Copyright 2012.
+ * TeleStax, Open Source Cloud Communications  Copyright 2012. 
  * and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
@@ -396,32 +396,32 @@ PrivateJainSipMessageConnector.prototype.send = function() {
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-/**
- * The JavaScript Framework WebRTComm allow Web Application developers to easily
- * integrate multimedia communication service (e.g. VoIP) in their web site, thanks
- * to the W3C WebRTC API. The WebRTComm Framework provides a high level communication
- * API on top of the opensource JAIN SIP JavaScript Stack (implementing transport of SIP over WebSocket).
- * By using a convergent HTTP/SIP Application Server (e.g. Mobicents MSS) or directly access a
- * SIP server (e.g. Asterisk), the web developer can rapidly and easily link his web site to a
- * telephony infrastructure.<br>
- *
- * A simple test web application of the WebRTComm Framework can be found
+/** 
+ * The JavaScript Framework WebRTComm allow Web Application developers to easily 
+ * integrate multimedia communication service (e.g. VoIP) in their web site, thanks 
+ * to the W3C WebRTC API. The WebRTComm Framework provides a high level communication 
+ * API on top of the opensource JAIN SIP JavaScript Stack (implementing transport of SIP over WebSocket). 
+ * By using a convergent HTTP/SIP Application Server (e.g. Mobicents MSS) or directly access a 
+ * SIP server (e.g. Asterisk), the web developer can rapidly and easily link his web site to a 
+ * telephony infrastructure.<br> 
+ * 
+ * A simple test web application of the WebRTComm Framework can be found 
  * <a href="https://code.google.com/p/webrtcomm/source/browse/?repo=test%2FWebRTCommTestWebApp">here</a>
- *
- * @module WebRTComm
- * @author Laurent STRULLU (laurent.strullu@orange.com)
+ * 
+ * @module WebRTComm 
+ * @author Laurent STRULLU (laurent.strullu@orange.com) 
  */
 
 /**
  * @class PrivateJainSipCallConnector
  * @private
- * @classdesc Private framework class handling  SIP client/user call control: ringing, ringing back, accept, reject, cancel, bye
+ * @classdesc Private framework class handling  SIP client/user call control: ringing, ringing back, accept, reject, cancel, bye 
  * @constructor
  * @param {PrivateJainSipClientConnector} clientConnector clientConnector owner object
  * @param {WebRTCommCall} webRTCommCall WebRTCommCall "connected" object
  * @param {string} sipCallId   SIP Call ID
  * @throw {String} Exception "bad argument"
- * @author Laurent STRULLU (laurent.strullu@orange.com)
+ * @author Laurent STRULLU (laurent.strullu@orange.com) 
  */
 PrivateJainSipCallConnector = function(clientConnector, webRTCommCall, sipCallId)
 {
@@ -472,7 +472,7 @@ PrivateJainSipCallConnector.prototype.SIP_INVITED_ERROR_STATE = "INVITED_ERROR_S
 PrivateJainSipCallConnector.prototype.SIP_INVITED_CANCELLED_STATE = "INVITING_HANGUP_STATE";
 
 /**
- * Get SIP communication opened/closed status
+ * Get SIP communication opened/closed status 
  * @public
  * @returns {boolean} true if opened, false if closed
  */
@@ -483,7 +483,7 @@ PrivateJainSipCallConnector.prototype.isOpened = function() {
 /**
  * Get SIP call ID
  * @public
- * @returns {string} SIP Call ID
+ * @returns {string} SIP Call ID  
  */
 PrivateJainSipCallConnector.prototype.getId = function() {
     return this.sipCallId;
@@ -491,8 +491,8 @@ PrivateJainSipCallConnector.prototype.getId = function() {
 
 /**
  * Open JAIN SIP call/communication, asynchronous action,  opened or error event is notified to WebRtcClientCall eventListener
- * @public
- * @param {object} configuration  WebRTC communication configuration
+ * @public 
+ * @param {object} configuration  WebRTC communication configuration 
  * <p> Communication configuration sample: <br>
  * { <br>
  * <span style="margin-left: 30px">displayName:alice,<br></span>
@@ -504,7 +504,7 @@ PrivateJainSipCallConnector.prototype.getId = function() {
  * <span style="margin-left: 30px">videoCodecsFilter:VP8,H264,<br></span>
  * }<br>
  * </p>
- * @public
+ * @public  
  * @throw {String} Exception "bad configuration, missing parameter"
  * @throw {String} Exception "bad state, unauthorized action"
  */
@@ -541,7 +541,7 @@ PrivateJainSipCallConnector.prototype.open = function(configuration) {
 
 /**
  * Close JAIN SIP communication, asynchronous action, closed event are notified to the WebRTCommClient eventListener
- * @public
+ * @public 
  * @throw {String} Exception "bad state, unauthorized action"
  * @throw {String} Exception "internal error,check console logs"
  */
@@ -622,7 +622,7 @@ PrivateJainSipCallConnector.prototype.close = function() {
 
 /**
  * Process reject of the SIP incoming communication
- * @public
+ * @public 
  * @throw {String} Exception "bad state, unauthorized action"
  * @throw {String} Exception "internal error,check console logs"
  */
@@ -651,7 +651,7 @@ PrivateJainSipCallConnector.prototype.reject = function() {
 };
 
 /**
- * Check configuration
+ * Check configuration 
  * @param {object} configuration SIP call configuration JSON object
  * @private
  * @return true configuration ok false otherwise
@@ -663,7 +663,7 @@ PrivateJainSipCallConnector.prototype.checkConfiguration = function(configuratio
 };
 
 /**
- * Reset SIP context
+ * Reset SIP context 
  * @private
  */
 PrivateJainSipCallConnector.prototype.resetSipContext = function() {
@@ -679,8 +679,8 @@ PrivateJainSipCallConnector.prototype.resetSipContext = function() {
 };
 
 /**
- * Process invitation of outgoing SIP communication
- * @public
+ * Process invitation of outgoing SIP communication 
+ * @public 
  * @param {String} sdpOffer SDP offer received from RTCPeerConenction
  */
 PrivateJainSipCallConnector.prototype.invite = function(sdpOffer) {
@@ -693,7 +693,7 @@ PrivateJainSipCallConnector.prototype.invite = function(sdpOffer) {
 
 /**
  * Process acceptation of incoming SIP communication
- * @public
+ * @public 
  * @param {string} sdpAnswer SDP answer received from RTCPeerConnection
  */
 PrivateJainSipCallConnector.prototype.accept = function(sdpAnswer) {
@@ -709,8 +709,8 @@ PrivateJainSipCallConnector.prototype.accept = function(sdpAnswer) {
 
 /**
  * PrivateJainSipClientConnector interface implementation: handle SIP Request event
- * @public
- * @param {RequestEvent} requestEvent
+ * @public 
+ * @param {RequestEvent} requestEvent 
  */
 PrivateJainSipCallConnector.prototype.onJainSipClientConnectorSipRequestEvent = function(requestEvent) {
     console.debug("PrivateJainSipCallConnector:onJainSipClientConnectorSipRequestEvent()");
@@ -726,8 +726,8 @@ PrivateJainSipCallConnector.prototype.onJainSipClientConnectorSipRequestEvent = 
 
 /**
  * PrivateJainSipClientConnector interface implementation: handle SIP response event
- * @public
- * @param {ResponseEvent} responseEvent
+ * @public 
+ * @param {ResponseEvent} responseEvent 
  */
 PrivateJainSipCallConnector.prototype.onJainSipClientConnectorSipResponseEvent = function(responseEvent) {
     console.debug("PrivateJainSipCallConnector:onJainSipClientConnectorSipResponseEvent()");
@@ -743,20 +743,20 @@ PrivateJainSipCallConnector.prototype.onJainSipClientConnectorSipResponseEvent =
 
 /**
  * PrivateJainSipClientConnector interface implementation: handle SIP timeout event
- * @public
+ * @public 
  * @param {TimeoutEvent} timeoutEvent
  */
 PrivateJainSipCallConnector.prototype.onJainSipClientConnectorSipTimeoutEvent = function(timeoutEvent) {
     console.debug("PrivateJainSipCallConnector:onJainSipClientConnectorSipTimeoutEvent()");
-    // For the time being force close of the call
+    // For the time being force close of the call 
     this.close();
 };
 
 
 /**
  * Handle SIP request event for inviting call
- * @private
- * @param {RequestEvent} requestEvent
+ * @private 
+ * @param {RequestEvent} requestEvent 
  */
 PrivateJainSipCallConnector.prototype.processInvitingSipRequestEvent = function(requestEvent) {
     console.debug("PrivateJainSipCallConnector:processInvitingSipRequestEvent(): this.sipCallState=" + this.sipCallState);
@@ -815,15 +815,15 @@ PrivateJainSipCallConnector.prototype.processInvitingSipRequestEvent = function(
 
 /**
  * Send SIP INVITE request
- * @private
+ * @private 
  */
 PrivateJainSipCallConnector.prototype.sendSipInviteRequest = function() {
     console.debug("PrivateJainSipCallConnector:sendSipInviteRequest()");
-    // Send INVITE
+    // Send INVITE 
     var calleeSipUri = this.webRTCommCall.getCalleePhoneNumber();
     if (calleeSipUri.indexOf("@") === -1)
     {
-        //No domain, add caller one
+        //No domain, add caller one 
         calleeSipUri += "@" + this.clientConnector.configuration.sipDomain;
     }
     var fromSipUriString = this.clientConnector.configuration.sipUserName + "@" + this.clientConnector.configuration.sipDomain;
@@ -870,7 +870,7 @@ PrivateJainSipCallConnector.prototype.sendSipInviteRequest = function() {
 
 /**
  * Send SIP INVITE request
- * @private
+ * @private 
  * @param {AuthorizationHeader} jainSipAuthorizationHeader Authorization Header
  */
 PrivateJainSipCallConnector.prototype.sendAuthenticatedSipInviteRequest = function(jainSipAuthorizationHeader) {
@@ -908,8 +908,8 @@ PrivateJainSipCallConnector.prototype.sendAuthenticatedSipInviteRequest = functi
 
 /**
  * Handle SIP response event for inviting call
- * @private
- * @param {ResponseEvent} responseEvent
+ * @private 
+ * @param {ResponseEvent} responseEvent 
  */
 PrivateJainSipCallConnector.prototype.processInvitingSipResponseEvent = function(responseEvent) {
     console.debug("PrivateJainSipCallConnector:processInvitingSipResponseEvent(): this.sipCallState=" + this.sipCallState);
@@ -936,7 +936,7 @@ PrivateJainSipCallConnector.prototype.processInvitingSipResponseEvent = function
             // Send Authenticated SIP INVITE
             var jainSipAuthorizationHeader = this.clientConnector.jainSipHeaderFactory.createAuthorizationHeader(jainSipResponse, this.jainSipInvitingRequest, this.clientConnector.configuration.sipPassword, this.clientConnector.configuration.sipLogin);
             this.sendAuthenticatedSipInviteRequest(jainSipAuthorizationHeader);
-            // Update SIP call state
+            // Update SIP call state            
             this.sipCallState = this.SIP_INVITING_407_STATE;
         }
         else if (statusCode === 200)
@@ -949,7 +949,7 @@ PrivateJainSipCallConnector.prototype.processInvitingSipResponseEvent = function
                 var jainSipMessageACK = this.jainSipInvitingTransaction.createAck();
                 jainSipMessageACK.addHeader(this.clientConnector.jainSipContactHeader);
                 this.jainSipInvitingDialog.sendAck(jainSipMessageACK);
-                // Update SIP call state
+                // Update SIP call state    
                 this.sipCallState = this.SIP_INVITING_ACCEPTED_STATE;
             }
             catch (exception)
@@ -976,7 +976,7 @@ PrivateJainSipCallConnector.prototype.processInvitingSipResponseEvent = function
         else
         {
             console.error("PrivateJainSipCallConnector:processInvitingSipRequestEvent(): SIP INVITE failed:" + jainSipResponse.getStatusCode() + "  " + jainSipResponse.getStatusLine().toString());
-            // Update SIP call state
+            // Update SIP call state    
             this.sipCallState = this.SIP_INVITING_ERROR_STATE;
             // Notify asynchronously the error event
             this.webRTCommCall.onPrivateCallConnectorCallOpenErrorEvent(jainSipResponse.getStatusLine().getReasonPhrase());
@@ -986,7 +986,7 @@ PrivateJainSipCallConnector.prototype.processInvitingSipResponseEvent = function
     }
     else if (this.sipCallState === this.SIP_INVITING_CANCELLING_STATE)
     {
-        // Update SIP call state
+        // Update SIP call state    
         this.sipCallState = this.SIP_INVITING_CANCELLED_STATE;
         this.close();
     }
@@ -1092,7 +1092,7 @@ PrivateJainSipCallConnector.prototype.processInvitingSipResponseEvent = function
 
 /**
  * Handle SIP request event for invited call
- * @private
+ * @private 
  * @param {RequestEvent} requestEvent request event
  */
 PrivateJainSipCallConnector.prototype.processInvitedSipRequestEvent = function(requestEvent) {
@@ -1207,7 +1207,7 @@ PrivateJainSipCallConnector.prototype.processInvitedSipRequestEvent = function(r
 
 /**
  * Handle SIP response event for invited call
- * @private
+ * @private 
  * @param {ResponseEvent} responseEvent response event
  */
 PrivateJainSipCallConnector.prototype.processInvitedSipResponseEvent = function(responseEvent) {
@@ -1269,12 +1269,12 @@ PrivateJainSipCallConnector.prototype.processInvitedSipResponseEvent = function(
 
 /**
  * @class PrivateJainSipClientConnector
- * @classdesc Private framework class handling  SIP client/user agent control
- * @constructor
+ * @classdesc Private framework class handling  SIP client/user agent control 
+ * @constructor 
  * @private
- * @param {WebRTCommClient} webRTCommClient "connected" WebRTCommClient object
+ * @param {WebRTCommClient} webRTCommClient "connected" WebRTCommClient object 
  * @throw {String} Exception "bad argument"
- * @author Laurent STRULLU (laurent.strullu@orange.com)
+ * @author Laurent STRULLU (laurent.strullu@orange.com) 
  */
 PrivateJainSipClientConnector = function(webRTCommClient)
 {
@@ -1304,7 +1304,7 @@ PrivateJainSipClientConnector.prototype.SIP_UNREGISTERING_STATE = "SIP_UNREGISTE
 PrivateJainSipClientConnector.prototype.SIP_SESSION_EXPIRATION_TIMER = 3600;
 
 /**
- * Get SIP client/user agent opened/closed status
+ * Get SIP client/user agent opened/closed status 
  * @public
  * @returns {boolean} true if opened, false if closed
  */
@@ -1315,7 +1315,7 @@ PrivateJainSipClientConnector.prototype.isOpened = function() {
 
 /**
  * Open SIP client/user agent, asynchronous action, opened or error event is notified to WebRtcClientComm
- * @public
+ * @public 
  * @param {object} configuration   SIP client/user agent configuration <br>
  * <p> Client configuration sample: <br>
  * { <br>
@@ -1410,7 +1410,7 @@ PrivateJainSipClientConnector.prototype.open = function(configuration) {
 /**
  * Close SIP client/User Agent, asynchronous action,closed event is notified to WebRtcClientComm
  * Open SIP Call/communication are closed
- * @public
+ * @public 
  * @throw {String} Exception "bad state, unauthorized action"
  * @throw {String} Exception [internal error]
  */
@@ -1472,7 +1472,7 @@ PrivateJainSipClientConnector.prototype.close = function() {
 
 /**
  * Create new CallConnector object
- * @public
+ * @public 
  * @param {WebRTCommCall|WebRTCommMessage} webRTCommSession connected "object"
  * @param {string} sipSessionId SIP CALL ID
  * @throw {String} Exception "bad argument, check API documentation"
@@ -1519,7 +1519,7 @@ PrivateJainSipClientConnector.prototype.createPrivateSessionConnector = function
 /**
  * Remove a PrivateJainSipClientConnector object  in the call table
  * @private
- * @param {string} sipSessionId SIP CALL ID
+ * @param {string} sipSessionId SIP CALL ID 
  */
 PrivateJainSipClientConnector.prototype.removeSessionConnector = function(sipSessionId) {
     console.debug("PrivateJainSipClientConnector:removeSessionConnector(): sipSessionId=" + sipSessionId);
@@ -1556,7 +1556,7 @@ PrivateJainSipClientConnector.prototype.resetSipRegisterContext = function() {
 };
 
 /**
- * Check configuration
+ * Check configuration 
  * @private
  * @param {object} configuration SIP user agent configuration
  * * <p> Client configuration sample: <br>
@@ -1644,7 +1644,7 @@ PrivateJainSipClientConnector.prototype.checkConfiguration = function(configurat
 
 /**
  * Implementation of JAIN SIP stack event listener interface: process WebSocket connection event
- * @public
+ * @public 
  */
 PrivateJainSipClientConnector.prototype.processConnected = function() {
     console.debug("PrivateJainSipClientConnector:processConnected()");
@@ -1686,7 +1686,7 @@ PrivateJainSipClientConnector.prototype.processConnected = function() {
 
 
 /**
- * Send SIP REGISTER request
+ * Send SIP REGISTER request 
  * @param {int} expiration
  * @private
  */
@@ -1718,7 +1718,7 @@ PrivateJainSipClientConnector.prototype.sendNewSipRegisterRequest = function(exp
 };
 
 /**
- * Send Authentitated SIP REGISTER request
+ * Send Authentitated SIP REGISTER request 
  * @param {AuthorizationHeader} jainSipAuthorizationHeader
  * @private
  */
@@ -1767,7 +1767,7 @@ PrivateJainSipClientConnector.prototype.processDisconnected = function() {
 
 /**
  * Implementation of JAIN SIP stack event listener interface: process WebSocket connection error event
- * @public
+ * @public 
  * @param {string} error WebSocket connection error
  */
 PrivateJainSipClientConnector.prototype.processConnectionError = function(error) {
@@ -1784,7 +1784,7 @@ PrivateJainSipClientConnector.prototype.processConnectionError = function(error)
 
 /**
  * Implementation of JAIN SIP stack event listener interface: process SIP request event
- * @public
+ * @public 
  * @param {RequestEvent} requestEvent JAIN SIP request event
  */
 PrivateJainSipClientConnector.prototype.processRequest = function(requestEvent) {
@@ -1853,7 +1853,7 @@ PrivateJainSipClientConnector.prototype.processRequest = function(requestEvent) 
                 else
                 {
                     console.warn("PrivateJainSipClientConnector:processRequest(): SIP request ignored");
-                    //@todo Should send SIP response 404 NOT FOUND or 501 NOT_IMPLEMENTED
+                    //@todo Should send SIP response 404 NOT FOUND or 501 NOT_IMPLEMENTED 				 
                 }
 
             }
@@ -1867,7 +1867,7 @@ PrivateJainSipClientConnector.prototype.processRequest = function(requestEvent) 
 
 /**
  * Implementation of JAIN SIP stack event listener interface: process SIP response event
- * @public
+ * @public 
  * @param {ResponseEvent} responseEvent JAIN SIP response event
  */
 PrivateJainSipClientConnector.prototype.processResponse = function(responseEvent) {
@@ -1901,7 +1901,7 @@ PrivateJainSipClientConnector.prototype.processResponse = function(responseEvent
 
 /**
  * Implementation of JAIN SIP stack event listener interface: process SIP transaction terminated event
- * @public
+ * @public 
  */
 PrivateJainSipClientConnector.prototype.processTransactionTerminated = function() {
     console.debug("PrivateJainSipClientConnector:processTransactionTerminated()");
@@ -1909,7 +1909,7 @@ PrivateJainSipClientConnector.prototype.processTransactionTerminated = function(
 
 /**
  * Implementation of JAIN SIP stack event listener interface: process SIP dialog terminated event
- * @public
+ * @public 
  */
 PrivateJainSipClientConnector.prototype.processDialogTerminated = function() {
     console.debug("PrivateJainSipClientConnector:processDialogTerminated()");
@@ -1917,8 +1917,8 @@ PrivateJainSipClientConnector.prototype.processDialogTerminated = function() {
 
 /**
  * Implementation of JAIN SIP stack event listener interface: process I/O websocket  error event
- * @public
- * @param {ExceptionEvent} exceptionEvent JAIN SIP exception event
+ * @public 
+ * @param {ExceptionEvent} exceptionEvent JAIN SIP exception event 
  */
 PrivateJainSipClientConnector.prototype.processIOException = function(exceptionEvent) {
     console.error("PrivateJainSipClientConnector:processIOException(): exceptionEvent=" + exceptionEvent.message);
@@ -1926,7 +1926,7 @@ PrivateJainSipClientConnector.prototype.processIOException = function(exceptionE
 
 /**
  * Implementation of JAIN SIP stack event listener interface: process SIP Dialog Timeout event
- * @public
+ * @public 
  * @param {TimeoutEvent} timeoutEvent JAIN SIP timeout event
  */
 PrivateJainSipClientConnector.prototype.processTimeout = function(timeoutEvent) {
@@ -1959,7 +1959,7 @@ PrivateJainSipClientConnector.prototype.processTimeout = function(timeoutEvent) 
 
 /**
  * SIP REGISTER refresh timeout
- * @private
+ * @private 
  */
 PrivateJainSipClientConnector.prototype.onSipRegisterTimeout = function() {
     console.debug("PrivateJainSipClientConnector:onSipRegisterTimeout()");
@@ -1985,7 +1985,7 @@ PrivateJainSipClientConnector.prototype.onSipRegisterTimeout = function() {
 
 /**
  * SIP REGISTER state machine
- * @private
+ * @private 
  * @param {ResponseEvent} responseEvent JAIN SIP response to process
  */
 PrivateJainSipClientConnector.prototype.processSipRegisterResponse = function(responseEvent) {
@@ -2061,7 +2061,7 @@ PrivateJainSipClientConnector.prototype.processSipRegisterResponse = function(re
     {
         if (statusCode < 200)
         {
-            //  No temporary response for SIP REGISTER request
+            //  No temporary response for SIP REGISTER request 
         }
         else if (statusCode === 200)
         {
@@ -2109,7 +2109,7 @@ PrivateJainSipClientConnector.prototype.processSipRegisterResponse = function(re
     {
         if (statusCode < 200)
         {
-            //  Not temporary response for SIP REGISTER request
+            //  Not temporary response for SIP REGISTER request  
         }
         else if(statusCode === 401 || statusCode === 407)
         {
@@ -2133,7 +2133,7 @@ PrivateJainSipClientConnector.prototype.processSipRegisterResponse = function(re
     {
         if (statusCode < 200)
         {
-            //  Not temporary response for SIP REGISTER request
+            //  Not temporary response for SIP REGISTER request 
         }
         else if (statusCode === 200)
         {
@@ -2160,13 +2160,13 @@ PrivateJainSipClientConnector.prototype.processSipRegisterResponse = function(re
 
 
 /**
- * Handle SIP OPTIONS RESPONSE (default behaviour: send 200 OK response)
+ * Handle SIP OPTIONS RESPONSE (default behaviour: send 200 OK response)                  
  * @param {RequestEvent} requestEvent JAIN SIP request event to process
- * @private
+ * @private 
  */
 PrivateJainSipClientConnector.prototype.processSipOptionRequest = function(requestEvent) {
     console.debug("PrivateJainSipClientConnector:processSipOptionRequest()");
-    // Build SIP OPTIONS 200 OK response
+    // Build SIP OPTIONS 200 OK response   
     var jainSipRequest = requestEvent.getRequest();
     var jainSip200OKResponse = jainSipRequest.createResponse(200, "OK");
     jainSip200OKResponse.addHeader(this.jainSipContactHeader);
@@ -2179,13 +2179,13 @@ PrivateJainSipClientConnector.prototype.processSipOptionRequest = function(reque
 
 /**
  * @class WebRTCommCall
- * @classdesc Main class of the WebRTComm Framework providing high level communication management:
- *            ringing, ringing back, accept, reject, cancel, bye
+ * @classdesc Main class of the WebRTComm Framework providing high level communication management: 
+ *            ringing, ringing back, accept, reject, cancel, bye 
  * @constructor
  * @public
- * @param  {WebRTCommClient} webRTCommClient client owner
- * @author Laurent STRULLU (laurent.strullu@orange.com)
- * @author Jean Deruelle (jean.deruelle@telestax.com)
+ * @param  {WebRTCommClient} webRTCommClient client owner 
+ * @author Laurent STRULLU (laurent.strullu@orange.com) 
+ * @author Jean Deruelle (jean.deruelle@telestax.com) 
  */
 WebRTCommCall = function(webRTCommClient)
 {
@@ -2218,7 +2218,7 @@ WebRTCommCall = function(webRTCommClient)
 };
 
 /**
- * Audio Codec Name
+ * Audio Codec Name 
  * @private
  * @constant
  */
@@ -2228,7 +2228,7 @@ WebRTCommCall.prototype.codecNames = {
 };
 
 /**
- * Get opened/closed status
+ * Get opened/closed status 
  * @public
  * @returns {boolean} true if opened, false if closed
  */
@@ -2240,7 +2240,7 @@ WebRTCommCall.prototype.isOpened = function() {
 };
 
 /**
- * Get incoming call status
+ * Get incoming call status 
  * @public
  * @returns {boolean} true if incoming, false if outgoing
  */
@@ -2261,7 +2261,7 @@ WebRTCommCall.prototype.isIncoming = function() {
 /**
  * Get call ID
  * @public
- * @returns {String} id
+ * @returns {String} id  
  */
 WebRTCommCall.prototype.getId = function() {
     return this.id;
@@ -2342,7 +2342,7 @@ WebRTCommCall.prototype.setEventListener = function(eventListener) {
 
 /**
  * Open WebRTC communication,  asynchronous action, opened or error event are notified to the WebRTCommClient eventListener
- * @public
+ * @public 
  * @param {String} calleePhoneNumber callee phone number (bob@sip.net)
  * @param {object} configuration communication configuration JSON object
  * <p> Communication configuration sample: <br>
@@ -2439,9 +2439,9 @@ WebRTCommCall.prototype.open = function(calleePhoneNumber, configuration) {
                             var sdpConstraints = {
                                 mandatory:
                                         {
-                                            OfferToReceiveAudio: this.configuration.audioMediaFlag,
-                                            OfferToReceiveVideo: this.configuration.videoMediaFlag,
-                                            MozDontOfferDataChannel: !this.configuration.messageMediaFlag
+                                            offerToReceiveAudio: this.configuration.audioMediaFlag,
+                                            offerToReceiveVideo: this.configuration.videoMediaFlag,
+                                            mozDontOfferDataChannel: !this.configuration.messageMediaFlag
                                         },
                                 optional: []
                             };
@@ -2503,7 +2503,7 @@ WebRTCommCall.prototype.open = function(calleePhoneNumber, configuration) {
 
 /**
  * Close WebRTC communication, asynchronous action, closed event are notified to the WebRTCommClient eventListener
- * @public
+ * @public 
  * @throw {String} Exception "bad state, unauthorized action"
  */
 WebRTCommCall.prototype.close = function() {
@@ -2546,7 +2546,7 @@ WebRTCommCall.prototype.close = function() {
 
 /**
  * Accept incoming WebRTC communication
- * @public
+ * @public 
  * @param {object} configuration communication configuration JSON object
  * <p> Communication configuration sample: <br>
  * { <br>
@@ -2638,7 +2638,7 @@ WebRTCommCall.prototype.accept = function(configuration) {
 
 /**
  * Reject/refuse incoming WebRTC communication
- * @public
+ * @public 
  * @throw {String} Exception "bad state, unauthorized action"
  * @throw {String} Exception "internal error,check console logs"
  */
@@ -2670,7 +2670,7 @@ WebRTCommCall.prototype.reject = function() {
 
 /**
  * Send DTMF Tone to WebRTC communication peer over the peerconnection
- * @public
+ * @public 
  * @param {String} dtmfEvent to send (1,2,3...)
  */
 WebRTCommCall.prototype.sendDTMF = function(dtmfEvent) {
@@ -2680,7 +2680,7 @@ WebRTCommCall.prototype.sendDTMF = function(dtmfEvent) {
 	    console.debug('Sending Tones, duration, gap: ', dtmfEvent, duration, gap);
 	    this.dtmfSender.insertDTMF(dtmfEvent, duration, gap);
 	} else {
-	    console.debug('DTMFSender not initialized so not Sending Tones, duration, gap: ', dtmfEvent, duration, gap);
+	    console.debug('DTMFSender not initialized so not Sending Tones, duration, gap: ', dtmfEvent, duration, gap);	
 	}
 }
 
@@ -2688,7 +2688,7 @@ WebRTCommCall.prototype.sendDTMF = function(dtmfEvent) {
 /**
  * Send Short message to WebRTC communication peer
  * Use WebRTC datachannel if open otherwise use transport (e.g SIP) implemented by the connector
- * @public
+ * @public 
  * @param {String} text message to send
  * @throw {String} Exception "bad state, unauthorized action"
  * @throw {String} Exception "internal error,check console logs"
@@ -2711,43 +2711,15 @@ WebRTCommCall.prototype.sendMessage = function(text) {
                 newWebRTCommMessage.to = this.calleePhoneNumber;
             }
 
-	      // Commented out for https://code.google.com/p/webrtcomm/issues/detail?id=18 SIP MESSAGE sending is not consistent
-//            if (this.messageChannel && this.messageChannel.readyState === "open")
-//            {
-//                try
-//                {
-//                    this.messageChannel.send(newWebRTCommMessage.text);
-//                    if (this.eventListener.onWebRTCommMessageSentEvent)
-//                    {
-//                        var that = this;
-//                        setTimeout(function() {
-//                            try {
-//                                that.eventListener.onWebRTCommMessageSentEvent(newWebRTCommMessage);
-//                            }
-//                            catch (exception) {
-//                                console.error("PrivateJainSipClientConnector:processMessageSipRequestEvent(): catched exception in event listener:" + exception);
-//                            }
-//                        }, 1);
-//                    }
-//                }
-//                catch (exception)
-//                {
-//                    console.error("WebRTCommCall:sendMessage(): catched exception:" + exception);
-//                    throw "WebRTCommCall:sendMessage(): catched exception:" + exception;
-//                }
-//            }
-//            else
-//            {
-                try
-                {
-                    newWebRTCommMessage.connector.send();
-                }
-                catch (exception)
-                {
-                    console.error("WebRTCommCall:sendMessage(): catched exception:" + exception);
-                    throw "WebRTCommCall:sendMessage(): catched exception:" + exception;
-                }
-//            }
+            try
+            {
+                newWebRTCommMessage.connector.send();
+            }
+            catch (exception)
+            {
+                console.error("WebRTCommCall:sendMessage(): catched exception:" + exception);
+                throw "WebRTCommCall:sendMessage(): catched exception:" + exception;
+            }
             return newWebRTCommMessage;
         }
         else
@@ -2764,8 +2736,74 @@ WebRTCommCall.prototype.sendMessage = function(text) {
 };
 
 /**
+ * Send Short message to WebRTC communication peer
+ * Use WebRTC datachannel if open otherwise use transport (e.g SIP) implemented by the connector
+ * @public 
+ * @param {String} text message to send
+ * @throw {String} Exception "bad state, unauthorized action"
+ * @throw {String} Exception "internal error,check console logs"
+ * @returns {WebRTCommMessage} new created WebRTCommMessage object
+ */
+WebRTCommCall.prototype.sendDataMessage = function(text) {
+    console.debug("WebRTCommCall:sendDataMessage()");
+    if (this.webRTCommClient.isOpened())
+    {
+        if (this.isOpened())
+        {
+            var newWebRTCommDataMessage = new WebRTCommDataMessage(this.webRTCommClient, this);
+            newWebRTCommDataMessage.content = text;
+            if (this.isIncoming())
+            {
+                newWebRTCommDataMessage.to = this.callerPhoneNumber;
+            }
+            else
+            {
+                newWebRTCommDataMessage.to = this.calleePhoneNumber;
+            }
+
+            if (this.messageChannel && this.messageChannel.readyState === "open")
+            {
+                try
+                {
+                    this.messageChannel.send(newWebRTCommDataMessage.content);
+                    if (this.eventListener.onWebRTCommDataMessageSentEvent)
+                    {
+                        var that = this;
+                        setTimeout(function() {
+                            try {
+                                that.eventListener.onWebRTCommDataMessageSentEvent(newWebRTCommDataMessage);
+                            }
+                            catch (exception) {
+                                console.error("WebRTCommCall:sendDataMessage(): catched exception in event listener:" + exception);
+                            }
+                        }, 1);
+                    }
+                }
+                catch (exception)
+                {
+                    console.error("WebRTCommCall:sendDataMessage(): catched exception:" + exception);
+                    throw "WebRTCommCall:sendDataMessage(): catched exception:" + exception;
+                }
+            }
+
+            return newWebRTCommDataMessage;
+        }
+        else
+        {
+            console.error("WebRTCommCall:sendDataMessage(): bad state, unauthorized action");
+            throw "WebRTCommCall:sendDataMessage(): bad state, unauthorized action";
+        }
+    }
+    else
+    {
+        console.error("WebRTCommCall:sendDataMessage(): bad state, unauthorized action");
+        throw "WebRTCommCall:sendDataMessage(): bad state, unauthorized action";
+    }
+};
+
+/**
  * Mute local audio media stream
- * @public
+ * @public 
  * @throw {String} Exception "bad state, unauthorized action"
  * @throw {String} Exception "not implemented by navigator"
  */
@@ -2800,7 +2838,7 @@ WebRTCommCall.prototype.muteLocalAudioMediaStream = function() {
 
 /**
  * Unmute local audio media stream
- * @public
+ * @public 
  */
 WebRTCommCall.prototype.unmuteLocalAudioMediaStream = function() {
     console.debug("WebRTCommCall:unmuteLocalAudioMediaStream()");
@@ -2833,7 +2871,7 @@ WebRTCommCall.prototype.unmuteLocalAudioMediaStream = function() {
 
 /**
  * Mute remote audio media stream
- * @public
+ * @public 
  * @throw {String} Exception "bad state, unauthorized action"
  * @throw {String} Exception "not implemented by navigator"
  */
@@ -2868,7 +2906,7 @@ WebRTCommCall.prototype.muteRemoteAudioMediaStream = function() {
 
 /**
  * Unmute remote audio media stream
- * @public
+ * @public 
  * @throw {String} Exception "bad state, unauthorized action"
  * @throw {String} Exception "not implemented by navigator"
  */
@@ -2903,7 +2941,7 @@ WebRTCommCall.prototype.unmuteRemoteAudioMediaStream = function() {
 
 /**
  * Hide local video media stream
- * @public
+ * @public 
  * @throw {String} Exception "bad state, unauthorized action"
  * @throw {String} Exception "not implemented by navigator"
  */
@@ -2939,7 +2977,7 @@ WebRTCommCall.prototype.hideLocalVideoMediaStream = function() {
 
 /**
  * Show local video media stream
- * @public
+ * @public 
  * @throw {String} Exception "bad state, unauthorized action"
  * @throw {String} Exception "not implemented by navigator"
  */
@@ -2976,7 +3014,7 @@ WebRTCommCall.prototype.showLocalVideoMediaStream = function() {
 
 /**
  * Hide remote video media stream
- * @public
+ * @public 
  * @throw {String} Exception "bad state, unauthorized action"
  * @throw {String} Exception "not implemented by navigator"
  */
@@ -3012,7 +3050,7 @@ WebRTCommCall.prototype.hideRemoteVideoMediaStream = function() {
 
 /**
  * Show remote video media stream
- * @public
+ * @public 
  * @throw {String} Exception "bad state, unauthorized action"
  * @throw {String} Exception "not implemented by navigator"
  */
@@ -3048,7 +3086,7 @@ WebRTCommCall.prototype.showRemoteVideoMediaStream = function() {
 
 
 /**
- * Check configuration
+ * Check configuration 
  * @private
  * @param {object}  configuration call configuration
  * @return true configuration ok false otherwise
@@ -3086,7 +3124,7 @@ WebRTCommCall.prototype.checkConfiguration = function(configuration) {
 };
 
 /**
- * Create RTCPeerConnection
+ * Create RTCPeerConnection 
  * @private
  * @return true configuration ok false otherwise
  */
@@ -3113,9 +3151,8 @@ WebRTCommCall.prototype.createRTCPeerConnection = function() {
 		    && this.webRTCommClient.configuration.RTCPeerConnection.turnPassword)
 	    {
 		rtcPeerConnectionConfiguration.iceServers.push({
-		    url: "turn:" + this.webRTCommClient.configuration.RTCPeerConnection.turnServer,
-            username: this.webRTCommClient.configuration.RTCPeerConnection.turnLogin,
-            credential: this.webRTCommClient.configuration.RTCPeerConnection.turnPassword
+		    url: "turn:" + this.webRTCommClient.configuration.RTCPeerConnection.turnLogin + "@" + this.webRTCommClient.configuration.RTCPeerConnection.turnServer,
+		    credential: this.webRTCommClient.configuration.RTCPeerConnection.turnPassword
 		});
 	    }
     }
@@ -3223,7 +3260,7 @@ WebRTCommCall.prototype.createRTCPeerConnection = function() {
 
 /**
  * Implementation of the PrivateCallConnector listener interface: process remote SDP offer event
- * @private
+ * @private 
  * @param {string} remoteSdpOffer Remote peer SDP offer
  */
 WebRTCommCall.prototype.onPrivateCallConnectorRemoteSdpOfferEvent = function(remoteSdpOffer) {
@@ -3233,7 +3270,7 @@ WebRTCommCall.prototype.onPrivateCallConnectorRemoteSdpOfferEvent = function(rem
 
 /**
  * Implementation of the PrivateCallConnector listener interface: process remote SDP answer event
- * @private
+ * @private 
  * @param {string} remoteSdpAnswer
  * @throw exception internal error
  */
@@ -3274,7 +3311,7 @@ WebRTCommCall.prototype.onPrivateCallConnectorRemoteSdpAnswerEvent = function(re
 
 /**
  * Implementation of the PrivateCallConnector listener interface: process call opened event
- * @private
+ * @private 
  */
 WebRTCommCall.prototype.onPrivateCallConnectorCallOpenedEvent = function()
 {
@@ -3297,7 +3334,7 @@ WebRTCommCall.prototype.onPrivateCallConnectorCallOpenedEvent = function()
 
 /**
  * Implementation of the PrivateCallConnector listener interface: process call in progress event
- * @private
+ * @private 
  */
 WebRTCommCall.prototype.onPrivateCallConnectorCallInProgressEvent = function()
 {
@@ -3320,7 +3357,7 @@ WebRTCommCall.prototype.onPrivateCallConnectorCallInProgressEvent = function()
 
 /**
  * Implementation of the PrivateCallConnector listener interface: process call error event
- * @private
+ * @private 
  * @param {string} error call control error
  */
 WebRTCommCall.prototype.onPrivateCallConnectorCallOpenErrorEvent = function(error)
@@ -3344,7 +3381,7 @@ WebRTCommCall.prototype.onPrivateCallConnectorCallOpenErrorEvent = function(erro
 
 /**
  * Implementation of the PrivateCallConnector listener interface: process call ringing event
- * @private
+ * @private 
  * @param {string} callerPhoneNumber  caller contact identifier (e.g. bob@sip.net)
  * @param {string} callerDisplayName  caller contact identifier (e.g. bob@sip.net)
  */
@@ -3372,7 +3409,7 @@ WebRTCommCall.prototype.onPrivateCallConnectorCallRingingEvent = function(caller
 
 /**
  * Implementation of the PrivateCallConnector listener interface: process call ringing back event
- * @private
+ * @private 
  */
 WebRTCommCall.prototype.onPrivateCallConnectorCallRingingBackEvent = function()
 {
@@ -3395,14 +3432,14 @@ WebRTCommCall.prototype.onPrivateCallConnectorCallRingingBackEvent = function()
 
 
 /**
- * Implementation of the PrivateCallConnector listener interface: process call closed event
- * @private
+ * Implementation of the PrivateCallConnector listener interface: process call closed event 
+ * @private 
  */
 WebRTCommCall.prototype.onPrivateCallConnectorCallClosedEvent = function()
 {
     console.debug("WebRTCommCall:onPrivateCallConnectorCallClosedEvent()");
     this.connector = undefined;
-    // Force communication close
+    // Force communication close 
     try {
         this.close();
     } catch (exception) {
@@ -3411,8 +3448,8 @@ WebRTCommCall.prototype.onPrivateCallConnectorCallClosedEvent = function()
 
 
 /**
- * Implementation of the PrivateCallConnector listener interface: process call hangup event
- * @private
+ * Implementation of the PrivateCallConnector listener interface: process call hangup event  
+ * @private 
  */
 WebRTCommCall.prototype.onPrivateCallConnectorCallHangupEvent = function()
 {
@@ -3435,7 +3472,7 @@ WebRTCommCall.prototype.onPrivateCallConnectorCallHangupEvent = function()
 
 /**
  * Implementation of the RTCPeerConnection listener interface: process RTCPeerConnection error event
- * @private
+ * @private 
  * @param {string} error internal error
  */
 WebRTCommCall.prototype.onRtcPeerConnectionErrorEvent = function(error) {
@@ -3569,19 +3606,10 @@ WebRTCommCall.prototype.onRtcPeerConnectionIceCandidateEvent = function(rtcIceCa
             {
                 if (this.peerConnection.iceGatheringState === 'complete')
                 {
-                    if (window.webkitRTCPeerConnection)
-                    {
                         if (this.peerConnectionState === 'preparing-offer')
                         {
                             var sdpOfferString = this.peerConnection.localDescription.sdp;
-                            var sdpParser = new SDPParser();
-                            var parsedSdpOffer = sdpParser.parse(sdpOfferString);
-
-                            // Check if offer is ok with the requested RTCPeerConnection constraints
-                            if (this.webRTCommClient.configuration.RTCPeerConnection.forceTurnMediaRelay === true)
-                            {
-                                this.forceTurnMediaRelay(parsedSdpOffer);
-                            }
+                            var parsedSdpOffer = this.setRtcPeerConnectionLocalDescription(this.peerConnection.localDescription);
 
                             // Apply modified SDP Offer
                             this.connector.invite(parsedSdpOffer);
@@ -3590,14 +3618,7 @@ WebRTCommCall.prototype.onRtcPeerConnectionIceCandidateEvent = function(rtcIceCa
                         else if (this.peerConnectionState === 'preparing-answer')
                         {
                             var sdpAnswerString = this.peerConnection.localDescription.sdp;
-                            var sdpParser = new SDPParser();
-                            var parsedSdpAnswer = sdpParser.parse(sdpAnswerString);
-
-                            // Check if offer is ok with the requested RTCPeerConnection constraints
-                            if (this.webRTCommClient.configuration.RTCPeerConnection.forceTurnMediaRelay === true)
-                            {
-                                this.forceTurnMediaRelay(parsedSdpAnswer);
-                            }
+                            var parsedSdpAnswer = this.setRtcPeerConnectionLocalDescription(this.peerConnection.localDescription);
 
                             this.connector.accept(parsedSdpAnswer);
                             this.peerConnectionState = 'established';
@@ -3624,7 +3645,6 @@ WebRTCommCall.prototype.onRtcPeerConnectionIceCandidateEvent = function(rtcIceCa
                         {
                             console.error("WebRTCommCall:onRtcPeerConnectionIceCandidateEvent(): RTCPeerConnection bad state!" + this.peerConnectionState);
                         }
-                    }
                 }
             }
             else
@@ -3665,46 +3685,10 @@ WebRTCommCall.prototype.onRtcPeerConnectionCreateOfferSuccessEvent = function(sd
                 // Preparing offer.
                 var that = this;
                 this.peerConnectionState = 'preparing-offer';
-                var sdpOfferString = sdpOffer.sdp;
-                var sdpParser = new SDPParser();
-                var parsedSdpOffer = sdpParser.parse(sdpOfferString);
-
-                // Check if offer is ok with the requested media constraints
-                if (this.configuration.videoMediaFlag === false)
-                {
-                    this.removeMediaDescription(parsedSdpOffer, "video");
-                }
-
-                if (this.configuration.audioMediaFlag === false)
-                {
-                    this.removeMediaDescription(parsedSdpOffer, "audio");
-                }
-
-                if (this.configuration.audioCodecsFilter || this.configuration.videoCodecsFilter || this.configuration.opusFmtpCodecsParameters)
-                {
-                    try
-                    {
-                        // Apply audio/video codecs filter to RTCPeerConnection SDP offer to
-                        this.applyConfiguredCodecFilterOnSessionDescription(parsedSdpOffer);
-                    }
-                    catch (exception)
-                    {
-                        console.error("WebRTCommCall:onRtcPeerConnectionCreateOfferSuccessEvent(): configured codec filtering has failded, use inital RTCPeerConnection SDP offer");
-                    }
-                }
-
-                // Check if offer is ok with the requested RTCPeerConnection constraints
-                if (this.webRTCommClient.configuration.RTCPeerConnection.forceTurnMediaRelay === true)
-                {
-                    this.forceTurnMediaRelay(parsedSdpOffer);
-                }
-		// Allow patching of chrome ice-options for interconnect with Mobicents Media Server, commented for now but to be made configurable
-		// this.patchChromeIce(parsedSdpOffer, "ice-options");
-                console.debug("WebRTCommCall:onRtcPeerConnectionCreateOfferSuccessEvent(): parsedSdpOffer=" + parsedSdpOffer);
-
-                // Apply modified SDP Offer
-                sdpOffer.sdp = parsedSdpOffer;
-                this.peerConnectionLocalDescription = sdpOffer;
+		if (window.webkitRTCPeerConnection) {
+			this.setRtcPeerConnectionLocalDescription(sdpOffer);
+		}
+                
                 this.peerConnection.setLocalDescription(sdpOffer, function() {
                     that.onRtcPeerConnectionSetLocalDescriptionSuccessEvent();
                 }, function(error) {
@@ -3727,6 +3711,53 @@ WebRTCommCall.prototype.onRtcPeerConnectionCreateOfferSuccessEvent = function(sd
         this.onRtcPeerConnectionErrorEvent();
     }
 };
+
+WebRTCommCall.prototype.setRtcPeerConnectionLocalDescription = function(sdpOffer) {
+	var sdpOfferString = sdpOffer.sdp;
+	var sdpParser = new SDPParser();
+	var parsedSdpOffer = sdpParser.parse(sdpOfferString);
+
+	// Check if offer is ok with the requested media constraints
+	if (window.webkitRTCPeerConnection) {
+		if (this.configuration.videoMediaFlag === false)
+		{
+		    this.removeMediaDescription(parsedSdpOffer, "video");
+		}
+
+		if (this.configuration.audioMediaFlag === false)
+		{
+		    this.removeMediaDescription(parsedSdpOffer, "audio");
+		}
+	}
+
+	if (this.configuration.audioCodecsFilter || this.configuration.videoCodecsFilter || this.configuration.opusFmtpCodecsParameters)
+	{
+	    try
+	    {
+		// Apply audio/video codecs filter to RTCPeerConnection SDP offer to
+		this.applyConfiguredCodecFilterOnSessionDescription(parsedSdpOffer);
+	    }
+	    catch (exception)
+	    {
+		console.error("WebRTCommCall:onRtcPeerConnectionCreateOfferSuccessEvent(): configured codec filtering has failded, use inital RTCPeerConnection SDP offer");
+	    }
+	}
+
+	// Check if offer is ok with the requested RTCPeerConnection constraints
+	if (this.webRTCommClient.configuration.RTCPeerConnection.forceTurnMediaRelay === true)
+	{
+	    this.forceTurnMediaRelay(parsedSdpOffer);
+	}
+	// Allow patching of chrome ice-options for interconnect with Mobicents Media Server, commented for now but to be made configurable
+	// this.patchChromeIce(parsedSdpOffer, "ice-options");
+	console.debug("WebRTCommCall:onRtcPeerConnectionCreateOfferSuccessEvent(): parsedSdpOffer=" + parsedSdpOffer);
+
+	// Apply modified SDP Offer
+	sdpOffer.sdp = parsedSdpOffer;
+	this.peerConnectionLocalDescription = sdpOffer;
+
+	return parsedSdpOffer;
+}
 
 /**
  * Implementation of the RTCPeerConnection listener interface: handle RTCPeerConnection state machine
@@ -3771,70 +3802,6 @@ WebRTCommCall.prototype.onRtcPeerConnectionSetLocalDescriptionSuccessEvent = fun
             console.debug("WebRTCommCall:onRtcPeerConnectionSetLocalDescriptionSuccessEvent(): this.peerConnection.iceGatheringState=" + this.peerConnection.iceGatheringState);
             console.debug("WebRTCommCall:onRtcPeerConnectionSetLocalDescriptionSuccessEvent(): this.peerConnection.iceConnectionState=" + this.peerConnection.iceConnectionState);
             console.debug("WebRTCommCall:onRtcPeerConnectionSetLocalDescriptionSuccessEvent(): this.peerConnectionState=" + this.peerConnectionState);
-
-            if (window.mozRTCPeerConnection)
-            {
-                var sdpOfferString = undefined;
-                if (this.peerConnection.localDescription)
-                    sdpOfferString = this.peerConnection.localDescription.sdp;
-                else
-                    sdpOfferString = this.peerConnectionLocalDescription.sdp;
-
-                if (this.peerConnectionState === 'preparing-offer')
-                {
-                    var sdpParser = new SDPParser();
-                    var parsedSdpOffer = sdpParser.parse(sdpOfferString);
-
-                    // Check if offer is ok with the requested RTCPeerConnection constraints
-                    if (this.webRTCommClient.configuration.RTCPeerConnection.forceTurnMediaRelay === true)
-                    {
-                        this.forceTurnMediaRelay(parsedSdpOffer);
-                    }
-
-                    // Apply modified SDP Offer
-                    this.connector.invite(parsedSdpOffer);
-                    // results in second invite being sent when testing chrome and ff, so commented out
-		    // this.connector.invite(this.peerConnectionLocalDescription.sdp);
-                    this.peerConnectionState = 'offer-sent';
-                }
-                else if (this.peerConnectionState === 'preparing-answer')
-                {
-                    var sdpAnswerString = this.peerConnection.localDescription.sdp;
-                    var sdpParser = new SDPParser();
-                    var parsedSdpAnswer = sdpParser.parse(sdpAnswerString);
-
-                    // Check if offer is ok with the requested RTCPeerConnection constraints
-                    if (this.webRTCommClient.configuration.RTCPeerConnection.forceTurnMediaRelay === true)
-                    {
-                        this.forceTurnMediaRelay(parsedSdpAnswer);
-                    }
-
-                    this.connector.accept(parsedSdpAnswer);
-                    this.peerConnectionState = 'established';
-                    // Notify opened event to listener
-                    if (this.eventListener.onWebRTCommCallOpenedEvent)
-                    {
-                        var that = this;
-                        setTimeout(function() {
-                            try {
-                                that.eventListener.onWebRTCommCallOpenedEvent(that);
-                            }
-                            catch (exception)
-                            {
-                                console.error("WebRTCommCall:onRtcPeerConnectionSetLocalDescriptionSuccessEvent(): catched exception in listener:" + exception);
-                            }
-                        }, 1);
-                    }
-                }
-                else if (this.peerConnectionState === 'established')
-                {
-                    // Why this last ice candidate event?
-                }
-                else
-                {
-                    console.error("WebRTCommCall:onRtcPeerConnectionSetLocalDescriptionSuccessEvent(): RTCPeerConnection bad state!");
-                }
-            }
         }
         else
         {
@@ -3897,14 +3864,14 @@ WebRTCommCall.prototype.onRtcPeerConnectionCreateAnswerSuccessEvent = function(s
             {
                 // Prepare answer.
                 var that = this;
-                this.peerConnectionState = 'preparing-answer';
+                this.peerConnectionState = 'preparing-answer';             
                 var sdpAnswerString = sdpAnswser.sdp;
                 var sdpParser = new SDPParser();
                 var parsedSdpAnswer = sdpParser.parse(sdpAnswerString);
 
                 // Check if offer is ok with the requested media constraints
                 // Can not remove/add SDP m lines
-
+                
                 if (this.configuration.audioCodecsFilter || this.configuration.videoCodecsFilter || this.configuration.opusFmtpCodecsParameters)
                 {
                     try
@@ -4020,6 +3987,7 @@ WebRTCommCall.prototype.onRtcPeerConnectionSetRemoteDescriptionSuccessEvent = fu
                                 },
                         optional: []
                     };
+		    console.debug("WebRTCommCall:onRtcPeerConnectionSetRemoteDescriptionSuccessEvent():sdpConstraints=" + JSON.stringify(sdpConstraints));
                     this.peerConnection.createAnswer(function(answer) {
                         that.onRtcPeerConnectionCreateAnswerSuccessEvent(answer);
                     }, function(error) {
@@ -4031,12 +3999,13 @@ WebRTCommCall.prototype.onRtcPeerConnectionSetRemoteDescriptionSuccessEvent = fu
                     var sdpConstraints = {
                         mandatory:
                                 {
-                                    OfferToReceiveAudio: this.configuration.audioMediaFlag,
-                                    OfferToReceiveVideo: this.configuration.videoMediaFlag,
-                                    MozDontOfferDataChannel: !this.configuration.messageMediaFlag
+                                    offerToReceiveAudio: this.configuration.audioMediaFlag,
+                                    offerToReceiveVideo: this.configuration.videoMediaFlag,
+                                    mozDontOfferDataChannel: !this.configuration.messageMediaFlag
                                 },
                         optional: []
                     };
+		    console.debug("WebRTCommCall:onRtcPeerConnectionSetRemoteDescriptionSuccessEvent():sdpConstraints=" + JSON.stringify(sdpConstraints));
                     this.peerConnection.createAnswer(function(answer) {
                         that.onRtcPeerConnectionCreateAnswerSuccessEvent(answer);
                     }, function(error) {
@@ -4169,36 +4138,19 @@ WebRTCommCall.prototype.onRtcPeerConnectionGatheringChangeEvent = function(event
         {
             if (this.peerConnection.iceGatheringState === "complete")
             {
-                if (window.webkitRTCPeerConnection)
-                {
                     if (this.peerConnectionState === 'preparing-offer')
                     {
                         var sdpOfferString = this.peerConnection.localDescription.sdp;
-                        var sdpParser = new SDPParser();
-                        var parsedSdpOffer = sdpParser.parse(sdpOfferString);
-
-                        // Check if offer is ok with the requested RTCPeerConnection constraints
-                        if (this.webRTCommClient.configuration.RTCPeerConnection.forceTurnMediaRelay === true)
-                        {
-                            this.forceTurnMediaRelay(parsedSdpOffer);
-                        }
+                        var parsedSdpOffer = this.setRtcPeerConnectionLocalDescription(this.peerConnection.localDescription);
 
                         // Apply modified SDP Offer
                         this.connector.invite(parsedSdpOffer);
-                        this.connector.invite(this.peerConnection.localDescription.sdp);
                         this.peerConnectionState = 'offer-sent';
                     }
                     else if (this.peerConnectionState === 'preparing-answer')
                     {
                         var sdpAnswerString = this.peerConnection.localDescription.sdp;
-                        var sdpParser = new SDPParser();
-                        var parsedSdpAnswer = sdpParser.parse(sdpAnswerString);
-
-                        // Check if offer is ok with the requested RTCPeerConnection constraints
-                        if (this.webRTCommClient.configuration.RTCPeerConnection.forceTurnMediaRelay === true)
-                        {
-                            this.forceTurnMediaRelay(parsedSdpAnswer);
-                        }
+                        var parsedSdpAnswer = this.setRtcPeerConnectionLocalDescription(this.peerConnection.localDescription);
 
                         this.connector.accept(parsedSdpAnswer);
                         this.peerConnectionState = 'established';
@@ -4225,7 +4177,6 @@ WebRTCommCall.prototype.onRtcPeerConnectionGatheringChangeEvent = function(event
                     {
                         console.error("WebRTCommCall:onRtcPeerConnectionGatheringChangeEvent(): RTCPeerConnection bad state!");
                     }
-                }
             }
         }
         else
@@ -4388,15 +4339,15 @@ WebRTCommCall.prototype.onRtcPeerConnectionMessageChannelOnMessageEvent = functi
         {
             console.debug("WebRTCommCall:onRtcPeerConnectionMessageChannelOnMessageEvent(): this.messageChannel.readyState=" + this.messageChannel.readyState);
             console.debug("WebRTCommCall:onRtcPeerConnectionMessageChannelOnMessageEvent(): this.messageChannel.binaryType=" + this.messageChannel.bufferedAmmount);
-            if (this.eventListener.onWebRTCommMessageReceivedEvent)
+            if (this.eventListener.onWebRTCommDataMessageReceivedEvent)
             {
                 // Build WebRTCommMessage
-                var newWebRTCommMessage = new WebRTCommMessage(this.webRTCommClient, this);
-                newWebRTCommMessage.text=event.data;
+                var newWebRTCommDataMessage = new WebRTCommDataMessage(this.webRTCommClient, this);
+                newWebRTCommDataMessage.content=event.data;
                 var that = this;
                 setTimeout(function() {
                     try {
-                        that.eventListener.onWebRTCommMessageReceivedEvent(newWebRTCommMessage);
+                        that.eventListener.onWebRTCommDataMessageReceivedEvent(newWebRTCommDataMessage);
                     }
                     catch (exception)
                     {
@@ -4415,7 +4366,7 @@ WebRTCommCall.prototype.onRtcPeerConnectionMessageChannelOnMessageEvent = functi
 /**
  * Modifiy SDP based on configured codec filter
  * @private
- * @param {SessionDescription} sessionDescription  JAIN (gov.nist.sdp) SDP offer object
+ * @param {SessionDescription} sessionDescription  JAIN (gov.nist.sdp) SDP offer object 
  */
 WebRTCommCall.prototype.applyConfiguredCodecFilterOnSessionDescription = function(sessionDescription) {
     if (sessionDescription instanceof SessionDescription)
@@ -4474,8 +4425,8 @@ WebRTCommCall.prototype.applyConfiguredCodecFilterOnSessionDescription = functio
 /**
  * Get offered codecs in media description
  * @private
- * @param {MediaDescription} mediaDescription  JAIN (gov.nist.sdp) MediaDescription object
- * @return offeredCodec JSON object { "0":"PCMU", "111":"OPUS", .....}
+ * @param {MediaDescription} mediaDescription  JAIN (gov.nist.sdp) MediaDescription object 
+ * @return offeredCodec JSON object { "0":"PCMU", "111":"OPUS", .....} 
  */
 WebRTCommCall.prototype.getOfferedCodecsInMediaDescription = function(mediaDescription) {
     console.debug("WebRTCommCall:getOfferedCodecsInMediaDescription()");
@@ -4493,7 +4444,7 @@ WebRTCommCall.prototype.getOfferedCodecsInMediaDescription = function(mediaDescr
             foundCodecs[payloadType] = this.codecNames[payloadType];
         }
 
-        // Set dynamic payload type and codec name
+        // Set dynamic payload type and codec name 
         var attributFields = mediaDescription.getAttributes();
         for (var k = 0; k < attributFields.length; k++)
         {
@@ -4529,8 +4480,8 @@ WebRTCommCall.prototype.getOfferedCodecsInMediaDescription = function(mediaDescr
 /**
  * Get offered codec list
  * @private
- * @param {JSON object} foundCodecs
- * @param {Array} codecFilters
+ * @param {JSON object} foundCodecs  
+ * @param {Array} codecFilters  
  */
 WebRTCommCall.prototype.applyCodecFiltersOnOfferedCodecs = function(foundCodecs, codecFilters) {
     console.debug("WebRTCommCall:applyCodecFiltersOnOfferedCodecs()");
@@ -4560,9 +4511,9 @@ WebRTCommCall.prototype.applyCodecFiltersOnOfferedCodecs = function(foundCodecs,
 /**
  * Update offered media description avec configured filters
  * @private
- * @param {MediaDescription} mediaDescription  JAIN (gov.nist.sdp) MediaDescription object
- * @param {JSON object} filteredCodecs
- * @param {Array} codecFilters
+ * @param {MediaDescription} mediaDescription  JAIN (gov.nist.sdp) MediaDescription object 
+ * @param {JSON object} filteredCodecs 
+ * @param {Array} codecFilters  
  */
 WebRTCommCall.prototype.updateMediaDescription = function(mediaDescription, filteredCodecs, codecFilters) {
     console.debug("WebRTCommCall:updateMediaDescription()");
@@ -4581,7 +4532,7 @@ WebRTCommCall.prototype.updateMediaDescription = function(mediaDescription, filt
             }
         }
         mediaDescription.getMedia().setFormats(newFormatListArray);
-        // Remove obsolte rtpmap attributs
+        // Remove obsolte rtpmap attributs 
         var newAttributeFieldArray = new Array();
         var attributFields = mediaDescription.getAttributes();
         for (var k = 0; k < attributFields.length; k++)
@@ -4616,14 +4567,14 @@ WebRTCommCall.prototype.updateMediaDescription = function(mediaDescription, filt
 /**
  * Update offered OPUS media description avec required FMTP parameters
  * @private
- * @param {MediaDescription} mediaDescription  JAIN (gov.nist.sdp) MediaDescription object
+ * @param {MediaDescription} mediaDescription  JAIN (gov.nist.sdp) MediaDescription object 
  * @param {string} opusMediaFmtpParameters FMTP OPUS parameters
  */
 WebRTCommCall.prototype.updateOpusMediaDescription = function(mediaDescription, opusMediaFmtpParameters) {
     console.debug("WebRTCommCall:updateOpusMediaDescription()");
     if (mediaDescription instanceof MediaDescription && typeof(opusMediaFmtpParameters) === 'string')
     {
-        // Find OPUS payload Type
+        // Find OPUS payload Type 
         var opusPayloadType = undefined;
         var attributFields = mediaDescription.getAttributes();
         for (var i = 0; i < attributFields.length; i++)
@@ -4651,7 +4602,7 @@ WebRTCommCall.prototype.updateOpusMediaDescription = function(mediaDescription, 
         if (opusPayloadType)
         {
             console.debug("WebRTCommCall:updateOpusMediaDescription():opusPayloadType=" + opusPayloadType);
-            // Update FMTP OPUS SDP parameter
+            // Update FMTP OPUS SDP parameter  
             for (var j = 0; j < attributFields.length; j++)
             {
                 var attributField = attributFields[j];
@@ -4685,8 +4636,8 @@ WebRTCommCall.prototype.updateOpusMediaDescription = function(mediaDescription, 
 /**
  * Modifiy SDP based on configured codec filter
  * @private
- * @param {SessionDescription} sessionDescription  JAIN (gov.nist.sdp) SDP offer object
- * @param {String} mediaTypeToRemove  audi/video
+ * @param {SessionDescription} sessionDescription  JAIN (gov.nist.sdp) SDP offer object 
+ * @param {String} mediaTypeToRemove  audi/video 
  */
 WebRTCommCall.prototype.patchChromeIce = function(sessionDescription, attributeToCheck) {
     console.debug("WebRTCommCall:patchChromeIce()");
@@ -4696,7 +4647,7 @@ WebRTCommCall.prototype.patchChromeIce = function(sessionDescription, attributeT
         {
 	    var otherAttributes = sessionDescription.getAttributes(false);
 	    if (otherAttributes != null) {
-		for (var i = 0; i <  otherAttributes.length; i++)
+		for (var i = 0; i <  otherAttributes.length; i++) 
 		{
 		    var attributField = otherAttributes[i];
 		    if (attributField.getName() === attributeToCheck)
@@ -4707,7 +4658,7 @@ WebRTCommCall.prototype.patchChromeIce = function(sessionDescription, attributeT
 		            var rtpmapValue = attributField.getValue().toLowerCase();
 		            if (rtpmapValue.indexOf("google-ice") >= 0)
 		            {
-				console.debug("WebRTCommCall:patchChromeIce(), found google-ice session attribute trying to patch");+
+				console.debug("WebRTCommCall:patchChromeIce(), found google-ice session attribute trying to patch");+				
 		                //attributField.setValue("trickle");
 				attributFields.remove(i);
 	                        break;
@@ -4718,8 +4669,8 @@ WebRTCommCall.prototype.patchChromeIce = function(sessionDescription, attributeT
 		            console.error("WebRTCommCall:updateMediaDescription(): rtpmap/fmtp format not supported");
 		        }
 		    }
-		}
-	    }
+		}	
+	    }	    
             var mediaDescriptions = sessionDescription.getMediaDescriptions(false);
             for (var i = 0; i < mediaDescriptions.length; i++)
             {
@@ -4735,7 +4686,7 @@ WebRTCommCall.prototype.patchChromeIce = function(sessionDescription, attributeT
 		            var rtpmapValue = attributField.getValue().toLowerCase();
 		            if (rtpmapValue.indexOf("google-ice") >= 0)
 		            {
-				console.debug("WebRTCommCall:patchChromeIce(), found google-ice mediajattribute trying to patch");+
+				console.debug("WebRTCommCall:patchChromeIce(), found google-ice mediajattribute trying to patch");+				
 		                //attributField.setValue("trickle");
 				attributFields.remove(j);
 	                        break;
@@ -4764,8 +4715,8 @@ WebRTCommCall.prototype.patchChromeIce = function(sessionDescription, attributeT
 /**
  * Modifiy SDP based on configured codec filter
  * @private
- * @param {SessionDescription} sessionDescription  JAIN (gov.nist.sdp) SDP offer object
- * @param {String} mediaTypeToRemove  audi/video
+ * @param {SessionDescription} sessionDescription  JAIN (gov.nist.sdp) SDP offer object 
+ * @param {String} mediaTypeToRemove  audi/video 
  */
 WebRTCommCall.prototype.removeMediaDescription = function(sessionDescription, mediaTypeToRemove) {
     console.debug("WebRTCommCall:removeMediaDescription()");
@@ -4785,6 +4736,27 @@ WebRTCommCall.prototype.removeMediaDescription = function(sessionDescription, me
                     break;
                 }
             }
+
+	    if (window.mozRTCPeerConnection) {
+		    var attributes = sessionDescription.getAttributes(false);
+		    for (var i = 0; i < attributes.length; i++)
+		    {
+			var attribute = attributes[i];
+			var attributeValue = attribute.getValue();
+			if("BUNDLE sdparta_0 sdparta_1" === attributeValue) {
+				if ("video" === mediaTypeToRemove)
+				{
+				    attribute.setValue("BUNDLE sdparta_0");
+				    break;
+				}
+				if ("audio" === mediaTypeToRemove)
+				{
+				    attribute.setValue("BUNDLE sdparta_1");
+				    break;
+				}
+			}
+		    }
+	    }
         }
         catch (exception)
         {
@@ -4801,7 +4773,7 @@ WebRTCommCall.prototype.removeMediaDescription = function(sessionDescription, me
 /**
  * Modifiy SDP, remove non "relay" ICE candidates
  * @private
- * @param {SessionDescription} sessionDescription  JAIN (gov.nist.sdp) SDP offer object
+ * @param {SessionDescription} sessionDescription  JAIN (gov.nist.sdp) SDP offer object 
  */
 WebRTCommCall.prototype.forceTurnMediaRelay = function(sessionDescription) {
     console.debug("WebRTCommCall:forceTurnMediaRelay()");
@@ -4850,13 +4822,13 @@ WebRTCommCall.prototype.forceTurnMediaRelay = function(sessionDescription) {
 
 /**
  * @class WebRTCommMessage
- * @classdesc Implements WebRTComm message
+ * @classdesc Implements WebRTComm message  
  * @constructor
  * @public
- * @param  {WebRTCommClient} webRTCommClient WebRTComm client owner
- * @param  {WebRTCommCall} webRTCommCall WebRTComm call owner
- * @author Laurent STRULLU (laurent.strullu@orange.com)
- */
+ * @param  {WebRTCommClient} webRTCommClient WebRTComm client owner 
+ * @param  {WebRTCommCall} webRTCommCall WebRTComm call owner 
+ * @author Laurent STRULLU (laurent.strullu@orange.com) 
+ */ 
 WebRTCommMessage = function(webRTCommClient, webRTCommCall)
 {
     console.debug("WebRTCommMessage:WebRTCommMessage()");
@@ -4870,9 +4842,9 @@ WebRTCommMessage = function(webRTCommClient, webRTCommCall)
         this.from=undefined;
         this.to=undefined;
     }
-    else
+    else 
     {
-        throw "WebRTCommMessage:WebRTCommMessage(): bad arguments"
+        throw "WebRTCommMessage:WebRTCommMessage(): bad arguments"      
     }
 };
 
@@ -4880,44 +4852,44 @@ WebRTCommMessage = function(webRTCommClient, webRTCommCall)
 /**
  * Get message id
  * @public
- * @returns {String} id
- */
+ * @returns {String} id  
+ */ 
 WebRTCommMessage.prototype.getId= function() {
-    return this.connector.getId();
+    return this.connector.getId();  
 };
 
 /**
  * Get message sender identity
  * @public
- * @returns {String} from
- */
+ * @returns {String} from  
+ */ 
 WebRTCommMessage.prototype.getFrom= function() {
-    return this.from;
+    return this.from;  
 };
 
 /**
  * Get message recever identity
  * @public
- * @returns {String} to
- */
+ * @returns {String} to  
+ */ 
 WebRTCommMessage.prototype.getTo= function() {
-    return this.to;
+    return this.to;  
 };
 
 /**
- * Get message
+ * Get message 
  * @public
- * @returns {String} message
- */
+ * @returns {String} message  
+ */ 
 WebRTCommMessage.prototype.getText= function() {
-    return this.text;
+    return this.text;  
 };
 
 /**
- * Get related WebRTCommCall
+ * Get related WebRTCommCall  
  * @public
- * @returns {WebRTCommCall} WebRTCommCall
- */
+ * @returns {WebRTCommCall} WebRTCommCall 
+ */ 
 WebRTCommMessage.prototype.getLinkedWebRTCommCall= function() {
         return this.webRTCommCall;
 };
@@ -4946,7 +4918,7 @@ WebRTCommClient = function(eventListener)
 };
 
 /**
- * SIP call control protocol mode
+ * SIP call control protocol mode 
  * @public
  * @constant
  */
@@ -4954,7 +4926,7 @@ WebRTCommClient.prototype.SIP = "SIP";
 
 
 /**
- * Get opened/closed status
+ * Get opened/closed status 
  * @public
  * @returns {boolean} true if opened, false if closed
  */
@@ -4976,7 +4948,7 @@ WebRTCommClient.prototype.getConfiguration = function() {
 
 /**
  * Open the WebRTC communication client, asynchronous action, opened or error event are notified to the eventListener
- * @public
+ * @public 
  * @param {object} configuration  WebRTC communication client configuration <br>
  * <p> Client configuration sample: <br>
  * { <br>
@@ -5038,7 +5010,7 @@ WebRTCommClient.prototype.open = function(configuration) {
 
 /**
  * Close the WebRTC communication client, asynchronous action, closed event is notified to the eventListener
- * @public
+ * @public 
  * @throw {String} Exception "bad argument, check API documentation"
  * @throw {String} Exception "bad configuration, missing parameter"
  * @throw {String} Exception "bad state, unauthorized action"
@@ -5078,7 +5050,7 @@ WebRTCommClient.prototype.close = function() {
 
 /**
  * Send a short text message using transport (e.g SIP)  implemented by the connector
- * @public
+ * @public 
  * @param {String} to destination identifier (Tel URI, SIP URI: sip:bob@sip.net)
  * @param {String} text Message to send <br>
  * @throw {String} Exception "bad argument, check API documentation"
@@ -5114,8 +5086,8 @@ WebRTCommClient.prototype.sendMessage = function(to, text)
 };
 
 /**
- * Request a WebRTC communication, asynchronous action, call events are notified to the eventListener
- * @public
+ * Request a WebRTC communication, asynchronous action, call events are notified to the eventListener 
+ * @public 
  * @param {string} calleePhoneNumber Callee contact identifier (Tel URI, SIP URI: sip:bob@sip.net)
  * @param {object} callConfiguration Communication configuration <br>
  * <p> Communication configuration sample: <br>
@@ -5169,7 +5141,7 @@ WebRTCommClient.prototype.call = function(calleePhoneNumber, callConfiguration) 
 
 
 /**
- * Check validity of the client configuration
+ * Check validity of the client configuration 
  * @private
  * @param {object} configuration client configuration
  *  * <p> Client configuration sample: <br>
@@ -5312,43 +5284,43 @@ WebRTCommClient.prototype.onPrivateClientConnectorClosedEvent = function()
 };
 /**
  * @class WebRTCommClientEventListenerInterface
- * @classdesc Abstract class describing  WebRTCommClient event listener interface
- *            required to be implented by the webapp
+ * @classdesc Abstract class describing  WebRTCommClient event listener interface 
+ *            required to be implented by the webapp 
  * @constructor
  * @public
- */
+ */ 
  WebRTCommClientEventListenerInterface = function(){
 };
-
+ 
 /**
  * Open event
  * @public
- */
+ */ 
 WebRTCommClientEventListenerInterface.prototype.onWebRTCommClientOpenedEvent= function() {
-    throw "WebRTCommClientEventListenerInterface:onWebRTCommClientOpenedEvent(): not implemented;";
+    throw "WebRTCommClientEventListenerInterface:onWebRTCommClientOpenedEvent(): not implemented;"; 
 };
 
 /**
- * Open error event
+ * Open error event 
  * @public
  * @param {String} error open error message
  */
 WebRTCommClientEventListenerInterface.prototype.onWebRTCommClientOpenErrorEvent= function(error) {
-    throw "WebRTCommClientEventListenerInterface:onWebRTCommClientOpenErrorEvent(): not implemented;";
+    throw "WebRTCommClientEventListenerInterface:onWebRTCommClientOpenErrorEvent(): not implemented;"; 
 };
 
 
 /**
- * Close event
+ * Close event 
  * @public
  */
 WebRTCommClientEventListenerInterface.prototype.onWebRTCommClientClosedEvent= function() {
-    throw "WebRTCommClientEventListenerInterface:onWebRTCommClientClosedEvent(): not implemented;";
+    throw "WebRTCommClientEventListenerInterface:onWebRTCommClientClosedEvent(): not implemented;"; 
 };
 /**
  * @class WebRTCommCallEventListenerInterface
- * @classdesc Abstract class describing  WebRTCommClient event listener interface
- *            required to be implented by the webapp
+ * @classdesc Abstract class describing  WebRTCommClient event listener interface 
+ *            required to be implented by the webapp 
  * @constructor
  * @public
  */
@@ -5366,7 +5338,7 @@ WebRTCommCallEventListenerInterface.prototype.onWebRTCommCallOpenedEvent = funct
 
 
 /**
- * In progress event
+ * In progress event 
  * @public
  * @param {WebRTCommCall} webRTCommCall source WebRTCommCall object
  */
@@ -5412,14 +5384,14 @@ WebRTCommCallEventListenerInterface.prototype.onWebRTCommCallHangupEvent = funct
 };
 /**
  * @class WebRTCommMessageEventListenerInterface
- * @classdesc Abstract class describing  WebRTCommMessage event listener interface
- *            required to be implented by the webapp
+ * @classdesc Abstract class describing  WebRTCommMessage event listener interface 
+ *            required to be implented by the webapp 
  * @constructor
  * @public
- */
+ */ 
  WebRTCommMessageEventListenerInterface = function(){
 };
-
+ 
 
 /**
  * Received message event
