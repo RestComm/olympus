@@ -92,7 +92,7 @@
       <img src="resources/images/male-placeholder.jpg" ng-hide="remoteVideo">
       <video class="remote-video-{{activeLayout}}" ng-src="{{remoteVideo}}" style="width: {{videoConstraints.mandatory.minWidth}}px; height: {{videoConstraints.mandatory.minHeight}}px;" autoplay="autoplay" ng-show="remoteVideo"></video>
       <div class="video-status" ng-show="inCall.intStatus !== 'ESTABLISHED'"> {{inCall.intStatus}} </div>
-      <video ng-show="activeLayout === 'FuS'" id="localVideoFS" autoplay="autoplay" ng-src="{{localVideo}}" style="width: 15%; top: 45px; position: fixed; z-index: 443; right: 10%; transform: scaleX(-1);"></video>
+      <video ng-show="activeLayout === 'FuS'" id="localVideoFS" autoplay="autoplay" ng-src="{{localVideo}}" style="width: 15%; top: 45px; position: fixed; z-index: 443; right: 10%; transform: scaleX(-1);" muted="true"></video>
     </div>
   </div>
 </div>
