@@ -1,13 +1,29 @@
 <ul class="nav nav-sidebar sidemenu">
+  <li ng-show="activeLayout === 'FuW'">
+    <a href="" ng-click="setActiveLayout('SbS')"><video ng-if="activeLayout === 'FuW'" id="localVideoThumb" autoplay="autoplay" ng-src="{{localVideo}}" style="width: 100%;"></video><small>YOU</small></a>
+  </li>
+
+  <!-- Non-popover contacts.. TODO: Check if going back to this...
   <li ng-click="toggleContactList();">
     <a id="btnContacts" href=""><i class="glyphicon glyphicon-user"></i><small>CONTACTS</small></a>
+  </li>
+  -->
+
+  <li>
+    <a id="btnContacts" href="" data-template="modules/templates/oly-contacts.html" data-animation="am-flip-x" data-auto-close="1" bs-popover data-container="body" data-placement="right"><i class="glyphicon glyphicon-user"></i><small>CONTACTS</small></a>
   </li>
 
   <li role="presentation" class="divider"></li>
 
+  <li id="tLayout">
+    <a id="btnLayout" href="" data-template="modules/templates/oly-layouts.html" title="Video Layouts" data-animation="am-flip-x" data-auto-close="1" bs-popover data-container="body" data-placement="right"><i class="fa fa-columns"></i><small>LAYOUT</small></a>
+  </li>
+
+<!--
   <li class="disabled">
     <a id="btnLayout"  href="" onclick="return false;"><span id="unreadTxt" class="badge pull-right" style="margin-bottom: -20px; margin-right: -10px; display: none;">0</span><i class="fa fa-columns"></i><small>LAYOUT</small></a>
   </li>
+-->
 
   <!-- In the future.. for number calls ?
   <li class="disabled">

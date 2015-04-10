@@ -1,0 +1,10 @@
+<div class="popover">
+  <!-- We need full popover template so we can hide it (disable) when not in call -->
+  <div class="arrow" ng-show="true || inCall"></div>
+  <h3 class="popover-title" ng-bind="title" ng-show="true || inCall && title"></h3>
+  <div class="popover-content" ng-show="true || inCall">
+    <ul class="nav nav-pills nav-stacked">
+      <li role="presentation" ng-repeat="(id, layout) in layouts" ng-class="{active: id === activeLayout}"><a href="" ng-click="setActiveLayout(id)">{{layout}}</a></li>
+    </ul>
+  </div>
+</div>

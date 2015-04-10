@@ -22,7 +22,7 @@ var olyMod = angular.module('mcWebRTC', [
   'mcWebRTC.directives',
   'mcWebRTC.controllers'
 ]);
-olyMod.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
+olyMod.config(['$routeProvider', /*'$locationProvider',*/ function($routeProvider, $locationProvider) {
   $routeProvider.
     when('/', {templateUrl: 'modules/register.html', controller: 'RegisterCtrl'}).
     when('/room', {templateUrl: 'modules/room.html', controller: 'RoomCtrl'}).

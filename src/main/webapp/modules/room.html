@@ -32,7 +32,7 @@
     <!-- Room Title / Incoming Call Banner -->
     <div id="incomingCall" class="row">
       <div class="col-md-5">
-        <h2 class="page-header"><span id="roomName" style="color:#555;">Welcome</span><span style="color:#CCC;">Room</span></h2>
+        <h4 ng-class="{'page-header': false}"><span id="roomName" style="color:#555;">Welcome</span><span style="color:#CCC;">Room</span></h4>
       </div>
       <div class="col-md-7 incoming-call-container inline-headers" ng-show="incomingCall">
         <div class="row" style="margin-top:29px;">
@@ -56,25 +56,30 @@
 
     <!-- Local Video Window -->
     <!--<video id="localVideo" class="col-md-6" autoplay="autoplay"></video>-->
-    <div id="localVideoSpan" fullscreen="localFS" only-watched-property style="display: inline;">
-    <webcam class="block" ng-if="loggedUser" placeholder="resources/images/loading.gif" audio="true" video="true" video-width="videoConstraints.mandatory.minWidth" video-height="videoConstraints.mandatory.minHeight" video-constraints="videoConstraints" on-stream="onStream(stream)" on-error="onError(err)" on-streaming="onStreaming()">
-      <div class="title"><button class="btn btn-link btn-xs pull-left" ng-show="false" ng-click="fsLocal()" data-title="Full Screen" data-delay="500,100" data-container="body" bs-tooltip><i class="fa fa-expand"></i></button>{{loggedUser}}'s Camera<span class="pull-right" ng-hide="noVideo"><i class="glyphicon glyphicon-record" ng-style="{ 'color': (inCall ? '#C00000' : 'lightgray') }" ng-class="{ 'flashing': inCall }" ng-show="streaming"></i></span></div>
-      <img src="resources/images/male-placeholder.jpg" ng-show="noVideo">
-      <div class="video-controls" ng-show="inCall">
-        <button class="btn btn-link" ng-click="localMuteAudio()">
-          <i class="fa" ng-class="inCall.localAudioMuted ? 'fa-microphone-slash muted' : 'fa-microphone'"></i>
-        </button>
-        <button class="btn btn-link" ng-click="localMuteVideo()">
-          <i class="fa" ng-class="inCall.localVideoMuted ? 'fa-eye-slash muted' : 'fa-eye'"></i>
-        </button>
-        <button class="btn btn-link" ng-click="callHangup()" ng-show="false"><i class="glyphicon glyphicon-earphone" style="transform: rotate(118deg);"></i></button>
-      </div>
-    </webcam>
+    <div ng-show="loggedUser && activeLayout === 'SbS'" id="localVideoSpan" class="block">
+      <webcam class="block" ng-if="loggedUser" placeholder="resources/images/loading.gif" audio="true" video="true" video-width="videoConstraints.mandatory.minWidth" video-height="videoConstraints.mandatory.minHeight" video-constraints="videoConstraints" on-stream="onStream(stream)" on-error="onError(err)" on-streaming="onStreaming()" style="width: 100%;">
+        <div class="title"><!-- <button class="btn btn-link btn-xs pull-left" ng-click="fsLocal()" data-title="Full Screen" data-delay="500,100" data-container="body" bs-tooltip><i class="fa fa-expand"></i></button> -->{{loggedUser}}'s Camera<span class="pull-right" ng-hide="noVideo"><i class="glyphicon glyphicon-record" ng-style="{ 'color': (inCall ? '#C00000' : 'lightgray') }" ng-class="{ 'flashing': inCall }" ng-show="streaming"></i></span></div>
+        <img src="resources/images/male-placeholder.jpg" ng-show="noVideo">
+
+        <!-- TODO: For future usage, with layouts
+        <video id="localVideo" autoplay="autoplay" ng-hide="noVideo" ng-src="{{localVideo}}" fullscreen="localFS" only-watched-property muted="true"></video>
+        -->
+
+        <div class="video-controls" ng-show="inCall">
+          <button class="btn btn-link" ng-click="localMuteAudio()">
+            <i class="fa" ng-class="inCall.localAudioMuted ? 'fa-microphone-slash muted' : 'fa-microphone'"></i>
+          </button>
+          <button class="btn btn-link" ng-click="localMuteVideo()">
+            <i class="fa" ng-class="inCall.localVideoMuted ? 'fa-eye-slash muted' : 'fa-eye'"></i>
+          </button>
+          <button class="btn btn-link" ng-click="callHangup()" ng-show="false"><i class="glyphicon glyphicon-earphone" style="transform: rotate(118deg);"></i></button>
+        </div>
+      </webcam>
     </div>
 
     <!-- Remote Video Window -->
-    <div class="block" ng-show="inCall" ng-style="{'height': getRemoteHeight()}">
-      <div class="title"><button class="btn btn-link btn-xs pull-left" ng-click="fsRemote()" data-title="Full Screen" data-delay="500,100" data-container="body" bs-tooltip><i class="fa fa-expand"></i></button>{{ (inCall.incomingCallFlag ? inCall.callerPhoneNumber : inCall.calleePhoneNumber) || "&nbsp;"}}</div>
+    <div class="block remote-video-container-{{activeLayout}}" ng-show="inCall" ng-style="{'height': getRemoteHeight()}"  fullscreen="remoteFS" only-watched-property>
+      <div class="title"><button class="btn btn-link btn-xs pull-left" ng-show="activeLayout === 'SbS'" ng-click="setActiveLayout('FuW')" data-title="Full Window" data-delay="500,100" data-container="body" bs-tooltip><i class="fa fa-square-o"></i></button><button class="btn btn-link btn-xs pull-left" ng-hide="activeLayout === 'FuS'" ng-click="setActiveLayout('FuS')" data-title="Full Screen" data-delay="500,100" data-container="body" bs-tooltip><i class="fa fa-expand"></i></button>{{ (inCall.callerPhoneNumber || inCall.calleePhoneNumber) || "&nbsp;"}}</div>
       <div class="video-controls" ng-show="inCall">
         <button class="btn btn-link" ng-click="remoteMuteAudio()" ng-show="inCall.intStatus === 'ESTABLISHED'">
           <i class="fa" ng-class="inCall.remoteAudioMuted ? 'fa-microphone-slash muted' : 'fa-microphone'"></i>
@@ -85,8 +90,9 @@
         <button class="btn btn-link" ng-click="callHangup()"><i class="glyphicon glyphicon-earphone" style="transform: rotate(118deg);"></i></button>
       </div>
       <img src="resources/images/male-placeholder.jpg" ng-hide="remoteVideo">
-      <video ng-src="{{remoteVideo}}" style="width: {{videoConstraints.mandatory.minWidth}}px; height: {{videoConstraints.mandatory.minHeight}}px;" autoplay="autoplay" ng-show="remoteVideo" fullscreen="remoteFS" only-watched-property></video>
+      <video class="remote-video-{{activeLayout}}" ng-src="{{remoteVideo}}" style="width: {{videoConstraints.mandatory.minWidth}}px; height: {{videoConstraints.mandatory.minHeight}}px;" autoplay="autoplay" ng-show="remoteVideo"></video>
       <div class="video-status" ng-show="inCall.intStatus !== 'ESTABLISHED'"> {{inCall.intStatus}} </div>
+      <video ng-if="activeLayout === 'FuS'" id="localVideoFS" autoplay="autoplay" ng-src="{{localVideo}}" style="width: 15%; top: 45px; position: fixed; z-index: 443; right: 10%;"></video>
     </div>
   </div>
 </div>
@@ -138,6 +144,26 @@
   </div>
 </div>
 </div>
+
+<!-- TODO: For future usage, with layouts
+<div ng-if="!inCall && activeLayout === 'FuW'" ng-hide="noVideo" ng-class="contactsVisible ? 'col-md-9 col-md-offset-3' : 'col-md-11 col-md-offset-1'" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0; padding: 0;" id="localVideoFullCnt">
+  <video id="localVideoFull" autoplay="autoplay" ng-src="{{localVideo}}" style="object-fit: cover; height: calc(100% - 50px); max-width: 100%; margin-top: 50px;"></video>
+</div>
+
+<div ng-if="inCall && activeLayout === 'FuW'" ng-class="contactsVisible ? 'col-md-9 col-md-offset-3' : 'col-md-11 col-md-offset-1'" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0; padding: 0;" id="localVideoFullCnt">
+  <div class="video-controls" style="margin-top: 50px" ng-show="inCall">
+    <button class="btn btn-link" ng-click="remoteMuteAudio()" ng-show="inCall.intStatus === 'ESTABLISHED'">
+      <i class="fa" ng-class="inCall.remoteAudioMuted ? 'fa-microphone-slash muted' : 'fa-microphone'"></i>
+    </button>
+    <button class="btn btn-link" ng-click="remoteMuteVideo()" ng-show="inCall.intStatus === 'ESTABLISHED'">
+      <i class="fa" ng-class="inCall.remoteVideoMuted ? 'fa-eye-slash muted' : 'fa-eye'"></i>
+    </button>
+    <button class="btn btn-link" ng-click="callHangup()"><i class="glyphicon glyphicon-earphone" style="transform: rotate(118deg);"></i></button>
+  </div>
+  <img src="resources/images/male-placeholder.jpg" ng-hide="remoteVideo">
+  <video id="remoteVideoFull" ng-src="{{remoteVideo}}" style="object-fit: cover; height: calc(100% - 50px); max-width: 100%; margin-top: 50px;" autoplay="autoplay" ng-show="remoteVideo" fullscreen="remoteFS" only-watched-property></video>
+</div>
+-->
 
 <!-- Audio Resources -->
 <audio id="snd_ringing" loop src="resources/audio/ringing.mp3" type="audio/mpeg"></audio>

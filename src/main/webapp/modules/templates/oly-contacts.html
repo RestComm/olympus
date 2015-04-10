@@ -1,0 +1,32 @@
+<div class="popover contacts-popover" style="overflow-y: scroll; overflow: auto; max-height: 75%;" ng-style="{'margin-top': contactsMarginTop}">
+  <!-- We need full popover template so we can hide it (disable) when not in call -->
+  <div class="arrow" ng-show="true || inCall"></div>
+  <!-- <h3 class="popover-title" ng-bind="title" ng-show="true || inCall && title"></h3> -->
+  <div class="popover-content" ng-show="true || inCall">
+
+  <div class="contacts animated" style="margin-top: 20px;" ng-init="setMarginTop()">
+    <h3><i class="glyphicon glyphicon-list-alt"></i> <span style="color:#555;">Contacts</span><span style="color:#CCC;">List</span></h3>
+    <div class="input-group">
+      <input id="inputContact" class="form-control" type="text" ng-model="newContact.address" ng-keyup="$event.keyCode == 13 && isValidContact() && addContact()" placeholder="Contact Address">
+      <span class="input-group-btn">
+        <button id="btnAddContact" class="btn btn-primary" type="button" ng-click="addContact()" ng-disabled="!isValidContact()">Add</button>
+      </span>
+    </div>
+    <div style="margin-top: 2px;">
+      <input id="inputContact" class="form-control input-sm" type="text" ng-model="newContact.name" placeholder="Contact Name (optional)" ng-show="newContact.address">
+    </div>
+    <br>
+    <dl ng-repeat="contact in contacts|filter:newContact.address">
+      <dt><i class="fa fa-{{contact.icon}}"></i> {{contact.name}}</dt>
+      <dd><a href="" class="contact-entry" ng-dblclick="isClient(contact) ? chatContact(contact.address) : callContact(contact.address, false)" data-content-template="modules/templates/oly-contact-card.html" title="{{contact.name}} // {{contact.address}}" data-animation="am-flip-x" data-auto-close="1" bs-popover data-container="body" data-placement="right">{{contact.address}}</a>
+        <div ng-show="contact.isCollapsed">
+          <button ng-if="isClient(contact)" class="btn btn-success btn-xs" ng-click="callContact(contact.address, true)"><i class="glyphicon glyphicon-facetime-video"></i></button>
+          <button class="btn btn-primary btn-xs" ng-click="callContact(contact.address, false)"><i class="glyphicon glyphicon-earphone"></i></button>
+          <button ng-if="isClient(contact)" class="btn btn-default btn-xs" ng-click="chatContact(contact.address)"><i class="glyphicon glyphicon-comment"></i></button>
+        </div>
+      </dd>
+    </dl>
+  </div>
+
+  </div>
+</div>

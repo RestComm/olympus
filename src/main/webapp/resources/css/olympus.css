@@ -343,6 +343,28 @@ body.loggedIn {
 }
 /** End of Chat Boxes CSS **/
 
+/** Layouts **/
+.remote-video-FuW {
+  height: 100% !important;
+  width: auto !important;
+}
+
+.remote-video-FuS {
+  height: 100% !important;
+  width: auto !important;
+}
+
+.remote-video-container-FuW {
+  position: fixed !important;
+  height: 100% !important;
+  max-width: 100% !important;
+}
+
+.remote-video-container-FuS {
+  height: 100% !important;
+  max-width: 100% !important;
+}
+
 .video-status {
   position: absolute;
   top: 45%;

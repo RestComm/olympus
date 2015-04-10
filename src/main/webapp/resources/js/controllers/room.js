@@ -5,11 +5,11 @@
 
 var olyMod = angular.module('mcWebRTC');
 
-olyMod.controller('RoomCtrl', function ($scope, $rootScope, $filter, $location, $timeout, $sce, $alert, Fullscreen) {
+olyMod.controller('RoomCtrl', function ($scope, $rootScope, $filter, $location, $timeout, $interval, $sce, $alert, Fullscreen) {
 
-  var currentCall;
-  // -- Alerts and Notification Management -------------------------------------
-  // TODO: Move to service/factory
+  $rootScope.logs = [
+    {time: Date.now(), level: 'INFO', message: 'Loaded Olympus v2!'}
+  ];
 
   var log = function(logLevel, message, alert) {
     $rootScope.logs.push({time: Date.now(), level: logLevel, message: message});
@@ -24,9 +24,53 @@ olyMod.controller('RoomCtrl', function ($scope, $rootScope, $filter, $location, 
     }
   };
 
-  $rootScope.logs = [
-    {time: Date.now(), level: 'INFO', message: 'Loaded Olympus v2!'}
-  ];
+  if (!$rootScope.loggedUser || $rootScope.loggedUser === '') {
+    // $rootScope.loggedUser = 'alice';
+    $location.path('/');
+    return;
+  }
+  else {
+    log('INFO', 'The user "' + $rootScope.loggedUser + '" has logged in to Olympus.', {
+      icon: 'thumbs-up', title: 'Welcome back!',
+      content: 'Welcome back to Olympus, ' + $rootScope.loggedUser + '. Who will you meet today ?',
+      type: 'info', duration: 10});
+  }
+
+  // -- Local Media Management -------------------------------------------------
+
+  $scope.setMarginTop = function() {
+    $timeout(function() {
+      var leTop = $('.contacts-popover').css('top');
+      if(leTop) {
+        var topMar = Math.min(parseInt(leTop.substr(1, leTop.indexOf('px')-1)), 150) + 50;
+        $scope.contactsMarginTop = topMar + 'px';
+      }
+    }, 250);
+  };
+
+/* TODO: For future use, if needed to replace webcam directive
+  navigator.getMedia = ( navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
+
+  navigator.getMedia( {video:
+    {mandatory: { maxWidth: 640, maxHeight: 360, minWidth: 640, minHeight: 360 } }, audio: true},
+    function(stream) {
+      $timeout(function() {
+        $rootScope.myStream = stream;
+        $scope.localVideo = $sce.trustAsResourceUrl(URL.createObjectURL(stream));
+      });
+    },
+    function(err) {
+      $scope.noVideo = true;
+      log('WARN', 'Permission to access the webcam/microphone has been denied. You may not be able to make calls!', {
+        title: 'No Media Access',
+        icon: 'warning', type: 'warning'});
+    }
+  );
+**/
+
+  var currentCall;
+  // -- Alerts and Notification Management -------------------------------------
+  // TODO: Move to service/factory
 
   $rootScope.signOut = function () {
     if ($rootScope.wrtcClient) {
@@ -39,6 +83,30 @@ olyMod.controller('RoomCtrl', function ($scope, $rootScope, $filter, $location, 
   $scope.toggleConsole = function () {
     $rootScope.showConsole = !$rootScope.showConsole;
   };
+
+  $scope.layouts = {'SbS':'Side-by-Side', 'FuW': 'Full Window', 'FuS': 'Full Screen'};
+  $scope.activeLayout = 'SbS';
+
+  $scope.setActiveLayout = function(id) {
+    if(this.$hide) {
+      this.$hide();
+    }
+    if(id === 'FuS') {
+      $scope.remoteFS = true;
+    }
+    $scope.activeLayout = id;
+  };
+
+  $scope.$watch('remoteFS', function(newValue, oldValue) {
+    if (newValue !== oldValue) {
+      if(newValue === true) {
+        $scope.activeLayout = 'FuS';
+      }
+      else {
+       $scope.activeLayout = 'FuW';
+      }
+    }
+  })
 
   $scope.playDTMF = function (dtmf) {
     currentCall.sendDTMF(dtmf);
@@ -61,17 +129,6 @@ olyMod.controller('RoomCtrl', function ($scope, $rootScope, $filter, $location, 
       angular.element('#btnDTMF' + dtmf).trigger('focus').trigger('click');
     });
   };
-
-  if (!$rootScope.loggedUser || $rootScope.loggedUser === '') {
-    // $rootScope.loggedUser = 'alice';
-    $location.path('/');
-  }
-  else {
-    log('INFO', 'The user "' + $rootScope.loggedUser + '" has logged in to Olympus.', {
-      icon: 'thumbs-up', title: 'Welcome back!',
-      content: 'Welcome back to Olympus, ' + $rootScope.loggedUser + '. Who will you meet today ?',
-      type: 'info', duration: 10});
-  }
 
   $scope.videoConstraints = {
     'mandatory': { 'minWidth': '480', 'minHeight': '360' },
@@ -130,6 +187,7 @@ olyMod.controller('RoomCtrl', function ($scope, $rootScope, $filter, $location, 
     $scope.$apply(
       function () {
         $rootScope.myStream = stream;
+        $scope.localVideo = $sce.trustAsResourceUrl(URL.createObjectURL(stream));
       }
     );
   };
@@ -298,7 +356,6 @@ olyMod.controller('RoomCtrl', function ($scope, $rootScope, $filter, $location, 
   $scope.$on('CALL_OUTGOING_RINGING', function (event, call) {
     $scope.$apply(
       function() {
-        debugger;
         currentCall = call;
         $scope.inCall = extractCallToScope(currentCall);
         $scope.inCall.intStatus = 'RINGING...';
@@ -317,7 +374,7 @@ olyMod.controller('RoomCtrl', function ($scope, $rootScope, $filter, $location, 
     $scope.$apply(
       function() {
         // TODO: Stop video, etc..
-        if ($scope.inCall.intStatus === 'CONNECTING...' || $scope.inCall.intStatus === 'RINGING...') {
+        if ($scope.inCall && ($scope.inCall.intStatus === 'CONNECTING...' || $scope.inCall.intStatus === 'RINGING...')) {
           $alert({
             title: '<i class="fa fa-user-times"></i> No Answer/Rejected!',
             content: 'Your call to ' + $scope.inCall.calleePhoneNumber + ' was not answered.',
@@ -327,7 +384,6 @@ olyMod.controller('RoomCtrl', function ($scope, $rootScope, $filter, $location, 
             show: true, html: true,
             container: '.notifications-container'});
         }
-        $scope.inCall.intStatus = 'REJECTED';
         delete $scope.inCall; // FIXME: Anything else ?
       });
   });
@@ -461,7 +517,7 @@ olyMod.controller('RoomCtrl', function ($scope, $rootScope, $filter, $location, 
   };
 
   $scope.sendMessage = function (ac) {
-    if (currentCall && currentCall.peerConnectionState === 'established') {
+    if (false && currentCall && currentCall.peerConnectionState === 'established') {
       // FIXME: Check if the connection is to the contact
       currentCall.sendMessage(ac.writeText);
     }

@@ -23,7 +23,7 @@ olyServices.service('wrtcEventListener', function($rootScope, $timeout) {
 
   this.onGetUserMediaErrorEventHandler = function(error) {
     console.debug('MobicentsWebRTCPhoneController:onGetUserMediaErrorEventHandler(): error='+error);
-    alert('Failed to get local user media: error='+error);
+    // alert('Failed to get local user media: error='+error);
   };
 
   /* == Call related listeners ============================================== */
@@ -32,8 +32,13 @@ olyServices.service('wrtcEventListener', function($rootScope, $timeout) {
     $rootScope.$broadcast('CALL_INCOMING', webRTCommCall);
   };
 
+  this.onWebRTCommCallInProgressEvent = function(webRTCommCall) {
+    // alert('call in progress...');
+    $rootScope.$broadcast('CALL_IN_PROGRESS', webRTCommCall);
+  };
+
   this.onWebRTCommCallRingingBackEvent = function(webRTCommCall) {
-    alert('rb!');
+    // alert('ringing back...');
     $rootScope.$broadcast('CALL_OUTGOING_RINGING', webRTCommCall);
   };
 
