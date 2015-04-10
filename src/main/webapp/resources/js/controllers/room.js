@@ -270,8 +270,8 @@ olyMod.controller('RoomCtrl', function ($scope, $rootScope, $filter, $location, 
       //connector: PrivateJainSipCallConnector
       //dtmfSender: undefined
       //eventListener: Object
-      id: call.id
-      //incomingCallFlag: false
+      id: call.id,
+      incomingCallFlag: call.incomingCallFlag
       //messageChannel: undefined
       //peerConnection: RTCPeerConnection
       //peerConnectionState: "new"

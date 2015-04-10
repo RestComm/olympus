@@ -356,7 +356,7 @@ body.loggedIn {
 
 .remote-video-container-FuW {
   position: fixed !important;
-  height: 100% !important;
+  height: calc(100% - 90px) !important;
   max-width: 100% !important;
 }
 

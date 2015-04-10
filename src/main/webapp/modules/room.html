@@ -79,7 +79,7 @@
 
     <!-- Remote Video Window -->
     <div class="block remote-video-container-{{activeLayout}}" ng-show="inCall" ng-style="{'height': getRemoteHeight()}"  fullscreen="remoteFS" only-watched-property>
-      <div class="title"><button class="btn btn-link btn-xs pull-left" ng-show="activeLayout === 'SbS'" ng-click="setActiveLayout('FuW')" data-title="Full Window" data-delay="500,100" data-container="body" bs-tooltip><i class="fa fa-square-o"></i></button><button class="btn btn-link btn-xs pull-left" ng-hide="activeLayout === 'FuS'" ng-click="setActiveLayout('FuS')" data-title="Full Screen" data-delay="500,100" data-container="body" bs-tooltip><i class="fa fa-expand"></i></button>{{ (inCall.callerPhoneNumber || inCall.calleePhoneNumber) || "&nbsp;"}}</div>
+      <div class="title"><button class="btn btn-link btn-xs pull-left" ng-show="activeLayout === 'SbS'" ng-click="setActiveLayout('FuW')" data-title="Full Window" data-delay="500,100" data-container="body" bs-tooltip><i class="fa fa-plus-square-o"></i></button><button class="btn btn-link btn-xs pull-left" ng-hide="activeLayout === 'FuS'" ng-click="setActiveLayout('FuS')" data-title="Full Screen" data-delay="500,100" data-container="body" bs-tooltip><i class="fa fa-expand"></i></button>{{ (inCall.incomingCallFlag ? inCall.callerPhoneNumber : inCall.calleePhoneNumber) || "&nbsp;"}}</div>
       <div class="video-controls" ng-show="inCall">
         <button class="btn btn-link" ng-click="remoteMuteAudio()" ng-show="inCall.intStatus === 'ESTABLISHED'">
           <i class="fa" ng-class="inCall.remoteAudioMuted ? 'fa-microphone-slash muted' : 'fa-microphone'"></i>
@@ -92,7 +92,7 @@
       <img src="resources/images/male-placeholder.jpg" ng-hide="remoteVideo">
       <video class="remote-video-{{activeLayout}}" ng-src="{{remoteVideo}}" style="width: {{videoConstraints.mandatory.minWidth}}px; height: {{videoConstraints.mandatory.minHeight}}px;" autoplay="autoplay" ng-show="remoteVideo"></video>
       <div class="video-status" ng-show="inCall.intStatus !== 'ESTABLISHED'"> {{inCall.intStatus}} </div>
-      <video ng-if="activeLayout === 'FuS'" id="localVideoFS" autoplay="autoplay" ng-src="{{localVideo}}" style="width: 15%; top: 45px; position: fixed; z-index: 443; right: 10%;"></video>
+      <video ng-show="activeLayout === 'FuS'" id="localVideoFS" autoplay="autoplay" ng-src="{{localVideo}}" style="width: 15%; top: 45px; position: fixed; z-index: 443; right: 10%; transform: scaleX(-1);"></video>
     </div>
   </div>
 </div>
