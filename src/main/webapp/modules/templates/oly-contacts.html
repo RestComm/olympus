@@ -7,16 +7,16 @@
   <div class="contacts animated" style="margin-top: 20px;" ng-init="setMarginTop()">
     <h3><i class="glyphicon glyphicon-list-alt"></i> <span style="color:#555;">Contacts</span><span style="color:#CCC;">List</span></h3>
     <div class="input-group">
-      <input id="inputContact" class="form-control" type="text" ng-model="newContact.address" ng-keyup="$event.keyCode == 13 && isValidContact() && addContact()" placeholder="Contact Address">
+      <input id="inputContact" class="form-control" type="text" ng-model="$parent.$parent.$parent.newContact.address" ng-keyup="$event.keyCode == 13 && isValidContact() && addContact()" placeholder="Contact Address">
       <span class="input-group-btn">
         <button id="btnAddContact" class="btn btn-primary" type="button" ng-click="addContact()" ng-disabled="!isValidContact()">Add</button>
       </span>
     </div>
     <div style="margin-top: 2px;">
-      <input id="inputContact" class="form-control input-sm" type="text" ng-model="newContact.name" placeholder="Contact Name (optional)" ng-show="newContact.address">
+      <input id="inputContact" class="form-control input-sm" type="text" ng-model="$parent.$parent.$parent.newContact.name" placeholder="Contact Name (optional)" ng-show="$parent.$parent.$parent.newContact.address" ng-keyup="$event.keyCode == 13 && isValidContact() && addContact()">
     </div>
     <br>
-    <dl ng-repeat="contact in contacts|filter:newContact.address">
+    <dl ng-repeat="contact in contacts|filter:$parent.$parent.$parent.newContact.address">
       <dt><i class="fa fa-{{contact.icon}}"></i> {{contact.name}}</dt>
       <dd><a href="" class="contact-entry" ng-dblclick="isClient(contact) ? chatContact(contact.address) : callContact(contact.address, false)" data-content-template="modules/templates/oly-contact-card.html" title="{{contact.name}} // {{contact.address}}" data-animation="am-flip-x" data-auto-close="1" bs-popover data-container="body" data-placement="right">{{contact.address}}</a>
         <div ng-show="contact.isCollapsed">
