@@ -25340,12 +25340,12 @@ DefaultRouter.prototype.getNextHop =function(request){
         hop = this.createHop(requestURI,request);
         return hop;
     } 
-    else if (this.defaultRoute != null) {
-        return this.defaultRoute;
-    } 
     else if (requestURI.isSipURI()) {
         hop = this.createHop(requestURI,request);
         return hop;
+    }
+    else if (this.defaultRoute != null) {
+        return this.defaultRoute;
     } 
     else {
         return null;
@@ -27483,7 +27483,6 @@ SIPTransaction.prototype.getCSeq =function(){
 }
 
 SIPTransaction.prototype.setState =function(newState){
-    console.debug("SIPTransaction.setState() " + this.branch + " currentState " + this.currentState);
     if (this.currentState == "COMPLETED") {
         if (newState != "TERMINATED" && newState != "CONFIRMED")
             newState = "COMPLETED";
@@ -27503,7 +27502,6 @@ SIPTransaction.prototype.setState =function(newState){
         newState = this.currentState;
     }
     currentState = newState;
-    console.debug("SIPTransaction.setState() " + this.branch + " newState " + this.currentState);
 }
 
 SIPTransaction.prototype.getState =function(){
@@ -27773,7 +27771,8 @@ SIPTransaction.prototype.startTransactionTimer =function(){
 
 SIPTransaction.prototype.isMessagePartOfTransaction =function(){
     
-}/*
+}
+/*
  * TeleStax, Open Source Cloud Communications  Copyright 2012. 
  * and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
@@ -28064,8 +28063,8 @@ SIPClientTransaction.prototype.processResponseargu2 =function(sipResponse,incomi
 }
 
 SIPClientTransaction.prototype.processResponseargu3 =function(transactionResponse,sourceChannel,dialog){
+    if(logger!=undefined) logger..debug("processResponse() ctx state: "+ this.getState()); 
 
-    console.debug("processResponse() ctx state: "+ this.getState()); 
     if (this.getState() == null)
     {
         return;
@@ -28138,13 +28137,10 @@ SIPClientTransaction.prototype.nonInviteClientTransaction =function(transactionR
 
 SIPClientTransaction.prototype.inviteClientTransaction =function(transactionResponse,sourceChannel,dialog){
     var statusCode = transactionResponse.getStatusCode();
-    console.debug("inviteClientTransaction.processResponse() ctx state: "+ this.getState()); 
     if (this.TERMINATED == this.getState()) {
         var ackAlreadySent = false;
-        console.debug("inviteClientTransaction.processResponse() dialog: "+ dialog);
-		if(dialog != null) {
-		        console.debug("inviteClientTransaction.processResponse() dialog ackSeen : "+ dialog.isAckSeen() + "+ lastAckSent" + dialog.getLastAckSent()); 
-		} 
+	if(dialog != null) {
+	} 
         if (dialog != null && dialog.isAckSeen() && dialog.getLastAckSent() != null) {
             if (dialog.getLastAckSent().getCSeq().getSeqNumber() == transactionResponse.getCSeq().getSeqNumber()
                 && transactionResponse.getFromTag()==dialog.getLastAckSent().getFromTag()) {
@@ -28153,7 +28149,6 @@ SIPClientTransaction.prototype.inviteClientTransaction =function(transactionResp
         }
         if (dialog!= null && !ackAlreadySent
             && transactionResponse.getCSeq().getMethod()==dialog.getMethod()) {
-            console.debug("inviteClientTransaction.processResponse() retransmission, resendingAck"); 
             dialog.resendAck();
         }
         this.sipStack.removeTransaction(this);
