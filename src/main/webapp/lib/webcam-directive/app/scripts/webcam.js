@@ -45,8 +45,15 @@ angular.module('webcam', [])
         };
 
         var onDestroy = function onDestroy() {
+          /*
           if (!!videoStream && typeof videoStream.stop === 'function') {
             videoStream.stop();
+          }
+          */
+          if (!!videoStream) {
+            videoStream.getTracks().forEach(function(track) {
+              track.stop();
+            });
           }
           if (!!videoElem) {
             delete videoElem.src;
@@ -120,7 +127,7 @@ angular.module('webcam', [])
             return;
           }
 
-          var mediaConstraint = { video: $scope.videoConstraints || true, audio: $scope.audio };
+          var mediaConstraint = { video: $scope.video && $scope.videoConstraints, audio: $scope.audio };
           navigator.getMedia(mediaConstraint, onSuccess, onFailure);
 
           /* Start streaming the webcam data when the video element can play

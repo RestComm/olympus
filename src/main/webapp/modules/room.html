@@ -57,7 +57,7 @@
     <!-- Local Video Window -->
     <!--<video id="localVideo" class="col-md-6" autoplay="autoplay"></video>-->
     <div ng-show="loggedUser && activeLayout === 'SbS'" id="localVideoSpan" class="block">
-      <webcam class="block" ng-if="loggedUser" placeholder="resources/images/loading.gif" audio="true" video="true" video-width="videoConstraints.mandatory.minWidth" video-height="videoConstraints.mandatory.minHeight" video-constraints="videoConstraints" on-stream="onStream(stream)" on-error="onError(err)" on-streaming="onStreaming()" style="width: 100%;">
+      <webcam class="block" ng-if="loggedUser && requestStream" placeholder="resources/images/loading.gif" audio="true" video="isVideoCall" video-width="videoConstraints.mandatory.minWidth" video-height="videoConstraints.mandatory.minHeight" video-constraints="videoConstraints" on-stream="onStream(stream)" on-error="onError(err)" on-streaming="onStreaming()" style="width: 100%;">
         <div class="title"><!-- <button class="btn btn-link btn-xs pull-left" ng-click="fsLocal()" data-title="Full Screen" data-delay="500,100" data-container="body" bs-tooltip><i class="fa fa-expand"></i></button> -->{{loggedUser}}'s Camera<span class="pull-right" ng-hide="noVideo"><i class="glyphicon glyphicon-record" ng-style="{ 'color': (inCall ? '#C00000' : 'lightgray') }" ng-class="{ 'flashing': inCall }" ng-show="streaming"></i></span></div>
         <img src="resources/images/male-placeholder.jpg" ng-show="noVideo">
 
