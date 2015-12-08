@@ -4,6 +4,8 @@ var olyMod = angular.module('mcWebRTC');
 
 olyMod.controller('RegisterCtrl', function ($scope, $rootScope, $location, $timeout, $animate, wrtcEventListener) {
 
+  var WS_PROTOCOL = $location.protocol() === 'https' ? 'wss' : 'ws';
+
   $rootScope.loggedUser = '';
 
   $scope.simplified = true;
@@ -28,7 +30,7 @@ olyMod.controller('RegisterCtrl', function ($scope, $rootScope, $location, $time
   };
 
   $scope.outboundProxy = {
-    address: 'ws://' + $scope.serverAddress + ':5082'
+    address: WS_PROTOCOL + '://' + $scope.serverAddress + ':5082'
   };
 
   $scope.communicationSettings = {
@@ -47,7 +49,7 @@ olyMod.controller('RegisterCtrl', function ($scope, $rootScope, $location, $time
   $scope.mirrorServer = function() {
     $scope.validServer = validate($scope.serverAddress);
     if($scope.validServer) {
-      $scope.outboundProxy.address = 'ws://' + $scope.serverAddress + ':' + $scope.serverPort;
+      $scope.outboundProxy.address = WS_PROTOCOL + '://' + $scope.serverAddress + ':' + $scope.serverPort;
       $scope.sip.domain = $scope.serverAddress;
     }
   };
