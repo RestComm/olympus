@@ -241,7 +241,25 @@ olyMod.controller('RoomCtrl', function ($scope, $rootScope, $filter, $location, 
     $scope.contacts.splice(0, 0, {name: 'Bob', address: 'bob@telestax.com', icon: 'heart'});
   }
 
+  var requestStream = function(video, callback) {
+    $rootScope.myStream = undefined;
+    $scope.isVideoCall = video;
+    $scope.requestStream = true;
+    var removeStreamWatch = $rootScope.$watch('myStream', function(newValue, oldValue) {
+      if (newValue !== oldValue) {
+        if(newValue) {
+          callback();
+          removeStreamWatch();
+        }
+      }
+    });
+  }
+
   $scope.callContact = function(contact, video) {
+    requestStream(video, function() { $scope.makeCall(contact, video); });
+  }
+
+  $scope.makeCall = function(contact, video) {
     if(this.$hide) {
       this.$hide();
     }
@@ -323,17 +341,22 @@ olyMod.controller('RoomCtrl', function ($scope, $rootScope, $filter, $location, 
         else if (currentCall) {
           currentCall = undefined;
           delete $scope.inCall;
+          delete $scope.requestStream;
         }
       });
   });
 
-  $scope.acceptCall = function(videoCall) {
+  $scope.acceptCall = function(video) {
+    requestStream(video, function() { $scope.doAcceptCall(video); });
+  }
+
+  $scope.doAcceptCall = function(video) {
     $('#snd_ringing')[0].pause(); // FIXME ?
     var callConfiguration = {
       displayName: $scope.loggedUser,
       localMediaStream: $rootScope.myStream,
       audioMediaFlag: true,
-      videoMediaFlag: videoCall,
+      videoMediaFlag: video,
       messageMediaFlag: false
     };
 
@@ -385,6 +408,7 @@ olyMod.controller('RoomCtrl', function ($scope, $rootScope, $filter, $location, 
             container: '.notifications-container'});
         }
         delete $scope.inCall; // FIXME: Anything else ?
+        delete $scope.requestStream;
       });
   });
 
