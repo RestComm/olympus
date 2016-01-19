@@ -88,9 +88,7 @@ olyMod.controller('RoomCtrl', function ($scope, $rootScope, $filter, $location, 
   $scope.activeLayout = 'SbS';
 
   $scope.setActiveLayout = function(id) {
-    if(this.$hide) {
-      this.$hide();
-    }
+    this.$hide && this.$hide();
     if(id === 'FuS') {
       $scope.remoteFS = true;
     }
@@ -256,13 +254,11 @@ olyMod.controller('RoomCtrl', function ($scope, $rootScope, $filter, $location, 
   }
 
   $scope.callContact = function(contact, video) {
+    this.$hide && this.$hide();
     requestStream(video, function() { $scope.makeCall(contact, video); });
   }
 
   $scope.makeCall = function(contact, video) {
-    if(this.$hide) {
-      this.$hide();
-    }
     var callConfiguration = {
         displayName: $rootScope.loggedUser,
         localMediaStream: $rootScope.myStream,
@@ -302,9 +298,7 @@ olyMod.controller('RoomCtrl', function ($scope, $rootScope, $filter, $location, 
   };
 
   $scope.chatContact = function(contact) {
-    if(this.$hide) {
-      this.$hide();
-    }
+    this.$hide && this.$hide();
     var chatId = contact.substr(0, contact.indexOf('@') === -1 ? 999 : contact.indexOf('@'));
     if(!$scope.activeChats[chatId]) {
       $scope.activeChats[chatId] = {id: contact,  status: 'normal', history: []};
@@ -414,7 +408,7 @@ olyMod.controller('RoomCtrl', function ($scope, $rootScope, $filter, $location, 
 
   $scope.$on('CALL_OPENED', function (event, call) {
     console.log('delivered', call);
-    $scope.$apply(
+    $timeout(
       function() {
         currentCall = call;
         $scope.inCall = extractCallToScope(currentCall);
@@ -423,7 +417,7 @@ olyMod.controller('RoomCtrl', function ($scope, $rootScope, $filter, $location, 
           call.getRemoteBundledAudioVideoMediaStream() ||
           call.getRemoteVideoMediaStream() ||
           call.getRemoteAudioMediaStream()));
-      });
+      }, 0);
   });
 
   // -- CURRENT CALL(S) --------------------------------------------------------
