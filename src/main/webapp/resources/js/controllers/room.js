@@ -379,6 +379,22 @@ olyMod.controller('RoomCtrl', function ($scope, $rootScope, $filter, $location, 
       });
   });
 
+  $scope.$on('CALL_ERROR', function (event, call, error) {
+    $scope.$apply(
+      function() {
+		  // TODO: CALL_ERROR can occur both in outgoing & incoming calls, but for incoming I can't get access to the number of the peer (for outgoing it's calleePhoneNumber and for incoming callerPhoneNumberi is undefined for some reason). Let's leave the number out for now since the user has enough context to figure it out. Once we migrate to restcomm-web-sdk, the number will be there in the Connection object
+        //log('WARN', 'Call with ' + $scope.inCall.calleePhoneNumber + ' has failed with "' + error + '".');
+        log('WARN', 'Call has failed with "' + error + '".');
+          $alert({
+            //title: '<i class="fa fa-user-times"></i> Call with ' + $scope.inCall.calleePhoneNumber + ' has failed.',
+            title: '<i class="fa fa-user-times"></i> Call has failed!',
+            content: error,
+            type: 'info', duration: 10,
+            show: true, html: true,
+            container: '.notifications-container'});
+      });
+  });
+
   // TODO: Switch alert between _OPEN_ERROR and _CLOSED ?
   $scope.$on('CALL_OPEN_ERROR', function (event, call, error) {
     $scope.$apply(

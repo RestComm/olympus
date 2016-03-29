@@ -46,6 +46,10 @@ olyServices.service('wrtcEventListener', function($rootScope, $timeout) {
     $rootScope.$broadcast('CALL_OPEN_ERROR', webRTCommCall, error);
   };
 
+  this.onWebRTCommCallErrorEvent = function(webRTCommCall, error) {
+    $rootScope.$broadcast('CALL_ERROR', webRTCommCall, error);
+  };
+
   this.onWebRTCommCallClosedEvent = function(webRTCommCall) {
     $rootScope.$broadcast('CALL_CLOSED', webRTCommCall);
   };
