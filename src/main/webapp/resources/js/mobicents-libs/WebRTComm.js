@@ -651,6 +651,37 @@ PrivateJainSipCallConnector.prototype.reject = function() {
 };
 
 /**
+ * Ignore the incoming SIP communication. This means clearing all local resources without notifying the remote party
+ * @public 
+ * @throw {String} Exception "bad state, unauthorized action"
+ * @throw {String} Exception "internal error,check console logs"
+ */
+PrivateJainSipCallConnector.prototype.ignore = function() {
+    console.debug("PrivateJainSipCallConnector:ignore()");
+    if (this.sipCallState === this.SIP_INVITED_INITIAL_STATE)
+    {
+        try
+        {
+				// SIP INVITE has not been sent yet.
+				this.resetSipContext();
+				this.clientConnector.removeSessionConnector(this.sipCallId);
+				// Notify closed event
+				this.webRTCommCall.onPrivateCallConnectorCallClosedEvent();
+        }
+        catch (exception)
+        {
+            console.error("PrivateJainSipCallConnector:ignore(): catched exception:" + exception);
+        }
+        this.close();
+    }
+    else
+    {
+        console.error("PrivateJainSipCallConnector:ignore(): bad state, unauthorized action");
+        throw "PrivateJainSipCallConnector:ignore(): bad state, unauthorized action";
+    }
+};
+
+/**
  * Check configuration 
  * @param {object} configuration SIP call configuration JSON object
  * @private
@@ -1144,6 +1175,7 @@ PrivateJainSipCallConnector.prototype.processInvitedSipRequestEvent = function(r
 
                 // Update SIP call state
                 this.sipCallState = this.SIP_INVITED_CANCELLED_STATE;
+                this.webRTCommCall.onPrivateCallConnectorCallCanceledEvent();
             }
             catch (exception)
             {
@@ -2383,7 +2415,9 @@ WebRTCommCall.prototype.open = function(calleePhoneNumber, configuration) {
 
                         // Setup RTCPeerConnection first
                         this.createRTCPeerConnection();
-                        this.peerConnection.addStream(this.configuration.localMediaStream);
+                        if (configuration.audioMediaFlag || configuration.videoMediaFlag) {
+                            this.peerConnection.addStream(this.configuration.localMediaStream);
+                        }
                         if (this.configuration.messageMediaFlag)
                         {
                             if (this.peerConnection.createDataChannel)
@@ -2572,7 +2606,9 @@ WebRTCommCall.prototype.accept = function(configuration) {
                     try
                     {
                         this.createRTCPeerConnection();
-                        this.peerConnection.addStream(this.configuration.localMediaStream);
+                        if(configuration.audioMediaFlag || configuration.videoMediaFlag) {
+                            this.peerConnection.addStream(this.configuration.localMediaStream);
+                        }
                         var sdpOffer = undefined;
                         if (window.webkitRTCPeerConnection)
                         {
@@ -2645,6 +2681,12 @@ WebRTCommCall.prototype.reject = function() {
         try
         {
             this.connector.reject();
+
+				// Notify asynchronously the closed event
+				var that = this;
+				setTimeout(function() {
+				    that.eventListener.onWebRTCommCallClosedEvent(that);
+				}, 1);
         }
         catch (exception)
         {
@@ -2665,6 +2707,44 @@ WebRTCommCall.prototype.reject = function() {
 };
 
 /**
+ * Ignore incoming WebRTC communication. This means that we silently close the communication without replying to the remote party
+ * @public 
+ * @throw {String} Exception "bad state, unauthorized action"
+ * @throw {String} Exception "internal error,check console logs"
+ */
+WebRTCommCall.prototype.ignore = function() {
+    console.debug("WebRTCommCall:ignore()");
+    if (this.webRTCommClient.isOpened())
+    {
+        try
+        {
+            this.connector.ignore();
+
+				// Notify asynchronously the closed event
+				var that = this;
+				setTimeout(function() {
+				    that.eventListener.onWebRTCommCallClosedEvent(that);
+				}, 1);
+        }
+        catch (exception)
+        {
+            console.error("WebRTCommCall:ignore(): catched exception:" + exception);
+            // Close properly the communication
+            try {
+                this.close();
+            } catch (e) {
+            }
+            throw exception;
+        }
+    }
+    else
+    {
+        console.error("WebRTCommCall:ignore(): bad state, unauthorized action");
+        throw "WebRTCommCall:ignore(): bad state, unauthorized action";
+    }
+};
+
+/**
  * Send DTMF Tone to WebRTC communication peer over the peerconnection
  * @public 
  * @param {String} dtmfEvent to send (1,2,3...)
@@ -2676,7 +2756,7 @@ WebRTCommCall.prototype.sendDTMF = function(dtmfEvent) {
 	    console.debug('Sending Tones, duration, gap: ', dtmfEvent, duration, gap);
 	    this.dtmfSender.insertDTMF(dtmfEvent, duration, gap);
 	} else {
-	    console.debug('DTMFSender not initialized so not Sending Tones, duration, gap: ', dtmfEvent, duration, gap);	
+	    console.debug('DTMFSender not initialized so not Sending Tones, duration, gap: ', dtmfEvent, duration, gap);
 	}
 }
 
@@ -3093,12 +3173,6 @@ WebRTCommCall.prototype.checkConfiguration = function(configuration) {
     var check = true;
     // displayName, audioCodecsFilter, videoCodecsFilter NOT mandatoty in configuration
 
-    if (configuration.localMediaStream === undefined)
-    {
-        check = false;
-        console.error("WebRTCommCall:checkConfiguration(): missing localMediaStream");
-    }
-
     if (configuration.audioMediaFlag === undefined || (typeof(configuration.audioMediaFlag) !== 'boolean'))
     {
         check = false;
@@ -3110,6 +3184,12 @@ WebRTCommCall.prototype.checkConfiguration = function(configuration) {
         check = false;
         console.error("WebRTCommCall:checkConfiguration(): missing video media flag");
     }
+
+    if ((configuration.audioMediaFlag || configuration.videoMediaFlag) && configuration.localMediaStream === undefined)
+    {
+        check = false;
+        console.error("WebRTCommCall:checkConfiguration(): missing localMediaStream");
+    }      
 
     if (configuration.messageMediaFlag === undefined || (typeof(configuration.messageMediaFlag) !== 'boolean'))
     {
@@ -3462,6 +3542,29 @@ WebRTCommCall.prototype.onPrivateCallConnectorCallHangupEvent = function()
             catch (exception)
             {
                 console.error("WebRTCommCall:onPrivateCallConnectorCallHangupEvent(): catched exception in listener:" + exception);
+            }
+        }, 1);
+    }
+};
+
+/**
+ * Implementation of the PrivateCallConnector listener interface: process incoming call cancel event  
+ * @private 
+ */
+WebRTCommCall.prototype.onPrivateCallConnectorCallCanceledEvent = function()
+{
+    console.debug("WebRTCommCall:onPrivateCallConnectorCallCanceledEvent()");
+    // Notify the canceled event to the listener
+    if (this.eventListener.onWebRTCommCallCanceledEvent)
+    {
+        var that = this;
+        setTimeout(function() {
+            try {
+                that.eventListener.onWebRTCommCallCanceledEvent(that);
+            }
+            catch (exception)
+            {
+                console.error("WebRTCommCall:onPrivateCallConnectorCallCanceledEvent(): catched exception in listener:" + exception);
             }
         }, 1);
     }
@@ -4196,6 +4299,35 @@ WebRTCommCall.prototype.onRtcPeerConnectionIceChangeEvent = function(event) {
         console.debug("WebRTCommCall:onRtcPeerConnectionIceChangeEvent(): this.peerConnection.iceGatheringState=" + this.peerConnection.iceGatheringState);
         console.debug("WebRTCommCall:onRtcPeerConnectionIceChangeEvent(): this.peerConnection.iceConnectionState=" + this.peerConnection.iceConnectionState);
         console.debug("WebRTCommCall:onRtcPeerConnectionIceChangeEvent(): this.peerConnectionState=" + this.peerConnectionState);
+        if (this.peerConnection.iceConnectionState == 'failed') {
+            error = 'Media path is lost due to connectivity issues; call has been hung up';
+            console.error("WebRTCommCall:onRtcPeerConnectionIceChangeEvent(): " + error);
+
+            // Error, notify the error and close properly the call
+            // Notify the error event to the listener
+            if (this.eventListener.onWebRTCommCallErrorEvent)
+            {
+               var that = this;
+               setTimeout(function() {
+                   try {
+                      that.eventListener.onWebRTCommCallErrorEvent(that, error);
+                   }
+                   catch (exception)
+                   {
+                      console.error("WebRTCommCall:onRtcPeerConnectionErrorEvent(): catched exception in listener:" + exception);
+                   }
+               }, 1);
+            }
+
+				// close the call since media has failed
+            try {
+               this.close();
+            } 
+            catch (exception) 
+            {
+               console.error("WebRTCommCall:onRtcPeerConnectionErrorEvent(): catched exception in listener:" + exception);
+            }
+        }
     }
     else
     {
@@ -4272,6 +4404,18 @@ WebRTCommCall.prototype.onRtcPeerConnectionMessageChannelOnOpenEvent = function(
         {
             console.debug("WebRTCommCall:onRtcPeerConnectionMessageChannelOnOpenEvent(): this.messageChannel.readyState=" + this.messageChannel.readyState);
             console.debug("WebRTCommCall:onRtcPeerConnectionMessageChannelOnOpenEvent(): this.messageChannel.binaryType=" + this.messageChannel.bufferedAmmount);
+            if (this.eventListener.onWebRTCommDataMessageChannelOnOpenEvent)
+            {
+                var that = this;
+                setTimeout(function() {
+                    try {
+                        that.eventListener.onWebRTCommDataMessageChannelOnOpenEvent();
+                    }
+                    catch (exception) {
+                        console.error("WebRTCommCall:onWebRTCommDataMessageChannelOnOpenEvent(): catched exception in event listener:" + exception);
+                    }
+                }, 1);
+            }             
         }
     }
     else
@@ -4292,6 +4436,18 @@ WebRTCommCall.prototype.onRtcPeerConnectionMessageChannelOnClose = function(even
         {
             console.debug("WebRTCommCall:onRtcPeerConnectionMessageChannelOnClose(): this.messageChannel.readyState=" + this.messageChannel.readyState);
             console.debug("WebRTCommCall:onRtcPeerConnectionMessageChannelOnClose(): this.messageChannel.binaryType=" + this.messageChannel.bufferedAmmount);
+            if (this.eventListener.onWebRTCommDataMessageChannelOnCloseEvent)
+            {
+                var that = this;
+                setTimeout(function() {
+                    try {
+                        that.eventListener.onWebRTCommDataMessageChannelOnCloseEvent();
+                    }
+                    catch (exception) {
+                        console.error("WebRTCommCall:onWebRTCommDataMessageChannelOnCloseEvent(): catched exception in event listener:" + exception);
+                    }
+                }, 1);
+            }              
         }
     }
     else
@@ -4312,6 +4468,18 @@ WebRTCommCall.prototype.onRtcPeerConnectionMessageChannelOnErrorEvent = function
         {
             console.debug("WebRTCommCall:onRtcPeerConnectionMessageChannelOnErrorEvent(): this.messageChannel.readyState=" + this.messageChannel.readyState);
             console.debug("WebRTCommCall:onRtcPeerConnectionMessageChannelOnErrorEvent(): this.messageChannel.binaryType=" + this.messageChannel.bufferedAmmount);
+            if (this.eventListener.onWebRTCommDataMessageChannelOnErrorEvent)
+            {
+                var that = this;
+                setTimeout(function() {
+                    try {
+                        that.eventListener.onWebRTCommDataMessageChannelOnErrorEvent();
+                    }
+                    catch (exception) {
+                        console.error("WebRTCommCall:onWebRTCommDataMessageChannelOnErrorEvent(): catched exception in event listener:" + exception);
+                    }
+                }, 1);
+            }            
         }
     }
     else
@@ -4651,7 +4819,7 @@ WebRTCommCall.prototype.patchChromeIce = function(sessionDescription, attributeT
 		            var rtpmapValue = attributField.getValue().toLowerCase();
 		            if (rtpmapValue.indexOf("google-ice") >= 0)
 		            {
-				console.debug("WebRTCommCall:patchChromeIce(), found google-ice session attribute trying to patch");+				
+				console.debug("WebRTCommCall:patchChromeIce(), found google-ice session attribute trying to patch");
 		                //attributField.setValue("trickle");
 				attributFields.remove(i);
 	                        break;
@@ -4679,7 +4847,7 @@ WebRTCommCall.prototype.patchChromeIce = function(sessionDescription, attributeT
 		            var rtpmapValue = attributField.getValue().toLowerCase();
 		            if (rtpmapValue.indexOf("google-ice") >= 0)
 		            {
-				console.debug("WebRTCommCall:patchChromeIce(), found google-ice mediajattribute trying to patch");+				
+				console.debug("WebRTCommCall:patchChromeIce(), found google-ice mediajattribute trying to patch");
 		                //attributField.setValue("trickle");
 				attributFields.remove(j);
 	                        break;
@@ -5350,6 +5518,16 @@ WebRTCommCallEventListenerInterface.prototype.onWebRTCommCallOpenErrorEvent = fu
 };
 
 /**
+ * Call error event
+ * @public
+ * @param {WebRTCommCall} webRTCommCall source WebRTCommCall object
+ * @param {String} error error message
+ */
+WebRTCommCallEventListenerInterface.prototype.onWebRTCommCallErrorEvent = function(webRTCommCall, error) {
+    throw "WebRTCommCallEventListenerInterface:onWebRTCommCallErrorEvent(): not implemented;";
+};
+
+/**
  * Open error  event
  * @public
  * @param {WebRTCommCall} webRTCommCall source WebRTCommCall object
@@ -5374,6 +5552,15 @@ WebRTCommCallEventListenerInterface.prototype.onWebRTCommCallRingingBackEvent = 
  */
 WebRTCommCallEventListenerInterface.prototype.onWebRTCommCallHangupEvent = function(webRTCommCall) {
     throw "WebRTCommCallEventListenerInterface:onWebRTCommCallHangupEvent(): not implemented;";
+};
+
+/**
+ * Incoming call Cancel event
+ * @public
+ * @param {WebRTCommCall} webRTCommCall source WebRTCommCall object
+ */
+WebRTCommCallEventListenerInterface.prototype.onWebRTCommCallCanceledEvent = function(webRTCommCall) {
+    throw "WebRTCommCallEventListenerInterface:onWebRTCommCallCanceledEvent(): not implemented;";
 };
 /**
  * @class WebRTCommMessageEventListenerInterface
