@@ -325,8 +325,7 @@ PrivateJainSipMessageConnector.prototype.send = function() {
 		console.error("PrivateJainSipMessageConnector:send(): bad state, unauthorized action");
 		throw "PrivateJainSipMessageConnector:send(): bad state, unauthorized action";
 	}
-};
-/*
+};/*
  * TeleStax, Open Source Cloud Communications  Copyright 2012. 
  * and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
@@ -648,6 +647,38 @@ PrivateJainSipCallConnector.prototype.accept = function(sdpAnswer) {
 
 
 /**
+ * Send DTMF digit over SIP INFO
+ * @public 
+ * @param {String} dtmfDigit DTMF digit to send
+ */
+PrivateJainSipCallConnector.prototype.sendSipDtmf = function(dtmfDigit) {
+	console.debug("PrivateJainSipCallConnector:sendSipDtmf()");
+
+	var dialog = null;
+	if (this.sipCallState === this.SIP_INVITED_ACCEPTED_STATE) {
+		dialog = this.jainSipInvitedDialog;
+	}
+	if (this.sipCallState === this.SIP_INVITING_ACCEPTED_STATE) {
+		dialog = this.jainSipInvitingDialog;
+	}
+	if (dialog) {
+		try {
+			var request = dialog.createRequest("INFO");
+			request.setContent("Signal=" + dtmfDigit + "\r\nDuration=100\r\n",
+					this.clientConnector.jainSipHeaderFactory.createContentTypeHeader("application", "dtmf-relay"));
+			var clientTransaction = this.clientConnector.jainSipProvider.getNewClientTransaction(request);
+			dialog.sendRequest(clientTransaction);
+		} catch (exception) {
+			console.error("PrivateJainSipCallConnector:sendSipDtmf(): catched exception exception:" + exception);
+		} 
+	}
+	else {
+		console.error("PrivateJainSipCallConnector:sendSipDtmf(): couldn't retrieve SIP dialog");
+	}
+};
+
+
+/**
  * PrivateJainSipClientConnector interface implementation: handle SIP Request event
  * @public 
  * @param {RequestEvent} requestEvent 
@@ -929,7 +960,7 @@ PrivateJainSipCallConnector.prototype.processInvitingSipResponseEvent = function
 	} else if (this.sipCallState === this.SIP_INVITING_ERROR_STATE) {
 		console.error("PrivateJainSipCallConnector:processInvitingSipResponseEvent(): bad state, SIP response ignored");
 	} else if (this.sipCallState === this.SIP_INVITING_ACCEPTED_STATE) {
-		console.error("PrivateJainSipCallConnector:processInvitingSipResponseEvent(): bad state, SIP response ignored");
+		console.debug("PrivateJainSipCallConnector:processInvitingSipResponseEvent(): Got reponse status: " + jainSipResponse.getStatusCode());
 	} else if (this.sipCallState === this.SIP_INVITING_LOCAL_HANGINGUP_STATE) {
 		if (statusCode === 407) {
 			try {
@@ -1059,7 +1090,7 @@ PrivateJainSipCallConnector.prototype.processInvitedSipResponseEvent = function(
 	if (this.sipCallState === this.SIP_INVITED_STATE) {
 		console.error("PrivateJainSipCallConnector:processInvitedSipResponseEvent(): bad state, SIP response ignored");
 	} else if (this.sipCallState === this.SIP_INVITED_ACCEPTED_STATE) {
-		console.error("PrivateJainSipCallConnector:processInvitedSipResponseEvent(): bad state, SIP response ignored");
+		console.debug("PrivateJainSipCallConnector:processInvitedSipResponseEvent(): Got reponse status: " + jainSipResponse.getStatusCode());
 	} else if (this.sipCallState === this.SIP_INVITED_LOCAL_HANGINGUP_STATE) {
 		if (statusCode === 407) {
 			try {
@@ -1840,8 +1871,7 @@ PrivateJainSipClientConnector.prototype.processSipOptionRequest = function(reque
 	jainSip200OKResponse.removeHeader("P-Charging-Function-Addresses");
 	jainSip200OKResponse.removeHeader("P-Called-Party-ID");
 	requestEvent.getServerTransaction().sendResponse(jainSip200OKResponse);
-};
-/**
+};/**
  * @class WebRTCommCall
  * @classdesc Main class of the WebRTComm Framework providing high level communication management: 
  *            ringing, ringing back, accept, reject, cancel, bye 
@@ -2226,7 +2256,7 @@ WebRTCommCall.prototype.normalizeStats = function(stats) {
 
 		// object to represent stats for a single media type (i.e. audio/video) and a single direction (i.e. inbound/outbound)
 		normalizedStat = {};
-		if (/boundrtp$/.test(report.type)) {
+		if (/boundrtp$/.test(report.type)) {  
 			// firefox
 			if (report.type === 'inboundrtp') {
 				normalizedStat['direction'] = 'inbound';
@@ -2247,7 +2277,8 @@ WebRTCommCall.prototype.normalizeStats = function(stats) {
 			normalizedStat['ssrc'] = report.ssrc;
 
 			normalizedStats.push(normalizedStat);
-		} else if (report.type === 'ssrc') {
+		}
+		else if (report.type === 'ssrc') {
 			// chrome
 			if (/_recv$/.test(report.id)) {
 				normalizedStat['direction'] = 'inbound';
@@ -2551,7 +2582,8 @@ WebRTCommCall.prototype.sendDTMF = function(dtmfEvent) {
 		console.debug('Sending Tones, duration, gap: ', dtmfEvent, duration, gap);
 		this.dtmfSender.insertDTMF(dtmfEvent, duration, gap);
 	} else {
-		console.debug('DTMFSender not initialized so not Sending Tones, duration, gap: ', dtmfEvent, duration, gap);
+		console.debug('DTMFSender not initialized, falling back to SIP INFO DTMF, Sending tones, duration, gap: ', dtmfEvent, duration, gap);
+		this.connector.sendSipDtmf(dtmfEvent);
 	}
 }
 
@@ -3292,7 +3324,7 @@ WebRTCommCall.prototype.onRtcPeerConnectionOnAddStreamEvent = function(event) {
 								console.debug('No local stream to create DTMF Sender');
 							}
 						} else {
-							console.warn('RTCPeerConnection method createDTMFSender() is not support by this browser.');
+							console.warn('RTCPeerConnection method createDTMFSender() is not support by this browser, will fallback to SIP INFO DTMF.');
 						}
 					} catch (exception) {
 						console.error("WebRTCommCall:onRtcPeerConnectionOnAddStreamEvent(): catched exception in listener:" + exception);
@@ -4293,8 +4325,8 @@ WebRTCommCall.prototype.patchChromeIce = function(sessionDescription, attributeT
  * @private
  * @param {SessionDescription} sessionDescription JAIN (gov.nist.sdp) SDP offer object 
  */
-WebRTCommCall.prototype.removeEmptyIceUfragPwdAttributes = function(sessionDescription) {
-	// Check if ice-ufrag and pwd are empty and if so remove
+WebRTCommCall.prototype.removeEmptyIceUfragPwdAttributes = function(sessionDescription ) {
+   // Check if ice-ufrag and pwd are empty and if so remove
 	var mediaDescriptions = sessionDescription.getMediaDescriptions(false);
 	for (var i = 0; i < mediaDescriptions.length; i++) {
 		var newAttributeFieldArray = new Array();
@@ -4302,9 +4334,10 @@ WebRTCommCall.prototype.removeEmptyIceUfragPwdAttributes = function(sessionDescr
 		for (var k = 0; k < attributeFields.length; k++) {
 			var attributeField = attributeFields[k];
 			if ((attributeField.getName() === "ice-ufrag" && !attributeField.getValue()) ||
-				(attributeField.getName() === "ice-pwd" && !attributeField.getValue())) {
-				console.warn("WebRTCommCall:setRtcPeerConnectionLocalDescription(): found empty ice-ufrag/ice-pwd; removing them");
-			} else {
+						(attributeField.getName() === "ice-pwd" && !attributeField.getValue())) {
+            console.warn("WebRTCommCall:setRtcPeerConnectionLocalDescription(): found empty ice-ufrag/ice-pwd; removing them");
+			}
+			else {
 				newAttributeFieldArray.push(attributeField);
 			}
 		}
@@ -4464,8 +4497,7 @@ WebRTCommMessage.prototype.getText = function() {
  */
 WebRTCommMessage.prototype.getLinkedWebRTCommCall = function() {
 	return this.webRTCommCall;
-};
-/**
+};/**
  * @class WebRTCommClient
  * @classdesc Main class of the WebRTComm Framework providing high level communication service: call and be call
  * @constructor
@@ -4797,8 +4829,7 @@ WebRTCommClient.prototype.onPrivateClientConnectorClosedEvent = function() {
 			}
 		}, 1);
 	}
-};
-/**
+};/**
  * @class WebRTCommClientEventListenerInterface
  * @classdesc Abstract class describing  WebRTCommClient event listener interface 
  *            required to be implented by the webapp 
@@ -4831,8 +4862,7 @@ WebRTCommClientEventListenerInterface.prototype.onWebRTCommClientOpenErrorEvent 
  */
 WebRTCommClientEventListenerInterface.prototype.onWebRTCommClientClosedEvent = function() {
 	throw "WebRTCommClientEventListenerInterface:onWebRTCommClientClosedEvent(): not implemented;";
-};
-/**
+};/**
  * @class WebRTCommCallEventListenerInterface
  * @classdesc Abstract class describing  WebRTCommClient event listener interface 
  *            required to be implented by the webapp 
@@ -4924,8 +4954,7 @@ WebRTCommCallEventListenerInterface.prototype.onWebRTCommCallStatsEvent = functi
  */
 WebRTCommCallEventListenerInterface.prototype.onWebRTCommCallCanceledEvent = function(webRTCommCall) {
 	throw "WebRTCommCallEventListenerInterface:onWebRTCommCallCanceledEvent(): not implemented;";
-};
-/**
+};/**
  * @class WebRTCommMessageEventListenerInterface
  * @classdesc Abstract class describing  WebRTCommMessage event listener interface 
  *            required to be implented by the webapp 
