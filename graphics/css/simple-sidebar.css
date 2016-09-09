@@ -4,13 +4,129 @@
  * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap/blob/gh-pages/LICENSE)
  */
 
- body {
-    overflow-x: hidden;
- }
+
 
 /* Toggle Styles */
+#company-logo {
+font-size: 22px;
+color: #4e4f51;
+padding-left: 20px;
+}
+
+#user-photo {
+    padding-left: 10px;
+         float: left;
+    margin: 0 0px 5px 10px;
+}
+#room-icon {
+ padding-left: 10px;
+ float: left;
+ margin: 13px 0px 5px 10px;
+}
+
+#contact-photo {
+ padding-left: 10px;
+ float: left;
+ margin: 13px 0px 5px 10px;   
+}
+
+#badge {
+ 
+ float: right;
+ margin: 12px 15px 0px 0px;    
+
+}
+
+
+#status {
+float: left;
+margin: 23px 0px 0px 15px; 
+}
+
+
+
+#user-name {
+    padding-left: 90px;
+    padding-top:  0px;
+    color: #4e4f51;
+    font-weight: normal;
+
+}
+
+#chat {
+    float: right;
+margin-bottom: 25px;
+margin-right: 1305px;
+margin-top: 10px;
+
+}
+
+#settings {
+    margin-left: 8px;
+    padding-bottom: 600px;
+    
+}
+#add-participant {
+   margin-left: 1450px; 
+   margin-top: 20px;
+}
+
+#chat-video-aeria {
+    margin-left: 70px;
+    margin-top: -50px;
+    width: 1500px;
+    height: 800px;
+    background: #fff;
+    border-style: solid;
+    border-width: 2px;
+    border-color: #e1e1e1; 
+    border-radius: 17px 17px 17px 17px;
+-moz-border-radius: 17px 17px 17px 17px;
+-webkit-border-radius: 17px 17px 17px 17px;
+}
+
+.textbox{
+  margin-left: 70px;
+   margin-top: 30px;
+    width: 1350px;
+    height: 50px;
+    background: #fff;
+    border-style: solid;
+    border-width: 2px;
+    border-color: #e1e1e1; 
+    border-radius: 17px 17px 17px 17px;
+-moz-border-radius: 17px 17px 17px 17px;
+-webkit-border-radius: 17px 17px 17px 17px;  
+font-size: 16px; 
+font-family: lato;
+font-weight: normal;
+padding-left: 60px;
+
+
+}
+
+
+#border{
+  margin-left: 10px;
+   
+    width: 1475px;
+    height: 1px;
+    background: #e1e1e1;
+ }
+
+#current-call {
+margin-left: 30px;
+margin-top: -30px;
+margin-bottom: 12px;
+color: #585858;
+font-weight: normal;
+}
+
+/*   margin-bottom: -80px 
+}*/
 
 #wrapper {
+    padding-top: 20px;
     padding-left: 0;
     -webkit-transition: all 0.5s ease;
     -moz-transition: all 0.5s ease;
@@ -24,13 +140,14 @@
 
 #sidebar-wrapper {
     z-index: 1000;
-    position: fixed;
+    position: inherit;
     left: 250px;
     width: 0;
     height: 100%;
     margin-left: -250px;
+    margin-top: 60px;
     overflow-y: auto;
-    background: #000;
+    background: transparent;
     -webkit-transition: all 0.5s ease;
     -moz-transition: all 0.5s ease;
     -o-transition: all 0.5s ease;
@@ -56,11 +173,12 @@
 
 .sidebar-nav {
     position: absolute;
-    top: 0;
-    width: 250px;
+    top: 0px;
+    width: 300px;
     margin: 0;
     padding: 0;
     list-style: none;
+    height: 100%;
 }
 
 .sidebar-nav li {
@@ -71,13 +189,14 @@
 .sidebar-nav li a {
     display: block;
     text-decoration: none;
-    color: #999999;
+    color: #585858;
 }
 
 .sidebar-nav li a:hover {
     text-decoration: none;
-    color: #fff;
-    background: rgba(255,255,255,0.2);
+    color: #383838;
+    font-weight: bold;
+    background: #e9e8e8;
 }
 
 .sidebar-nav li a:active,
@@ -86,18 +205,36 @@
 }
 
 .sidebar-nav > .sidebar-brand {
-    height: 65px;
+    height: 60px;
     font-size: 18px;
-    line-height: 60px;
+    line-height: 80px;
+    
 }
 
 .sidebar-nav > .sidebar-brand a {
-    color: #999999;
+    color: #4e4f51;
 }
 
 .sidebar-nav > .sidebar-brand a:hover {
-    color: #fff;
+    color: #44a5ab;
+    font-weight: normal;
     background: none;
+}
+
+
+#settings {
+    padding-bottom: 0px;
+}
+
+#contact-space {
+    padding-top: 5px;
+padding-bottom: 40px;
+
+}
+
+#sign-out {
+    margin-left: 10px;
+
 }
 
 @media(min-width:768px) {
@@ -110,7 +247,7 @@
     }
 
     #sidebar-wrapper {
-        width: 250px;
+        width: 200px;
     }
 
     #wrapper.toggled #sidebar-wrapper {
@@ -126,4 +263,8 @@
         position: relative;
         margin-right: 0;
     }
+}
+
+.form-control:focus {
+  z-index: 0;
 }
