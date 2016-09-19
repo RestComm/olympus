@@ -10,5 +10,10 @@ $("#infoToggler3").click(function() {
     $(this).find('img').toggle();
 });
 
+$("#infoToggler4").click(function() {
+    $(this).find('img').toggle();
+});
+
+
 
 
