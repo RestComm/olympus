@@ -17,7 +17,7 @@ padding-left: 20px;
     padding-left: 10px;
          float: left;
     margin: 10 0px 10px 10px;
-    margin-top: 5px;
+    margin-top: 0px;
 }
 #room-icon {
  padding-left: 10px;
@@ -116,7 +116,6 @@ transform: scale(1.0);
     padding-bottom: 0px;
     
 }
-
 #settings:hover {
   transform: scale(0.9);
  
@@ -140,6 +139,17 @@ transform: scale(0.9);
 ::-moz-placeholder {
   opacity: 1;
 }
+
+ul {
+    
+    margin: 10px;
+    padding: 0;
+}
+
+
+
+
+
 
 /*
 input[type="checkbox"] {
@@ -172,7 +182,79 @@ input[type="checkbox"]:checked {
     height: 25px;
      }
 */
+.profile {
+margin-top: -20  
+
+
+}
+
+.preferences {
+
+
+
+}
+
+.mentions {
+   
+
+}
+
+.favorites {
+
+}
+
+.files {
+
+}
+
+.add  {
+
+    }
+
  
+.nav-menu {
+   position:relative;
+  height: 200px;
+  width: 200px;
+}
+ 
+.nav-menu li {
+   display: inline;
+   list-style-type: none;
+}
+ 
+.sub-menu {
+   position:absolute;
+   display:none;
+   border-style: solid;
+   background: #fff;
+   border: 2px;
+   border-color: e1e1e1;
+       border-radius: 17px 17px 17px 17px;
+-moz-border-radius: 17px 17px 17px 17px;
+-webkit-border-radius: 17px 17px 17px 17px;
+   width: 270px;
+   height: 800px;
+
+}
+
+ .nav-menu ul li:hover > ul {
+   display:inline-block;
+}
+
+.nav-menu > ul > li:after {
+   /*content: "\25BC";  escaped unicode for the down arrow*/
+   font-size: .5em;
+   display: inline;
+   position: relative;
+   }
+
+
+#icons-settings {
+    width: 0px;
+    height: 30px;
+}
+
 
 #chat-video-aeria {
 
@@ -198,8 +280,8 @@ input[type="checkbox"]:checked {
     height: 50px;
     background: #fff;
     border-style: solid;
-    border-width: 2px;
-    border-color: #e1e1e1; 
+    border: 2px #e1e1e1;
+    
     border-radius: 17px 17px 17px 17px;
 -moz-border-radius: 17px 17px 17px 17px;
 -webkit-border-radius: 17px 17px 17px 17px;  

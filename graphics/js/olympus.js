@@ -12,16 +12,3 @@ $("#infoToggler3").click(function() {
 
 
 
-$(document).ready(function() { 
-	$('.showHide>span').click(function () {
-		$(this).next().slideToggle("slow");
-		return false; 
-	});
-    $(".showHide>span").toggle(function() {
-            $(this).children("#changeArrow").text("↓");
-        }, function() {
-            $(this).children("#changeArrow").text("↑");
-        });
-    
-});
-   
