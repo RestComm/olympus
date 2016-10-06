@@ -1,4 +1,7 @@
-
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
 
 * {
   -webkit-box-sizing: border-box;
@@ -41,7 +44,7 @@ body {
    margin-top: 13px;
   margin-left: auto;
   margin-right: auto;
- 
+
 }
 
 .login-form {
@@ -62,7 +65,7 @@ form[role=login] {
 }
 
 
-  
+
 .simplebox {
   outline: none;
   border: none !important;
@@ -118,7 +121,7 @@ form[role=login] h3 {
     */
 
 
-  
+
 
 
     form[role=login] input::-webkit-input-placeholder {
@@ -130,7 +133,7 @@ form[role=login] h3 {
     form[role=login] input::-moz-placeholder {
       color: #c1c4c5;
     }
-    form[role=login] input:-ms-input-placeholder {  
+    form[role=login] input:-ms-input-placeholder {
       color: #c1c4c5;
     }
   form[role=login] button {
@@ -151,7 +154,7 @@ form[role=login] h3 {
   cursor: pointer;
   -webkit-user-select: none;
   padding: 10px 16px;
-  border-radius: 6px; 
+  border-radius: 6px;
   display: block;
   width: 100%;
 
@@ -164,7 +167,7 @@ form[role=login] h3 {
   form[role=login] button:hover {
     background: #c7c7c7;
   }
-  
+
 .login-form .form-control {
     padding-left: 40px;
 }
