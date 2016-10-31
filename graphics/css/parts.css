@@ -33,7 +33,7 @@
     -webkit-border-radius: 17px 17px 17px 17px;
 }
 
-#outgoing-call {
+#outgoing-call-audio {
    width: 300px;
    height: 337px;
    background: #4a4a4b; 
@@ -46,6 +46,19 @@
     -webkit-border-radius: 17px 17px 17px 17px;
 }
 
+#outgoing-call-video {
+  margin-top: 100px;
+   width: 300px;
+   height: 337px;
+   background: #4a4a4b; 
+   box-shadow: 3px 3px 2px #6d6e70;
+  display: block;
+  margin-right: auto;
+  margin-left: auto;
+  border-radius: 17px 17px 17px 17px;
+    -moz-border-radius: 17px 17px 17px 17px;
+    -webkit-border-radius: 17px 17px 17px 17px;
+}
 #incoming-call-placed {
     
    display: block;
@@ -216,4 +229,27 @@ list-style-type: none;
 #keypad-distances {
 margin-top: 10px;
 margin-right: 10px;
+}
+
+#mute-video-outgoing {
+    margin-left: 60px;
+    margin-bottom: 10px;
+}
+
+#mute-audio-autgoing-case1 {
+  margin-left: 90px;
+}
+
+#mute-audio-autgoing {
+    margin-left: 40px;
+}
+
+#stop-call-case1 {
+    margin-left: 50px;
+    margin-bottom: 10px;
+}
+
+#stop-call {
+    margin-left: 40px;
+    margin-bottom: 10px;
 }
