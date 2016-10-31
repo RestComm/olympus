@@ -1442,7 +1442,6 @@ PrivateJainSipClientConnector.prototype.checkConfiguration = function(configurat
 		console.debug("PrivateJainSipClientConnector:checkConfiguration(): configuration.sipDomain:" + configuration.sipDomain);
 		console.debug("PrivateJainSipClientConnector:checkConfiguration(): configuration.sipUserName:" + configuration.sipUserName);
 		console.debug("PrivateJainSipClientConnector:checkConfiguration(): configuration.sipLogin:" + configuration.sipLogin);
-		console.debug("PrivateJainSipClientConnector:checkConfiguration(): configuration.sipPassword: " + configuration.sipPassword);
 		console.debug("PrivateJainSipClientConnector:checkConfiguration(): configuration.sipRegisterMode:" + configuration.sipRegisterMode);
 		return check;
 	} catch (exception) {
@@ -1882,7 +1881,8 @@ PrivateJainSipClientConnector.prototype.processSipOptionRequest = function(reque
 	jainSip200OKResponse.removeHeader("P-Charging-Function-Addresses");
 	jainSip200OKResponse.removeHeader("P-Called-Party-ID");
 	requestEvent.getServerTransaction().sendResponse(jainSip200OKResponse);
-};/**
+};
+/**
  * @class WebRTCommCall
  * @classdesc Main class of the WebRTComm Framework providing high level communication management: 
  *            ringing, ringing back, accept, reject, cancel, bye 
@@ -4585,7 +4585,6 @@ WebRTCommClient.prototype.getConfiguration = function() {
  * @throw {String} Exception [internal error]
  */
 WebRTCommClient.prototype.open = function(configuration) {
-	console.debug("WebRTCommClient:open(): configuration=" + JSON.stringify(configuration));
 	if (typeof(configuration) === 'object') {
 		if (this.isOpened() === false) {
 			if (this.checkConfiguration(configuration) === true) {
@@ -4745,8 +4744,13 @@ WebRTCommClient.prototype.call = function(calleePhoneNumber, callConfiguration) 
  * @returns {boolean} true valid false unvalid
  */
 WebRTCommClient.prototype.checkConfiguration = function(configuration) {
+	// don't want the password part of the configuration logged, so let's make a deep copy of 'configuration' and then delete the password key/value
+	var passwordSafeConfiguration = JSON.parse(JSON.stringify(configuration));
+	if (configuration.sip.sipPassword != null) {
+		delete passwordSafeConfiguration.sip.sipPassword;
+	}
 
-	console.debug("WebRTCommClient:checkConfiguration(): configuration=" + JSON.stringify(configuration));
+	console.debug("WebRTCommClient:checkConfiguration(): configuration=" + JSON.stringify(passwordSafeConfiguration));
 	var check = true;
 	if (configuration.communicationMode !== undefined) {
 		if (configuration.communicationMode === WebRTCommClient.prototype.SIP) {} else {
@@ -4839,7 +4843,8 @@ WebRTCommClient.prototype.onPrivateClientConnectorClosedEvent = function() {
 			}
 		}, 1);
 	}
-};/**
+};
+/**
  * @class WebRTCommClientEventListenerInterface
  * @classdesc Abstract class describing  WebRTCommClient event listener interface 
  *            required to be implented by the webapp 
