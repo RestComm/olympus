@@ -24,6 +24,60 @@ body {
   margin-top: 800;
 }
 
+#contact-container {
+background:#f2f1f1;
+  width:100%;
+  height:100px;
+  position:absolute;
+  bottom:25px;
+  }
+
+
+#s-i-border {
+float: right;
+margin-right: 15px;
+margin-left: 0px;
+
+}
+
+#terms-of-service {
+float: right;
+margin-right: 90px;
+margin-top: 2px;
+
+}
+
+#privacy-policy {
+float: right;
+margin-right: 15px;
+margin-top: 1px;
+
+}
+
+#legal-information {
+float: right;
+margin-right: 15px;
+margin-top: 1px;
+
+}
+
+#support {
+float: right;
+margin-right: 15px;
+margin-top: 1px;
+
+}
+
+#contact {
+float: right;
+margin-right: 15px;
+margin-top: 1px;
+
+}
+
+
+
+
 
 #footer {
   background:#4a4a4b;
@@ -34,18 +88,49 @@ body {
   left:0;
 }
 
-.telestax-logo {
-   margin-top: 33px;
-  margin-left: 50px;
-}
-
-.telestax-rights {
-   display: block;
-   margin-top: 13px;
+#telestax-rights {
+  display: block;
+  margin-top: 20px;
   margin-left: auto;
   margin-right: auto;
+  }
 
-}
+
+ #telestax-logo {
+  margin-top: 35px;
+  margin-left: 70px
+
+  }
+ 
+  #facebook {
+  margin-top: 38px;
+  margin-right: 20px;
+  float: right;
+  }
+
+#twitter {
+  margin-top: 41px;
+  margin-right: 20px;
+  float: right;
+  }
+
+#linkedin {
+  margin-top: 40px;
+  margin-right: 20px;
+  float: right;
+  }
+
+  #googleplus {
+    margin-top: 40px;
+    margin-right: 15px;
+    float: right;
+  }
+
+  #youtube {
+    margin-top: 39px;
+    margin-right: 90px;
+    float: right;
+  }
 
 .login-form {
   max-width: 400px;
@@ -56,7 +141,7 @@ form[role=login] {
   font: 16px/1.6em Lato, serif;
   color: transparent;
   background: transparent;
-  margin-top: 100px;
+  margin-top: 70px;
   padding: 0 10px 25px 10px;
   border-radius: 5px;
   -moz-border-radius: 5px;
@@ -110,7 +195,7 @@ form[role=login] h3 {
     border: none;
     padding-left: 40px;
     border: 1px solid #d1d1d1;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 
   }
 
@@ -139,15 +224,14 @@ form[role=login] h3 {
   form[role=login] button {
     line-height: 30px;
     font-weight: normal;
-    -webkit-box-shadow: 0px 3px 0px 0px #c7c7c;
-       -moz-box-shadow: 0px 3px 0px 0px rgba(24, 121, 158, 1);
-        box-shadow: 1px 3px 0px 0px #c7c7c7;
-    background: #d1d1d1;
-    border: none;
+   
+    background: #f2f1f1;
+    border: 2px solid#44a5ab;
+    
   }
 
 .change-color {
-  color: #6d6e70;
+  color: #44a5ab;
   text-align: center;
   white-space: nowrap;
   vertical-align: middle;
@@ -165,11 +249,12 @@ form[role=login] h3 {
   margin-left: 150px;
 }
   form[role=login] button:hover {
-    background: #c7c7c7;
+    color: #edf7f8;
+    background: #44a5ab;
   }
 
 .login-form .form-control {
-    padding-left: 40px;
+    padding-left: 10px;
 }
 .login-form .form-control + .glyphicon {
     position: absolute;
@@ -177,3 +262,4 @@ form[role=login] h3 {
   top: 22%;
     padding: 6px 0 0 27px;
 }
+

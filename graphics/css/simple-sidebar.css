@@ -56,6 +56,9 @@
 
 }
 
+#contacts-sidebar {
+
+}
 
 
 
@@ -732,7 +735,7 @@ input[type="checkbox"]:checked {
 }
 
 .sidebar-nav > .sidebar-brand {
-    height: 60px;
+    
     font-size: 18px;
     line-height: 80px;
 
