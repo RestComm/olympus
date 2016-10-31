@@ -143,6 +143,16 @@ float: right;
     
 }
 
+#call-no-responding {
+  float: left;
+    font-weight: 300;
+    font-size: 20px;
+    color: #f3f3f2;
+    margin-left: 35px;
+    margin-top: 15px;
+    margin-bottom: 15px; 
+}
+
 #name-participant {
    
     font-weight: 300;
@@ -252,4 +262,16 @@ margin-right: 10px;
 #stop-call {
     margin-left: 40px;
     margin-bottom: 10px;
+}
+
+#try-again {
+  margin-left: 40px;
+  margin-top: 40px;
+}
+
+
+#close-window {
+    margin-left: 50px;
+    margin-top: 40px;
+    
 }
