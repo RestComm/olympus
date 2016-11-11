@@ -253,6 +253,13 @@ olyMod.controller('RoomCtrl', function ($scope, $rootScope, $filter, $location, 
     });
   }
 
+
+  $scope.callXCard = function(xcard, video) {
+    this.$hide && this.$hide();
+    var contact = xcard.object.getElementsByTagName('uri')[0].childNodes[0].nodeValue;
+    requestStream(video, function() { $scope.makeCall(contact, video); });
+  }
+
   $scope.callContact = function(contact, video) {
     this.$hide && this.$hide();
     requestStream(video, function() { $scope.makeCall(contact, video); });
@@ -558,7 +565,7 @@ olyMod.controller('RoomCtrl', function ($scope, $rootScope, $filter, $location, 
     else {
       $rootScope.wrtcClient.sendMessage(ac.id, ac.writeText);
     }
-    var entry = {time: Date.now(), direction: 'out', status: 'pending', text: ac.writeText};
+    var entry = {time: Date.now(), direction: 'out', status: 'pending',type: 'text', text: ac.writeText, object : ''};
     var chatId = ac.id.substr(0, ac.id.indexOf('@') === -1 ? 999 : ac.id.indexOf('@'));
     $scope.activeChats[chatId].history.push(entry);
     ac.writeText = '';
@@ -569,7 +576,18 @@ olyMod.controller('RoomCtrl', function ($scope, $rootScope, $filter, $location, 
     console.log('got message', event, message);
     $scope.$apply(
       function() {
-        var entry = {time: Date.now(), direction: 'in', text: message.text};
+          var entry = {time: Date.now(), direction: 'in', text: message.text, type: 'text'};
+          if (message.text.startsWith("<?xml")) {
+              console.log('got XML message');
+              var xCardObject = jQuery.parseXML(message.text);
+              console.log('got valid XML message');
+              if (xCardObject.getElementsByTagName("vcards").length > 0) {
+                var xCardTitle = 'VCard:' + xCardObject.getElementsByTagName("text")[0].childNodes[0].nodeValue;
+                console.log('got XCard message for: ',xCardTitle);
+                entry = {time: Date.now(), direction: 'in', text: xCardTitle, type: 'vcard', object: xCardObject};
+            }
+          }
+        
         if($scope.activeChats[message.from]) {
           $scope.activeChats[message.from].history.push(entry);
           if ($scope.activeChats[message.from].status === 'hid') {
