@@ -123,9 +123,6 @@
         </div>
         <div class="messages" style="width: 100%;">
           <p class="{{entry.status}}" ng-bind-html="entry.text | emoticons:{linkTarget:'_blank'}"></p>
-          
-          <a ng-if="entry.type == 'vcard'" href=""  class="{{entry.status}}" data-content-template="modules/templates/oly-vcard.html" title="{{entry.text}}" data-animation="am-flip-x" data-auto-close="1" bs-popover="" data-container="body" data-placement="left" >{{entry.text}}</a>
-                    
           <time ng-if="ac.history[$index+1].direction !== entry.direction || ac.history[$index + 1].time - entry.time >= timeToGroup">{{entry.direction === 'in' ? (ac.id + ' • ') : ''}}<span am-time-ago="entry.time" title="{{entry.time | amDateFormat:'ddd, DD MMM YYYY, HH:mm:ss'}}"></span></time>
         </div>
       </li>

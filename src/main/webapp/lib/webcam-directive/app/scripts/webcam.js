@@ -135,10 +135,18 @@ angular.module('webcam', [])
            */
           videoElem.addEventListener('canplay', function() {
             if (!isStreaming) {
+              /*
+              console.log('WDT', width);
+              console.log('HGT', height);
+              console.log('V-WDT', videoElem.videoWidth);
+              console.log('V-HGT', videoElem.videoHeight);
+              console.log('V-SCL', videoElem.videoWidth / videoElem.videoHeight);
+              */
+
               var scale = width / videoElem.videoWidth;
               height = (videoElem.videoHeight * scale) || $scope.videoHeight;
-              videoElem.setAttribute('width', width);
-              videoElem.setAttribute('height', height);
+              videoElem.setAttribute('width', '100%');
+              videoElem.setAttribute('height', '100%');
               isStreaming = true;
 
               $scope.video = videoElem;
