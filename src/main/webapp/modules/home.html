@@ -14,7 +14,7 @@
       <h4 id="user-name">{{ loggedUser }}</h4>
       <div class="nav-menu" id="icons-settings">
         <ul>
-          <div class="profile action-disabled" bs-tooltip="User Profile">
+          <div class="profile action-disabled" tooltip="User Profile">
             <li>
               <a href=""><img src="resources/images/v2/mp-icon-profile.png"></a>
             </li>
@@ -149,10 +149,35 @@
         <div class="video-controls-top">
           {{ ("0" + Math.floor(inCall.callTimer / 60)).slice(-2) }}:{{ ("0" + (inCall.callTimer % 60 | number:0)).slice(-2) }}
           <div style="float: right;">
+            <i class="fa fa-th" ng-click="toggleKeypad()"></i>
             <i class="fa fa-television"></i>
             <i class="fa fa-cog"></i>
             <i class="fa fa-expand"></i>
           </div>
+        </div>
+        <div id="keypad" class="keypad" ng-show="showKeypad">
+          <table>
+            <tr>
+              <td class="btn keypad-btn" id="btnDTMF1" ng-click="playDTMF('1')" ng-keydown="keypressDTMF($event)" tabindex="0">1</td>
+              <td class="btn keypad-btn" id="btnDTMF2" ng-click="playDTMF('2')" ng-keydown="keypressDTMF($event)" tabindex="0">2</td>
+              <td class="btn keypad-btn" id="btnDTMF3" ng-click="playDTMF('3')" ng-keydown="keypressDTMF($event)" tabindex="0">3</td>
+            </tr>
+            <tr>
+              <td class="btn keypad-btn" id="btnDTMF4" ng-click="playDTMF('4')" ng-keydown="keypressDTMF($event)" tabindex="0">4</td>
+              <td class="btn keypad-btn" id="btnDTMF5" ng-click="playDTMF('5')" ng-keydown="keypressDTMF($event)" tabindex="0">5</td>
+              <td class="btn keypad-btn" id="btnDTMF6" ng-click="playDTMF('6')" ng-keydown="keypressDTMF($event)" tabindex="0">6</td>
+            </tr>
+            <tr>
+              <td class="btn keypad-btn" id="btnDTMF7" ng-click="playDTMF('7')" ng-keydown="keypressDTMF($event)" tabindex="0">7</td>
+              <td class="btn keypad-btn" id="btnDTMF8" ng-click="playDTMF('8')" ng-keydown="keypressDTMF($event)" tabindex="0">8</td>
+              <td class="btn keypad-btn" id="btnDTMF9" ng-click="playDTMF('9')" ng-keydown="keypressDTMF($event)" tabindex="0">9</td>
+            </tr>
+            <tr>
+              <td class="btn keypad-btn" id="btnDTMF*" ng-click="playDTMF('*')" ng-keydown="keypressDTMF($event)" tabindex="0">*</td>
+              <td class="btn keypad-btn" id="btnDTMF0" ng-click="playDTMF('0')" ng-keydown="keypressDTMF($event)" tabindex="0">0</td>
+              <td class="btn keypad-btn" id="btnDTMF#" ng-click="playDTMF('#')" ng-keydown="keypressDTMF($event)" tabindex="0">#</td>
+            </tr>
+          </table>
         </div>
         <div class="video-controls-bottom" style="margin-top: -75px; font-size: 3em;">
           <i class="fa" ng-class="inCall.localVideoMuted ? 'fa-eye-slash muted' : 'fa-video-camera'" ng-click="localMuteVideo()"></i>

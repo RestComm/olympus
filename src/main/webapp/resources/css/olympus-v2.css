@@ -337,10 +337,40 @@ a.action-disabled, .action-disabled a {
     color: #aeacab;
     position: relative;
     font-size: 1.5em;
+    z-index: 1;
 }
 
 .video-controls-top i {
     margin-right: 10px;
+    cursor: pointer;
+
+}
+
+.video-controls-top i:hover {
+    color: #dbd9d8;
+}
+
+.keypad {
+    position: absolute;
+    right: 176px;
+    z-index: 1;
+}
+
+.keypad-btn, .keypad-btn:focus {
+    color: #eee;
+    font-size: 2em;
+    width: 45px;
+    height: 45px;
+    border: 3px solid #c2c2c3;
+    color: #c2c2c3;
+    font-weight: bold;
+    margin: 3px;
+    padding: 0;
+}
+
+.keypad-btn:hover {
+    border: 3px solid #eee;
+    color: #eee;
 }
 
 .video-controls-bottom {
