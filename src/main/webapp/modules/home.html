@@ -180,9 +180,15 @@
           </table>
         </div>
         <div class="video-controls-bottom" style="margin-top: -75px; font-size: 3em;">
-          <i class="fa" ng-class="inCall.localVideoMuted ? 'fa-eye-slash muted' : 'fa-video-camera'" ng-click="localMuteVideo()"></i>
-          <i class="fa fa-phone" style="transform: rotate(135deg);" ng-click="callHangup()"></i>
-          <i class="fa" ng-class="inCall.localAudioMuted ? 'fa-microphone-slash muted' : 'fa-microphone'" ng-click="localMuteAudio()"></i>
+          <span class="btn" style="font-size: 1em;">
+            <i class="fa" ng-class="inCall.localVideoMuted ? 'fa-eye-slash muted' : 'fa-video-camera'" ng-click="localMuteVideo()"></i>
+          </span>
+          <span class="btn" style="font-size: 1em;">
+            <i class="fa fa-phone" style="transform: rotate(135deg);" ng-click="callHangup()"></i>
+          </span>
+          <span class="btn" style="font-size: 1em;">
+            <i class="fa" ng-class="inCall.localAudioMuted ? 'fa-microphone-slash muted' : 'fa-microphone'" ng-click="localMuteAudio()"></i>
+          </span>
         </div>
         <video
             class="remote-video"
