@@ -53,11 +53,9 @@ body {
 }
 
 .telestax-rights {
-  display: block;
-  margin-top: 13px;
-  margin-left: auto;
-  margin-right: auto;
-
+  color: #a7a7a7;
+  font-size: 1.35em;
+  text-align: center;
 }
 
 .login-form {
