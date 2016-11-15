@@ -44,8 +44,8 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
   $scope.contacts = [
     {id: 'bob',     name: 'Bob Robert',  address: 'bob@telestax.com',   photo: 'test2.png'},
     {id: 'jgrey',   name: 'Jean Dylan',      address: 'dylan@telestax.com',   photo: 'test1.png'},
-    {id: 'charlie', name: 'Charles Xavier', address: 'charlie@telestax.com',   photo: 'test3.png'},
-    {id: 'alice',   name: 'Alice Alissys',  address: 'alice@telestax.com', photo: 'test4.png'},
+    {id: 'charlie', name: 'Charles Xavier', address: 'charlie@telestax.com',   photo: 'test4.png'},
+    {id: 'alice',   name: 'Alice Alissys',  address: 'alice@telestax.com', photo: 'test3.png'},
   ];
 
   $scope.hasContacts = true;
