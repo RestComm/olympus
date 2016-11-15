@@ -16,10 +16,10 @@ olyMod.controller('SignInCtrl', function ($scope, $rootScope, $location, $timeou
 
   $scope.sip = {
     displayName: 'Alice Alissys',
-    username: 'alice',
+    // username: 'alice',
     domain: $scope.serverAddress,
-    login: 'alice',
-    password: '1234'
+    // login: 'alice',
+    // password: '1234'
   };
 
   $scope.stun = {
