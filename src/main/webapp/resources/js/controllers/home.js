@@ -231,11 +231,18 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
         $scope.activeLayout = 'FuW';
       }
     }
-  })
+  });
 
   $scope.playDTMF = function (dtmf) {
     currentCall.sendDTMF(dtmf);
     $('audio[title="' + dtmf + '"]')[0].play();
+  };
+
+  $scope.toggleKeypad = function () {
+    $scope.showKeypad = !$scope.showKeypad;
+    $timeout(function() {
+      angular.element('.keypad-btn').focus();
+    });
   };
 
   $scope.keypressDTMF = function (event) {
@@ -402,7 +409,6 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
     currentCall = $rootScope.wrtcClient.call(contact, callConfiguration);
     $scope.inCall = extractCallToScope(currentCall);
     $scope.inCall.intStatus = 'CONNECTING...';
-    console.log($scope.inCall);
   };
 
   var extractCallToScope = function(call) {
