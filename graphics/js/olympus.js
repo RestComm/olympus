@@ -17,5 +17,11 @@ $("#infoToggler4").click(function() {
 
 
 
-
+$('document').ready(function() {
+    $('#show1, #show2, #show3').click( function() {
+        var $div = $('#' + $(this).data('href'));
+        $('.delete-the-contact').not($div).hide();
+        $div.slideToggle();
+    });
+});
 

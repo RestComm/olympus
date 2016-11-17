@@ -121,15 +121,27 @@
         </li>
         <li>
           <img id="room-icon" src="images/mp-icon-rooms.png">
-          <a href="#">marketing</a>
+          <a href="#">marketing<span class="badge">5</span></a><!--Whene the badhe appears no hover nor delete button will play on hover-->
+        </li>
+        <li>        
+          <a class="items-container" href="#"> <img id="room-icon" src="images/mp-icon-rooms.png">general
+            <span class="delete-contact play" id="show1" data-href="delete-icon-expand"><img src="images/delete-contact.png">
+            </span>
+            <span class="edit-contact play" id="show1" data-href="delete-icon-expand"><img src="images/edit-contact.png">
+            </span>
+          </a>
+          <div id="delete-icon-expand" class="delete-the-contact">
+            <div id="delete-the-contact">Delete the contact?</div>
+            <a href="#"><h5 id="cancel-choice">CANCEL</h5></a><a href="#"><h5 id="delete-choice">DELETE</h5></a>
+          </div>
+          <div id="delete-icon-expand" class="delete-the-contact">
+            <div><h5>Change name</h5></div>
+            <div><h5>Change number</h5></div>
+          </div>
         </li>
         <li>
-          <img id="room-icon" src="images/mp-icon-rooms.png">
-          <a href="#">general</a>
-        </li>
-        <li>
-          <img id="room-icon" src="images/mp-icon-rooms.png"> <img id="badge" src="images/mp-badge.png">
-          <a href="#">restcomm - SDKs</a>
+          <img id="room-icon" src="images/mp-icon-rooms.png"> 
+          <a href="#">restcomm - SDKs</a><i class="fa fa-trash-o" aria-hidden="true"></i></a></a>
         </li>
         <li>
           <img id="room-icon" src="images/mp-icon-rooms.png">
@@ -149,22 +161,22 @@
         </li>
         <li class="sidebar-brand">
           <a href="#">
-          Contacts   +
+          Contacts   
           </a>
         <li>
-          <img id="contact-photo" src="images/test2.png"><img id="status" src="images/mp-online.png">
+          <img id="contact-photo" src="images/avatar-contact-list.png"><img id="status" src="images/mp-online.png">
           <a id="contact-space" href="#">Logan Howlett</a>
         </li>
         <li>
-          <img id="contact-photo" src="images/test1.png"><img id="status" src="images/mp-online.png">
+          <img id="contact-photo" src="images/avatar-contact-list.png"><img id="status" src="images/mp-online.png">
           <a id="contact-space" href="#">Jean Grey</a>
         </li>
         <li>
-          <img id="contact-photo" src="images/test3.png"><img id="status" src="images/mp-offline.png">
+          <img id="contact-photo" src="images/avatar-contact-list.png"><img id="status" src="images/mp-offline.png">
           <a id="contact-space" href="#">Charles Xavies</a>
         </li>
         <li>
-          <img id="contact-photo" src="images/test4.png"><img id="status" src="images/mp-offline.png">
+          <img id="contact-photo" src="images/avatar-contact-list.png"><img id="status" src="images/mp-offline.png">
           <a id="contact-space" href="#">Reed Richards</a>
         </li>
       </ul>
@@ -231,8 +243,8 @@
       </div>
     </div>
     <div id="border2"></div>
-    <img id="chat-photo1" src="images/mp-photo1-chat.png">
-    <img id="chat-photo2" src="images/mp-photo2-chat.png">
+    <img id="chat-photo1" src="images/avatar-user-chat.png">
+    <img id="chat-photo2" src="images/avatar-contact-chat.png">
     <!--
       <div class="textbox"> <a href="#">
 
