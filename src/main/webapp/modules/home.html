@@ -233,7 +233,7 @@
 
     <div class="border-separator"></div>
 
-    <div class="chat-container" ng-class="{'chat-with-video': remoteVideo}">
+    <div class="chat-container" ng-class="{'chat-with-video': (remoteVideo && (inCall.incomingCallFlag && inCall.callerPhoneNumber === ac.id) || (!inCall.incomingCallFlag && inCall.calleePhoneNumber === ac.address))}">
       <div class="chat-participant-block" ng-repeat="entry in activeChats[ac.id].history">
         <img class="chat-photo" ng-if="$index === 0 || activeChats[ac.id].history[$index].direction !== activeChats[ac.id].history[$index-1].direction" src="resources/images/v2/mp-photo2-chat.png">
         <div class="chat-header" ng-if="$index === 0 || activeChats[ac.id].history[$index].direction !== activeChats[ac.id].history[$index-1].direction">
