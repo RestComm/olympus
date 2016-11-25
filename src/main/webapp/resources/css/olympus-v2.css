@@ -55,6 +55,9 @@ i.contact-photo {
     margin-top: -23px;
     font-size: 0.7em;
     opacity: 0.5;
+    text-overflow: ellipsis;
+    width: 175px;
+    overflow: hidden;
 }
 
 .contact-chat-unread {

@@ -42,11 +42,22 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
 
   // FIXME: fake contacts
   $scope.contacts = [
-    {id: 'bob',     name: 'Bob Robert',  address: 'bob@telestax.com',   photo: 'test2.png'},
-    {id: 'jgrey',   name: 'Jean Dylan',      address: 'dylan@telestax.com',   photo: 'test1.png'},
-    {id: 'charlie', name: 'Charles Xavier', address: 'charlie@telestax.com',   photo: 'test4.png'},
-    {id: 'alice',   name: 'Alice Alissys',  address: 'alice@telestax.com', photo: 'test3.png'},
+    {id: 'jgrey',   name: 'Jean Dylan',        address: 'dylan@telestax.com',   photo: 'test1.png'},
+    {id: 'charlie', name: 'Charles Xavier',    address: 'charlie@telestax.com', photo: 'test4.png'},
+    {id: '1234',    name: 'Hello Play Demo',   address: '+1234',                 icon: 'play'},
+    {id: '1235',    name: 'Hello Say Demo',    address: '+1235',                 icon: 'bullhorn'},
+    {id: '1236',    name: 'Hello Gather Demo', address: '+1236',                 icon: 'hand-o-up'},
+    {id: '1310',    name: 'Conference Client', address: '+1310',                 icon: 'headphones'},
+    {id: '1311',    name: 'Conference Admin',  address: '+1311',                 icon: 'briefcase'}
   ];
+
+  // TODO: Remove, just for demo...
+  if($scope.loggedUser !== 'alice' && $scope.loggedUser !== 'Alice Alissys') {
+    $scope.contacts.splice(0, 0, {id: 'alice', name: 'Alice Alissys', address: 'alice@telestax.com', photo: 'test3.png'});
+  }
+  if ($scope.loggedUser !== 'bob') {
+    $scope.contacts.splice(0, 0, {id: 'bob', name: 'Bob Robert', address: 'bob@telestax.com', photo: 'test2.png'});
+  }
 
   $scope.hasContacts = true;
   $scope.hasRooms = false;
@@ -69,7 +80,7 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
     else {
       $scope.sidebarAction = section;
     }
-  }
+  };
 
   // -- Messaging --
 
@@ -355,27 +366,6 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
   $scope.fsRemote = function() {
     $scope.remoteFS = true;
   };
-
-  /*
-  $scope.contacts = [
-    // {name: 'Charlie', address: 'charlie@telestax.com', icon: 'heart'},
-    // {name: 'Debra', address: 'debra@telestax.com', icon: 'heart'},
-    // {name: 'Zoe', address: 'zoe@telestax.com', icon: 'heart'},
-    {name: 'Hello Play Demo', address: '+1234', icon: 'play'},
-    {name: 'Hello Say Demo', address: '+1235', icon: 'bullhorn'},
-    {name: 'Hello Gather Demo', address: '+1236', icon: 'hand-o-up'},
-    {name: 'Conference Client', address: '+1310', icon: 'headphones'},
-    {name: 'Conference Admin', address: '+1311', icon: 'briefcase'}
-  ];
-
-  // TODO: Remove, just for demo...
-  if($scope.loggedUser !== 'alice' && $scope.loggedUser !== 'Alice Alissys') {
-    $scope.contacts.splice(0, 0, {name: 'Alice', address: 'alice@telestax.com', icon: 'heart'});
-  }
-  if ($scope.loggedUser !== 'bob') {
-    $scope.contacts.splice(0, 0, {name: 'Bob', address: 'bob@telestax.com', icon: 'heart'});
-  }
-  */
 
   var requestStream = function(video, callback) {
     $rootScope.myStream = undefined;
@@ -712,5 +702,10 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
     var chatId = id.substr(0, id.indexOf('@') === -1 ? 999 : id.indexOf('@'));
     $scope.activeChats[chatId].status = 'hid';
   };
+
+  // initialize with first contact for now
+  if ($scope.contacts && $scope.contacts.length) {
+    $scope.selectContact($scope.contacts[0]);
+  }
 
 });
