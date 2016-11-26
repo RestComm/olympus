@@ -71,7 +71,7 @@
     <div class="notifications-container" ng-show="loggedUser && false"></div>
     <!-- Begin page content -->
 
-    <div id="content" class="container-fluid" ng-view>
+    <div class="container-fluid" ng-class="{'main-content' : loggedUser}" ng-view>
     </div>
 
     <div class="footer" ng-hide="loggedUser">

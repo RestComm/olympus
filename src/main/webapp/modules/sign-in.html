@@ -1,7 +1,10 @@
-<div>
-  <img src="resources/images/v2/restcomm-logo.png" class="restcomm-logo">
+<div class="row">
+  <div class="col-md-10 col-md-offset-1">
+    <img src="resources/images/v2/restcomm-logo.png" class="restcomm-logo">
+  </div>
 </div>
-<div>
+<div class="row">
+  <div class="col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3 col-xs-12">
   <section class="login-form">
     <form role="login" name="loginForm">
       <h3>Sign in to your account</h3>
@@ -13,7 +16,7 @@
           <input type="password" name="password" placeholder="Password" class="form-control input-lg" ng-model="sip.password" required>
         </div>
       </div>
-      <button class="change-color" type="submit" name="go" ng-click="connect()" ng-disabled="loginForm.$invalid">Sign in</button>
+      <button type="submit" ng-click="connect()" ng-disabled="loginForm.$invalid">Sign in</button>
       <section style="color: #df3e00;" ng-show="registerFailed">
         Invalid Username/Password. Please try again.
       </section>
@@ -22,4 +25,5 @@
       </section>
     </form>
   </section>
+  </div>
 </div>
