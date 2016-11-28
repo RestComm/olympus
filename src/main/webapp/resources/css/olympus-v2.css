@@ -64,7 +64,7 @@ i.contact-photo {
 .contact-chat-unread {
     float: right;
     text-indent: 0;
-    margin-top: 12px;
+    /*margin-top: 12px;*/
     margin-right: 10px;
 }
 
@@ -1307,6 +1307,10 @@ ul {
         margin-top: -15px;
         margin-right: 10px;
         display: block;
+    }
+
+    #sidebar-content:hover .contact-chat-unread-min {
+        margin-right: 2px;
     }
 
     .textbox-in {
