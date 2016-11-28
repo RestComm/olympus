@@ -136,6 +136,16 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
         }
         else {
           $scope.activeChats[chatId] = {id: message.from, status: 'normal', history: [entry], unread: ($scope.ac && chatId === $scope.ac.id ? 0 : 1)};
+          var existingContact = false;
+          for (var i = 0; i < $scope.contacts.length; i++) {
+            if (chatId === $scope.contacts[i].id || chatId === $scope.contacts[i].address) {
+              existingContact = true;
+              break;
+            }
+          }
+          if (!existingContact) {
+            $scope.contacts.push({id: chatId, name: chatId, address: message.from, icon: 'user-secret'});
+          }
         }
       });
   });
@@ -293,7 +303,7 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
       name: $scope.newContact.name || $scope.newContact.address,
       address: $scope.newContact.address,
       id: $scope.newContact.address.substr(0, $scope.newContact.address.indexOf("@")) || $scope.newContact.address,
-      icon: 'user-secret'
+      icon: 'user-circle-o'
     });
     log('SUCCESS', 'The contact "' + ($scope.newContact.name || $scope.newContact.address)  + ' (' + $scope.newContact.address + ')" has been added to the contact list.', {
       icon: 'users', title: 'Contact added!'});
