@@ -97,6 +97,7 @@
           <li class="contact-container" ng-repeat="contact in contacts" ng-click="selectContact(contact)" ng-hide="hideContacts">
             <img id="contact-photo-{{ contact.id }}" class="contact-photo" ng-src="resources/images/v2/{{ contact.photo || 'mp-icon-profile.png' }}" ng-if ="contact.photo">
             <i class="fa fa-{{ contact.icon || 'user-o' }} contact-photo" id="contact-icon-{{ contact.id }}" ng-if ="!contact.photo" />
+            <span class="contact-chat-unread-min label label-danger" ng-show="activeChats[contact.id].unread > 0">{{ activeChats[contact.id].unread }}</span>
             <img id="contact-status-{{ contact.id }}" class="contact-status" ng-src="resources/images/v2/mp-{{ contact.status }}.png">
             <div class="contact-space" >
               <a id="contact-space-{{ contact.id }}" href="">
