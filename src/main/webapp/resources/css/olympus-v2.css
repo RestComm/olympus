@@ -35,6 +35,7 @@
     padding-left: 10px;
     float: left;
     margin: 13px 0px 5px 10px;
+    cursor: pointer;
 }
 
 i.contact-photo {
@@ -65,6 +66,10 @@ i.contact-photo {
     text-indent: 0;
     margin-top: 12px;
     margin-right: 10px;
+}
+
+.contact-chat-unread-min {
+    display: none;
 }
 
 .contact-status {
@@ -722,7 +727,7 @@ a.action-disabled, .action-disabled a {
     /* amm -- left: 250px; */
     /* amm -- width: 0; */
     /* amm -- height: 100%; */
-    margin-left: -250px;
+    margin-left: -10px;
     /* amm -- margin-top: 60px; */
     overflow-y: hidden;
     background: transparent;
@@ -752,7 +757,7 @@ a.action-disabled, .action-disabled a {
 .sidebar-nav {
     position: absolute;
     top: 0px;
-    width: 300px;
+    width: 85px;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -765,13 +770,17 @@ a.action-disabled, .action-disabled a {
     line-height: 40px;
 }
 
+.sidebar-nav li:last-of-type {
+    margin-bottom: 20px;
+}
+
 .sidebar-nav li a {
     display: block;
     text-decoration: none;
     color: #585858;
 }
 
-.sidebar-nav li a:hover {
+.sidebar-nav li:hover {
     text-decoration: none;
     color: #383838;
     font-weight: bold;
@@ -829,7 +838,8 @@ a.action-disabled, .action-disabled a {
     }
 
     #sidebar-wrapper {
-        /* amm -- width: 200px;*/ width: 300px;
+        /* amm -- width: 200px;*/
+        width: 300px;
         float: left;
     }
 
@@ -845,6 +855,18 @@ a.action-disabled, .action-disabled a {
     #wrapper.toggled #page-content-wrapper {
         position: relative;
         margin-right: 0;
+    }
+
+    .sidebar-nav {
+        width: 300px;
+    }
+
+    #sidebar-wrapper {
+        margin-left: -250px;
+    }
+
+    .sidebar-brand {
+        display: block;
     }
 }
 
@@ -1249,3 +1271,45 @@ ul {
 }
 
 */
+
+@media(max-width:768px) {
+
+    #company-logo {
+        font-size: 18px;
+        padding-left: 5px;
+    }
+
+    #sidebar-content {
+        border-top: 2px solid #e1e1e1;
+        padding: 0;
+        width: 77px;
+    }
+
+    .sidebar-nav {
+        width: 77px;
+    }
+
+    .sidebar-nav .sidebar-brand {
+        display: none;
+    }
+
+    .contact-space {
+        display: none;
+    }
+
+    .contact-photo {
+        margin: 8px 0px 0px 1px;
+    }
+
+    .contact-chat-unread-min {
+        float: right;
+        text-indent: 0;
+        margin-top: -15px;
+        margin-right: 10px;
+        display: block;
+    }
+
+    .textbox-in {
+        width: calc(100% - 330px);
+    }
+}
