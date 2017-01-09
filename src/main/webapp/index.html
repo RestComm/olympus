@@ -1,11 +1,14 @@
 <!DOCTYPE HTML>
-<html lang="en" ng-app="mcWebRTC" class="no-js">
+<html class="{{ loggedUser ? 'loggedIn' : 'login' }}" lang="en" ng-app="mcWebRTC" class="no-js">
   <head>
     <meta charset="utf-8">
     <link rel="icon" type="image/png" href="resources/images/favicon.png">
 
+    <link href="https://fonts.googleapis.com/css?family=Lato:100italic,100,300italic,300,400italic,400,700italic,700,900italic,900" rel="stylesheet" type="text/css">
+
     <link href="lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
     <link href="lib/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://raw.github.com/daneden/animate.css/master/animate.css" rel="stylesheet">
 
     <style type="text/css">
       /* Sticky footer styles
@@ -16,15 +19,15 @@
       }
       body {
         /* Margin bottom by footer height */
-        margin-bottom: 30px;
+        margin-bottom: 85px;
       }
       .footer {
         position: absolute;
         bottom: 0;
         width: 100%;
         /* Set the fixed height of the footer here */
-        height: 30px;
-        background-color: #f5f5f5;
+        height: 85px;
+        background-color: #4a4a4b;
         z-index: 1;
       }
 
@@ -59,56 +62,22 @@
     <link href="lib/animate.css/animate.css" rel="stylesheet">
     <link href="lib/ng-emoticons/dist/ng-emoticons.min.css" rel="stylesheet">
     <link href="resources/css/olympus.css" rel="stylesheet" />
+    <link href="resources/css/olympus-v2.css" rel="stylesheet" />
 
     <title>&lt;OLYMPUS/&gt;</title>
   </head>
   <body class="{{ loggedUser ? 'loggedIn' : 'login' }}" ng-cloak>
     <oly-console ng-show="showConsole"></oly-console>
-    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation" ng-show="loggedUser">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-              <span class="sr-only">Toggle navigation</span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href=""><img src="resources/images/telestax-logo-dark.png" style="display: inline" /> <span class="brand-text"> OLYMPUS</span></a>
-        </div>
-        <div id="navbar" class="collapse navbar-collapse">
-          <!-- <oly-sidebar></oly-sidebar> -->
-          <!--
-          <ul class="navbar-nav list-inline" style="margin-top: 10px;">
-            <li style="margin-left: 10px;"><a href=""><i class="glyphicon glyphicon-user" style="font-size: 3em;"></i><br>INVITE</a></li>
-            <li style="margin-left: 15px;"><a href=""><i class="glyphicon glyphicon-comment" style="font-size: 3em;"></i><br>CHAT</a></li>
-            <li style="margin-left: 15px;"><a href=""><i class="glyphicon glyphicon-facetime-video" style="font-size: 3em;"></i><br>VIDEO</a></li>
-            <li style="margin-left: 15px;"><a href=""><i class="glyphicon glyphicon-volume-up" style="font-size: 3em;"></i><br>AUDIO</a></li>
-            <li style="margin-left: 15px;"><a href="" id="tKeypad2" data-container="body" data-toggle="popover" data-placement="bottom" data-content="<table class='keypad'><tr><td class='btn btn-primary'>1</td><td class='btn btn-primary'>2</td><td class='btn btn-primary'>3</td></tr><tr><td class='btn btn-primary'>4</td><td class='btn btn-primary'>5</td><td class='btn btn-primary'>6</td></tr><tr><td class='btn btn-primary'>7</td><td class='btn btn-primary'>8</td><td class='btn btn-primary'>9</td></tr><tr><td class='btn btn-primary'>*</td><td class='btn btn-primary'>0</td><td class='btn btn-primary'>#</td></tr></table>" data-html="true"><i class="glyphicon glyphicon-th" style="font-size: 3em;"></i><br>KEYS</a></li>
-            <li class="pull-right" style="margin-right: 10px;"><a href=""><i class="glyphicon glyphicon-earphone" style="transform: rotate(113deg) translateX(2px); font-size: 3em;"></i><br>HANG</a></li>
-          </ul>
-          -->
-          <span class="navbar-text pull-right no-margins" style="font-size: 1.2em; margin-top: 10px;" ng-show="loggedUser !== ''">
-            <span id="user" style="margin-top: 15px; vertical-align: sub;">
-              <i class="glyphicon glyphicon-user"></i> <a id="username" href="" class="navbar-link">{{loggedUser}}</a>
-            </span>
-            &nbsp; <span id="unregister" style=""><button ng-click="signOut()" class="btn btn-danger btn-sm"><i class="glyphicon glyphicon-off"></i> Sign Out</button></span>
-          </span>
-        </div><!--/.nav-collapse -->
-      </div>
-    </nav>
-    <div class="notifications-container" ng-show="loggedUser"></div>
+    <div class="notifications-container" ng-show="loggedUser && false"></div>
     <!-- Begin page content -->
-    <div id="registration" class="container-fluid" style="margin-top: 20px;" ng-view>
+
+    <div class="container-fluid" ng-class="{'main-content' : loggedUser}" ng-view>
     </div>
 
-<!--
-    <div class="container-fluid" id="room">
-    </div>
--->
-
-    <div class="footer">
+    <div class="footer" ng-hide="loggedUser">
       <div class="container">
-        <p class="text-muted text-right" style="margin: 5px; font-weight: bold; opacity: 0.4;">POWERED BY RESTCOMM (C) TELESTAX 2015</p>
+        <img src="resources/images/v2/telestax-logo-small-white.png" class="telestax-logo">
+        <div class="telestax-rights">&copy; 2016 Telestax, Inc. All rights reserved</div>
       </div>
     </div>
 
@@ -161,8 +130,10 @@
 
     <script src="resources/js/app.js"></script>
     <script src="resources/js/controllers.js"></script>
-    <script src="resources/js/controllers/register.js"></script>
-    <script src="resources/js/controllers/room.js"></script>
+    <script src="resources/js/controllers/sign-in.js"></script>
+    <!--<script src="resources/js/controllers/register.js"></script>-->
+    <!--<script src="resources/js/controllers/room.js"></script>-->
+    <script src="resources/js/controllers/home.js"></script>
     <script src="resources/js/directives.js"></script>
     <script src="resources/js/filters.js"></script>
     <script src="resources/js/services.js"></script>

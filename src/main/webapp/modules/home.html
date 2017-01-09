@@ -1,0 +1,275 @@
+<div id="wrapper">
+
+  <!-- Sidebar -->
+  <div id="sidebar-wrapper">
+    <ul class="sidebar-nav">
+
+      <h3 id="company-logo">TeleStax
+        <a href="" ng-click="signOut()">
+          <img src="resources/images/v2/mp-icon-signout.png" width="66px" height="15px">
+        </a>
+      </h3>
+
+      <img id="user-photo" src="resources/images/v2/mp-images-sidebar-frame-example.png">
+      <h4 id="user-name">{{ loggedUser }}</h4>
+      <div class="nav-menu" id="icons-settings">
+        <ul>
+          <div class="profile action-disabled" tooltip="User Profile">
+            <li>
+              <a href=""><img src="resources/images/v2/mp-icon-profile.png"></a>
+            </li>
+          </div>
+
+          <div class="preferences action-disabled" tooltip="Preferences">
+            <li><a href=""><img src="resources/images/v2/mp-icon-preferences.png"></a>
+            </li>
+          </div>
+
+          <div class="mentions action-disabled" tooltip="Mentions">
+            <li><a href=""><img src="resources/images/v2/mp-icon-mentions.png"></a>
+            </li>
+          </div>
+
+          <div class="favorites action-disabled" tooltip="Favorites">
+            <li><a href=""><img src="resources/images/v2/mp-icon-favorites.png"></a>
+            </li>
+          </div>
+
+          <div class="files action-disabled" tooltip="Files">
+            <li><a href=""><img src="resources/images/v2/mp-icon-files.png"></a>
+            </li>
+          </div>
+
+          <div class="add" tooltip="Add Contact">
+            <li><a href="" ng-click="toggleSidebar('addContact')"><img src="resources/images/v2/mp-icon-add.png"></a>
+            </li>
+          </div>
+        </ul>
+      </div>
+
+      <div id="sidebar-content">
+        <div class="sidebar-rooms" ng-show="!sidebarAction && hasRooms">
+          <li class="sidebar-brand">
+            <a href="">
+              Rooms  <span class="pull-right">+</span>
+            </a>
+          </li>
+
+          <li>
+            <img id="room-icon-1" class="room-icon" src="resources/images/v2/mp-icon-rooms.png">
+            <a href="">documentation</a>
+          </li>
+          <li>
+            <img id="room-icon-2" class="room-icon" src="resources/images/v2/mp-icon-rooms.png">
+            <a href="">marketing</a>
+          </li>
+          <li>
+            <img id="room-icon-3" class="room-icon" src="resources/images/v2/mp-icon-rooms.png">
+            <a href="">general</a>
+          </li>
+          <li>
+            <img id="room-icon-4" class="room-icon" src="resources/images/v2/mp-icon-rooms.png">
+            <img id="badge" src="resources/images/v2/mp-badge.png">
+            <a href="">restcomm - SDKs</a>
+          </li>
+          <li>
+            <img id="room-icon-5" class="room-icon" src="resources/images/v2/mp-icon-rooms.png">
+            <a href="">design</a>
+          </li>
+          <li>
+            <img id="room-icon-6" class="room-icon" src="resources/images/v2/mp-icon-rooms.png">
+            <a href="">sales</a>
+          </li>
+          <li>
+            <img id="room-icon-7" class="room-icon" src="resources/images/v2/mp-icon-rooms.png">
+            <a href="">random</a>
+          </li>
+          <li>
+            <img id="room-icon-8" class="room-icon" src="resources/images/v2/mp-icon-rooms.png">
+            <a href="">core</a>
+          </li>
+        </div>
+
+        <div class="sidebar-contacts" ng-show="!sidebarAction && hasContacts">
+          <div class="sidebar-brand">
+            <a href="" ng-click="hideContacts = !hideContacts">Contacts <span class="pull-right" ng-show="hideContacts">+</span><span class="pull-right" ng-show="!hideContacts">-</span></a>
+          </div>
+          <li class="contact-container" ng-repeat="contact in contacts" ng-click="selectContact(contact)" ng-hide="hideContacts">
+            <img id="contact-photo-{{ contact.id }}" class="contact-photo" ng-src="resources/images/v2/{{ contact.photo || 'mp-icon-profile.png' }}" ng-if ="contact.photo">
+            <i class="fa fa-{{ contact.icon || 'user-o' }} contact-photo" id="contact-icon-{{ contact.id }}" ng-if ="!contact.photo" />
+            <span class="contact-chat-unread-min label label-danger" ng-show="activeChats[contact.id].unread > 0">{{ activeChats[contact.id].unread }}</span>
+            <img id="contact-status-{{ contact.id }}" class="contact-status" ng-src="resources/images/v2/mp-{{ contact.status }}.png">
+            <div class="contact-space" >
+              <a id="contact-space-{{ contact.id }}" href="">
+                <i class="fa fa-phone" style="text-indent: 0; margin-left: -18px;" ng-show="(inCall.incomingCallFlag && inCall.callerPhoneNumber === contact.id) || (!inCall.incomingCallFlag && inCall.calleePhoneNumber === contact.address)"></i>
+                {{ contact.name }}
+                <span class="contact-chat-unread label label-danger" ng-show="activeChats[contact.id].unread > 0">{{ activeChats[contact.id].unread }}</span>
+                <br>
+                <div class="contact-info">{{contact.address}}</div>
+              </a>
+            </div>
+          </li>
+        </div>
+
+        <div class="sidebar-add-contact" ng-show="sidebarAction === 'addContact'" style="border: 2px solid #e1e1e1;background-color: #fafafa;height: calc(100% - 10px);">
+          <h4 style="margin-left: 10px;">Add Contact</h4>
+          <hr>
+          <input type="text" class="sidebar-input" placeholder="Contact Name" ng-model="newContact.name">
+          <input type="text" class="sidebar-input" placeholder="Contact Address" ng-model="newContact.address">
+          <button class="btn btn-default pull-right" ng-click="addContact()" style="margin: 15px;">Add Contact</button>
+        </div>
+      </div>
+
+    </ul>
+  </div>
+  <!-- /#sidebar-wrapper -->
+
+  <!-- Page Content -->
+  <a href=""><img id="expand-chat" src="resources/images/v2/mp-arrow-onchat.png" ng-show="ac"></a>
+
+  <div id="incoming-call" class="incoming-call-wrapper" ng-show="incomingCall">
+    <h5 id="incoming-call-message">Incoming Video Call</h5>
+    <img id="photo-call" src="resources/images/v2/photo-call.png">
+    <h5 id="name-participant">{{ incomingCall.callerPhoneNumber }}</h5>
+    <a href="" ng-click="acceptCall(true)"><img id="answer-video-call" src="resources/images/v2/answer-video-call.png"></a>
+    <a href="" ng-click="acceptCall(false)"><img id="answer-audio-call" src="resources/images/v2/answer-audio-call.png"></a>
+    <a href="" ng-click="rejectCall()"><img id="decline-call" src="resources/images/v2/decline-call.png"></a>
+  </div>
+
+  <div id="chat-video-aeria" class="animated" ng-class="videoClass" ng-show="ac">
+    <div id="add-participant" class="add-participant" ng-show="false">
+      <img src="resources/images/v2/mp-icon-add-participant-chat.png">
+    </div>
+
+    <h3 id="current-call">Chat with {{ ac.name }} <i ng-show="false" class="fa fa-chevron-down" style="font-size: 14px; vertical-align: 3px;"></i></h3>
+
+    <div class="border-separator"></div>
+
+    <div id="videos" ng-show="remoteVideo && (ac.id === inCall.callerPhoneNumber || ac.address === inCall.calleePhoneNumber)">
+      <div id="big-video">
+        <div class="video-controls-top">
+          {{ ("0" + Math.floor(inCall.callTimer / 60)).slice(-2) }}:{{ ("0" + (inCall.callTimer % 60 | number:0)).slice(-2) }}
+          <div style="float: right;">
+            <i class="fa fa-th" ng-click="toggleKeypad()"></i>
+            <i class="fa fa-television"></i>
+            <i class="fa fa-cog"></i>
+            <i class="fa fa-expand"></i>
+          </div>
+        </div>
+        <div id="keypad" class="keypad" ng-show="showKeypad">
+          <table>
+            <tr>
+              <td class="btn keypad-btn" id="btnDTMF1" ng-click="playDTMF('1')" ng-keydown="keypressDTMF($event)" tabindex="0">1</td>
+              <td class="btn keypad-btn" id="btnDTMF2" ng-click="playDTMF('2')" ng-keydown="keypressDTMF($event)" tabindex="0">2</td>
+              <td class="btn keypad-btn" id="btnDTMF3" ng-click="playDTMF('3')" ng-keydown="keypressDTMF($event)" tabindex="0">3</td>
+            </tr>
+            <tr>
+              <td class="btn keypad-btn" id="btnDTMF4" ng-click="playDTMF('4')" ng-keydown="keypressDTMF($event)" tabindex="0">4</td>
+              <td class="btn keypad-btn" id="btnDTMF5" ng-click="playDTMF('5')" ng-keydown="keypressDTMF($event)" tabindex="0">5</td>
+              <td class="btn keypad-btn" id="btnDTMF6" ng-click="playDTMF('6')" ng-keydown="keypressDTMF($event)" tabindex="0">6</td>
+            </tr>
+            <tr>
+              <td class="btn keypad-btn" id="btnDTMF7" ng-click="playDTMF('7')" ng-keydown="keypressDTMF($event)" tabindex="0">7</td>
+              <td class="btn keypad-btn" id="btnDTMF8" ng-click="playDTMF('8')" ng-keydown="keypressDTMF($event)" tabindex="0">8</td>
+              <td class="btn keypad-btn" id="btnDTMF9" ng-click="playDTMF('9')" ng-keydown="keypressDTMF($event)" tabindex="0">9</td>
+            </tr>
+            <tr>
+              <td class="btn keypad-btn" id="btnDTMF*" ng-click="playDTMF('*')" ng-keydown="keypressDTMF($event)" tabindex="0">*</td>
+              <td class="btn keypad-btn" id="btnDTMF0" ng-click="playDTMF('0')" ng-keydown="keypressDTMF($event)" tabindex="0">0</td>
+              <td class="btn keypad-btn" id="btnDTMF#" ng-click="playDTMF('#')" ng-keydown="keypressDTMF($event)" tabindex="0">#</td>
+            </tr>
+          </table>
+        </div>
+        <div class="video-controls-bottom" style="margin-top: -75px; font-size: 3em;">
+          <span class="btn" style="font-size: 1em;">
+            <i class="fa" ng-class="inCall.localVideoMuted ? 'fa-eye-slash muted' : 'fa-video-camera'" ng-click="localMuteVideo()"></i>
+          </span>
+          <span class="btn" style="font-size: 1em;">
+            <i class="fa fa-phone" style="transform: rotate(135deg);" ng-click="callHangup()"></i>
+          </span>
+          <span class="btn" style="font-size: 1em;">
+            <i class="fa" ng-class="inCall.localAudioMuted ? 'fa-microphone-slash muted' : 'fa-microphone'" ng-click="localMuteAudio()"></i>
+          </span>
+        </div>
+        <video
+            class="remote-video"
+            ng-src="{{remoteVideo}}"
+            style="width: 100%;"
+            autoplay="autoplay">
+        </video>
+      </div>
+
+      <div id="side-videos">
+        <div id="video1" class="small-video">
+          <!-- Local Video Window -->
+          <webcam
+              class="block"
+              ng-if="loggedUser && requestStream"
+              placeholder="resources/images/loading.gif"
+              audio="true"
+              video="isVideoCall"
+              video-width="640"
+              video-height="480"
+              video-constraints="videoConstraints"
+              on-stream="onStream(stream)"
+              on-error="onError(err)"
+              on-streaming="onStreaming()"
+              style="width: 100%; transform: scaleX(-1);">
+          </webcam>
+        </div>
+      </div>
+    </div>
+
+    <div class="border-separator"></div>
+
+    <div class="chat-container" ng-class="{'chat-with-video': (remoteVideo && (inCall.incomingCallFlag && inCall.callerPhoneNumber === ac.id) || (!inCall.incomingCallFlag && inCall.calleePhoneNumber === ac.address))}">
+      <div class="chat-participant-block" ng-repeat="entry in activeChats[ac.id].history">
+        <img class="chat-photo" ng-if="$index === 0 || activeChats[ac.id].history[$index].direction !== activeChats[ac.id].history[$index-1].direction" src="resources/images/v2/mp-photo2-chat.png">
+        <div class="chat-header" ng-if="$index === 0 || activeChats[ac.id].history[$index].direction !== activeChats[ac.id].history[$index-1].direction">
+          <span class="chat-name">{{ activeChats[ac.id].history[$index].direction === 'in' ? ac.id : loggedUser }}</span>
+          <span class="chat-time" am-time-ago="entry.time" title="{{entry.time | amDateFormat:'ddd, DD MMM YYYY, HH:mm:ss'}}"></span>
+        </div>
+        <div class="chat-line" ng-class="{'chat-line-margin' : $index >= 1}">{{ entry.text }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="textbox" ng-show="ac">
+    <input type="text" class="textbox-in" placeholder="Write something crazy" ng-model="ac.writeText" ng-keydown="$event.which === 13 && sendMessage(ac)">
+    <div id="infoToggler" class="chat chat-hover" ng-click="sendMessage(ac)">
+      <img src="resources/images/v2/mp-send-textbox.png" width="25px" height="30px">
+      <img src="resources/images/v2/mp-search-textbox.png" width="25px" height="30px" style="display:none">
+    </div>
+    <a href="" class="action-disabled">
+      <div id="border-emoticons"></div>
+      <img id="emoticons" src="resources/images/v2/mp-arrow-textbox.png">
+    </a>
+    <div id="container-btn">
+      <div id="cancel-call-btn">
+        <a href="" class="btn-phone btn-cancel" ng-show="inCall && !inCall.incomingCallFlag && inCall.intStatus === 'CONNECTING...'" ng-click="callHangup()"><img src="resources/images/v2/decline-call.png"></a>
+      </div>
+      <div id="left-btn">
+        <a href="" class="btn-phone" ng-hide="inCall" ng-class="{'action-disabled': inCall}" ng-click="callContact(ac.address, false)"><img src="resources/images/v2/btn-icon-phone.png"></a>
+      </div>
+      <div>
+        <a href="" class="btn-cam" ng-hide="inCall" ng-class="{'action-disabled': inCall}" ng-click="callContact(ac.address, true)"><img src="resources/images/v2/btn-icon-camera.png"></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Audio Resources -->
+<audio id="snd_ringing" loop src="resources/audio/ringing.mp3" type="audio/mpeg"></audio>
+<audio id="snd_message" src="resources/audio/chat_notification.wav" ></audio>
+<audio id="snd_dtmf0" title="0" src="resources/audio/dtmf0.wav" ></audio>
+<audio id="snd_dtmf1" title="1" src="resources/audio/dtmf1.wav" ></audio>
+<audio id="snd_dtmf2" title="2" src="resources/audio/dtmf2.wav" ></audio>
+<audio id="snd_dtmf3" title="3" src="resources/audio/dtmf3.wav" ></audio>
+<audio id="snd_dtmf4" title="4" src="resources/audio/dtmf4.wav" ></audio>
+<audio id="snd_dtmf5" title="5" src="resources/audio/dtmf5.wav" ></audio>
+<audio id="snd_dtmf6" title="6" src="resources/audio/dtmf6.wav" ></audio>
+<audio id="snd_dtmf7" title="7" src="resources/audio/dtmf7.wav" ></audio>
+<audio id="snd_dtmf8" title="8" src="resources/audio/dtmf8.wav" ></audio>
+<audio id="snd_dtmf9" title="9" src="resources/audio/dtmf9.wav" ></audio>
+<audio id="snd_dtmfs" title="*" src="resources/audio/star.wav" ></audio>
+<audio id="snd_dtmfp" title="#" src="resources/audio/pound.wav" ></audio>
