@@ -563,17 +563,10 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
   });
 
 
-  var nrFuncCalls = 0;
   $scope.$on('CALL_OPENED', function (event, call) {
-    nrFuncCalls++;
     console.debug('Event "CALL_OPENED"', event, call);
     $timeout(
       function() {
-        if (nrFuncCalls !== 2) { // FIXME: !!! WHY OH WHY !?!?!?
-          console.error('2nd call for CALL_OPENED', currentCall, call);
-          return;
-        }
-        nrFuncCalls = 0;
         if (call.incomingCallFlag) {
           for (var i = 0; i < $scope.contacts.length; i++) {
             if (call.callerPhoneNumber === $scope.contacts[i].id || call.callerPhoneNumber === $scope.contacts[i].address) {
