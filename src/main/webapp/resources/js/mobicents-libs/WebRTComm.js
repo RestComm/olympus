@@ -1077,6 +1077,7 @@ PrivateJainSipCallConnector.prototype.processInvitedSipRequestEvent = function(r
 			// Close the call
 			this.close();
 		} else if (requestMethod === "ACK") {
+			// It's important to update the stored dialog with the one in the request as it might have been updated inside the JAIN SIP stack
 			this.jainSipInvitedDialog = requestEvent.getServerTransaction().getDialog();
 		} else {
 			console.error("PrivateJainSipCallConnector:processInvitedSipRequestEvent(): bad state, SIP request ignored");
@@ -1158,8 +1159,8 @@ PrivateJainSipClientConnector.prototype.SIP_REGISTERING_401_STATE = "SIP_REGISTE
 PrivateJainSipClientConnector.prototype.SIP_REGISTERED_STATE = "SIP_REGISTERED_STATE";
 PrivateJainSipClientConnector.prototype.SIP_UNREGISTERING_401_STATE = "SIP_UNREGISTERING_401_STATE";
 PrivateJainSipClientConnector.prototype.SIP_UNREGISTERING_STATE = "SIP_UNREGISTERING_STATE";
-PrivateJainSipClientConnector.prototype.SIP_SESSION_EXPIRATION_TIMER = 60;
-PrivateJainSipClientConnector.prototype.SIP_REGISTER_REFRESH_TIMER = 50;
+PrivateJainSipClientConnector.prototype.SIP_SESSION_EXPIRATION_TIMER = 3600;
+PrivateJainSipClientConnector.prototype.SIP_REGISTER_REFRESH_TIMER = 3550;
 
 /**
  * Get SIP client/user agent opened/closed status 
@@ -1343,6 +1344,25 @@ PrivateJainSipClientConnector.prototype.createPrivateSessionConnector = function
 PrivateJainSipClientConnector.prototype.removeSessionConnector = function(sipSessionId) {
 	console.debug("PrivateJainSipClientConnector:removeSessionConnector(): sipSessionId=" + sipSessionId);
 	delete this.sessionConnectors[sipSessionId];
+};
+
+/**
+ * Check if JainSipClient is busy. We 're deemed busy if there a call in any state
+ * @public
+ * @return true if client is busy, false otherwise
+ */
+PrivateJainSipClientConnector.prototype.clientIsBusy = function() {
+	var isBusy = false;
+	for (var sipCallId in this.sessionConnectors) {
+		var sessionConnector = this.sessionConnectors[sipCallId];
+		if (sessionConnector instanceof PrivateJainSipCallConnector) {
+			// if sessionConnection of type PrivateJainSipCallConnector exists in any state we are deemed busy
+			isBusy = true;
+			break;
+		}
+	}
+	console.debug("PrivateJainSipClientConnector:clientIsBusy(): " + isBusy);
+	return isBusy;
 };
 
 /**
@@ -1599,6 +1619,15 @@ PrivateJainSipClientConnector.prototype.processRequest = function(requestEvent) 
 			} else {
 				if (jainSipRequestMethod === "INVITE") {
 					// Incoming SIP INVITE
+					if (this.clientIsBusy()) {
+						// Client is already busy; decline new call with 480 Temporarily Unavailable
+						var jainSipResponse480 = jainSipRequest.createResponse(480, "Temporarily Unavailable");
+						jainSipResponse480.addHeader(this.jainSipContactHeader);
+						requestEvent.getServerTransaction().sendResponse(jainSipResponse480);
+						this.removeSessionConnector(sipSessionId);
+						return;
+					}
+
 					var newWebRTCommCall = new WebRTCommCall(this.webRTCommClient);
 					newWebRTCommCall.incomingCallFlag = true;
 					newWebRTCommCall.connector = this.createPrivateSessionConnector(newWebRTCommCall, sipSessionId);
@@ -1707,9 +1736,11 @@ PrivateJainSipClientConnector.prototype.processTimeout = function(timeoutEvent) 
 		if (sessionConnector) {
 			sessionConnector.onJainSipClientConnectorSipTimeoutEvent(timeoutEvent);
 		} else if (this.jainSipRegisterRequest.getCallId().getCallId() === sipCallId) {
-			console.error("PrivateJainSipClientConnector:processTimeout(): SIP registration failed, request timeout, no response from SIP server, Call-Id: " + sipCallId);
-			this.reset();
-			this.webRTCommClient.onPrivateClientConnectorOpenErrorEvent("Request Timeout");
+			console.error("PrivateJainSipClientConnector:processTimeout(): SIP registration timed out, no response from SIP server, Call-Id: " + sipCallId + ". Retrying... ");
+
+			// Let's retry register, notice that previous REGISTER timed out after 32 seconds, so we 're here after this interval and we shouldn't be stressing the server
+			this.sendNewSipRegisterRequest(this.SIP_SESSION_EXPIRATION_TIMER);
+			this.webRTCommClient.onPrivateClientConnectorOpenWarningEvent("Register Request Timeout");
 		} else {
 			console.warn("PrivateJainSipClientConnector:processTimeout(): no dialog found, SIP timeout ignored");
 		}
@@ -3272,7 +3303,7 @@ WebRTCommCall.prototype.onPrivateCallConnectorCallCanceledEvent = function() {
  * @param {string} error internal error
  */
 WebRTCommCall.prototype.onRtcPeerConnectionErrorEvent = function(error) {
-	console.debug("WebRTCommCall:onRtcPeerConnectionErrorEvent(): error=" + error);
+	console.error("WebRTCommCall:onRtcPeerConnectionErrorEvent(): error=" + error);
 	// Critical issue, notify the error and close properly the call
 	// Notify the error event to the listener
 	if (this.eventListener.onWebRTCommCallOpenErrorEvent) {
@@ -3506,7 +3537,7 @@ WebRTCommCall.prototype.setRtcPeerConnectionLocalDescription = function(sdpOffer
  * @param {object} error  RTCPeerConnection SDP offer error event
  */
 WebRTCommCall.prototype.onRtcPeerConnectionCreateOfferErrorEvent = function(error) {
-	console.debug("[PC]: onCreateOfferErrorEvent()");
+	console.error("[PC]: onCreateOfferErrorEvent()");
 	try {
 		console.error("WebRTCommCall:onRtcPeerConnectionCreateOfferErrorEvent():error=" + JSON.stringify(error));
 		if (this.peerConnection) {
@@ -3552,7 +3583,7 @@ WebRTCommCall.prototype.onRtcPeerConnectionSetLocalDescriptionSuccessEvent = fun
  * @param {object} error  RTCPeerConnection SDP offer error event
  */
 WebRTCommCall.prototype.onRtcPeerConnectionSetLocalDescriptionErrorEvent = function(error) {
-	console.debug("[PC]: onSetLocalDescriptionError()");
+	console.error("[PC]: onSetLocalDescriptionError()");
 	try {
 		console.error("WebRTCommCall:onRtcPeerConnectionSetLocalDescriptionErrorEvent():error=" + JSON.stringify(error));
 		if (this.peerConnection) {
@@ -3633,7 +3664,7 @@ WebRTCommCall.prototype.onRtcPeerConnectionCreateAnswerSuccessEvent = function(s
  * @param {String} error  SDP error
  */
 WebRTCommCall.prototype.onRtcPeerConnectionCreateAnswerErrorEvent = function(error) {
-	console.debug("[PC]: onCreateAnswerError()");
+	console.error("[PC]: onCreateAnswerError()");
 	console.error("WebRTCommCall:onRtcPeerConnectionCreateAnswerErrorEvent():error=" + JSON.stringify(error));
 	try {
 		if (this.peerConnection) {
@@ -3716,7 +3747,7 @@ WebRTCommCall.prototype.onRtcPeerConnectionSetRemoteDescriptionSuccessEvent = fu
  * @param {String} error  SDP error
  */
 WebRTCommCall.prototype.onRtcPeerConnectionSetRemoteDescriptionErrorEvent = function(error) {
-	console.debug("[PC]: onSetRemoteDescriptionError()");
+	console.error("[PC]: onSetRemoteDescriptionError()");
 	try {
 		console.error("WebRTCommCall:onRtcPeerConnectionSetRemoteDescriptionErrorEvent():error=" + JSON.stringify(error));
 		if (this.peerConnection) {
@@ -3934,7 +3965,7 @@ WebRTCommCall.prototype.onRtcPeerConnectionMessageChannelClose = function(event)
 };
 
 WebRTCommCall.prototype.onRtcPeerConnectionMessageChannelErrorEvent = function(event) {
-	console.debug("WebRTCommCall:onRtcPeerConnectionMessageChannelErrorEvent():event=" + event);
+	console.error("WebRTCommCall:onRtcPeerConnectionMessageChannelErrorEvent():event=" + event);
 	if (this.peerConnection) {
 		console.debug("WebRTCommCall:onRtcPeerConnectionMessageChannelErrorEvent(): this.peerConnection.signalingState=" + this.peerConnection.signalingState);
 		console.debug("WebRTCommCall:onRtcPeerConnectionMessageChannelErrorEvent(): this.peerConnection.iceGatheringState=" + this.peerConnection.iceGatheringState);
@@ -4723,7 +4754,7 @@ WebRTCommClient.prototype.onPrivateClientConnectorOpenedEvent = function() {
  * @param {string} error Error message
  */
 WebRTCommClient.prototype.onPrivateClientConnectorOpenErrorEvent = function(error) {
-	console.debug("WebRTCommClient:onPrivateClientConnectorOpenErrorEvent():error:" + error);
+	console.error("WebRTCommClient:onPrivateClientConnectorOpenErrorEvent():error:" + error);
 	// Force closing of the client
 	try {
 		this.close();
@@ -4736,6 +4767,25 @@ WebRTCommClient.prototype.onPrivateClientConnectorOpenErrorEvent = function(erro
 				that.eventListener.onWebRTCommClientOpenErrorEvent(error);
 			} catch (exception) {
 				console.error("WebRTCommClient:onPrivateClientConnectorOpenErrorEvent(): catched exception in event listener:" + exception);
+			}
+		}, 1);
+	}
+};
+
+/**
+ * Implements PrivateClientConnector warning event listener interface
+ * @private
+ * @param {string} error Error message
+ */
+WebRTCommClient.prototype.onPrivateClientConnectorOpenWarningEvent = function(warning) {
+	console.warn("WebRTCommClient:onPrivateClientConnectorOpenWarningEvent():warning:" + warning);
+	if (this.eventListener.onWebRTCommClientOpenWarningEvent !== undefined) {
+		var that = this;
+		setTimeout(function() {
+			try {
+				that.eventListener.onWebRTCommClientOpenWarningEvent(warning);
+			} catch (exception) {
+				console.error("WebRTCommClient:onPrivateClientConnectorOpenWarningEvent(): catched exception in event listener:" + exception);
 			}
 		}, 1);
 	}
@@ -4920,6 +4970,16 @@ WebRTCommClientEventListenerInterface.prototype.onWebRTCommClientOpenErrorEvent 
 	throw "WebRTCommClientEventListenerInterface:onWebRTCommClientOpenErrorEvent(): not implemented;";
 };
 
+/**
+ * Warning event. Used for WebRTCommClient events that the application needs to know but which are not destructive
+ * For example a REGISTER refresh that fails is such an event that we need to know, but which usually resolves
+ * itself by retrying
+ * @public
+ * @param {String} error open error message
+ */
+WebRTCommClientEventListenerInterface.prototype.onWebRTCommClientOpenWarningEvent = function(error) {
+	throw "WebRTCommClientEventListenerInterface:onWebRTCommClientOpenWarningEvent(): not implemented;";
+};
 
 /**
  * Close event 
