@@ -31895,7 +31895,12 @@ SipStackImpl.prototype.newSIPServerRequest =function(requestReceived,requestMess
            transaction = this.serverTransactionTable[i][1];
            // important note: we are comparing all the fields as described in the RFC, except for Via where we don't compare the branch (i.e. transactionId), 
            // since it is different in the ACK that comes after 200 OK (remember a new transaction is created for that ACK from the client)
-           if (transaction.getOriginalRequest().getRequestURI().toString() == requestReceived.getRequestURI().toString() &&
+
+           // also note that for request URI we leave parameters out and compare everything else, as it breaks some scenarios from RC/XMS: webrtcomm #94 
+           if (transaction.getOriginalRequest().getRequestURI().getScheme() == requestReceived.getRequestURI().getScheme() &&
+                transaction.getOriginalRequest().getRequestURI().getUser() == requestReceived.getRequestURI().getUser() &&
+                transaction.getOriginalRequest().getRequestURI().getHost() == requestReceived.getRequestURI().getHost() &&
+                transaction.getOriginalRequest().getRequestURI().getPort() == requestReceived.getRequestURI().getPort() &&
                 transaction.getOriginalRequest().getFromTag() == requestReceived.getFromTag() &&
                 transaction.getOriginalRequest().getCallId().getCallId().toString() == requestReceived.getCallId().getCallId().toString() &&
                 transaction.getOriginalRequest().getCSeq().getSeqNumber() == requestReceived.getCSeq().getSeqNumber() &&
@@ -32010,7 +32015,8 @@ SipStackImpl.prototype.removeTransaction =function(sipTransaction){
             sipProvider.handleEvent(event, sipTransaction);
         }
     }
-}/*
+}
+/*
  * TeleStax, Open Source Cloud Communications  Copyright 2012. 
  * and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
