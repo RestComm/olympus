@@ -5,7 +5,7 @@
 
 var olyMod = angular.module('mcWebRTC');
 
-olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, $timeout, $interval, $sce, $alert, Fullscreen) {
+olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, $timeout, $interval, $sce, $window, $alert, Fullscreen) {
 
   $scope.Math = window.Math;
 
@@ -58,6 +58,18 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
   if ($scope.loggedUser !== 'bob') {
     $scope.contacts.splice(0, 0, {id: 'bob', name: 'Bob Robert', address: 'bob@telestax.com', photo: 'test2.png'});
   }
+
+  var loadContacts = function() {
+    if ($window.localStorage.getItem($scope.loggedUser + '_contacts')) {
+     $scope.contacts = angular.fromJson($window.localStorage.getItem($scope.loggedUser + '_contacts'));
+    }
+  };
+
+  var saveContacts = function() {
+    $window.localStorage.setItem($scope.loggedUser + '_contacts', angular.toJson($scope.contacts));
+  };
+
+  loadContacts();
 
   $scope.hasContacts = true;
   $scope.hasRooms = false;
@@ -309,6 +321,7 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
       icon: 'users', title: 'Contact added!'});
 
     $scope.newContact = {};
+    saveContacts();
     delete $scope.sidebarAction;
   };
 
