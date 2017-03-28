@@ -144,7 +144,7 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
             }
           }
           if (!existingContact) {
-            $scope.contacts.push({id: chatId, name: chatId, address: message.from, icon: 'user-secret'});
+            $scope.contacts.unshift({id: chatId, name: chatId, address: message.from, icon: 'user-secret'});
           }
         }
       });
@@ -568,11 +568,18 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
     $timeout(
       function() {
         if (call.incomingCallFlag) {
+          var existingContact = false;
           for (var i = 0; i < $scope.contacts.length; i++) {
             if (call.callerPhoneNumber === $scope.contacts[i].id || call.callerPhoneNumber === $scope.contacts[i].address) {
               $scope.ac = $scope.contacts[i];
+              existingContact = true;
               break;
             }
+          }
+          if (!existingContact) {
+            var contactId = call.callerPhoneNumber.substr(0, call.callerPhoneNumber.indexOf('@') === -1 ? 999 : call.callerPhoneNumber.indexOf('@'));
+            $scope.contacts.unshift({id: contactId, name: call.callerDisplayName || call.callerPhoneNumber, address: call.callerPhoneNumber, icon: 'user-secret'});
+            $scope.ac = $scope.contacts[0];
           }
         }
         currentCall = call;
