@@ -527,6 +527,7 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
         $scope.inCall = extractCallToScope(currentCall);
         console.log('incoming call', $scope.inCall);
         $scope.inCall.intStatus = 'RINGING...';
+        $('#snd_ringback')[0].play();
       });
   });
 
@@ -535,6 +536,7 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
       function() {
         // TODO: CALL_ERROR can occur both in outgoing & incoming calls, but for incoming I can't get access to the number of the peer (for outgoing it's calleePhoneNumber and for incoming callerPhoneNumberi is undefined for some reason). Let's leave the number out for now since the user has enough context to figure it out. Once we migrate to restcomm-web-sdk, the number will be there in the Connection object
         //log('WARN', 'Call with ' + $scope.inCall.calleePhoneNumber + ' has failed with "' + error + '".');
+        $('#snd_ringback')[0].pause();
         log('WARN', 'Call has failed with "' + error + '".');
         $alert({
           //title: '<i class="fa fa-user-times"></i> Call with ' + $scope.inCall.calleePhoneNumber + ' has failed.',
@@ -550,6 +552,7 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
   $scope.$on('CALL_OPEN_ERROR', function (event, call, error) {
     $scope.$apply(
       function() {
+        $('#snd_ringback')[0].pause();
         log('WARN', 'Call to ' + $scope.inCall.calleePhoneNumber + ' has failed with "' + error + '".');
       });
   });
@@ -557,6 +560,7 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
   $scope.$on('CALL_CLOSED', function (event, call) {
     $scope.$apply(
       function() {
+        $('#snd_ringback')[0].pause();
         // TODO: Stop video, etc..
         if ($scope.inCall && ($scope.inCall.intStatus === 'CONNECTING...' || $scope.inCall.intStatus === 'RINGING...')) {
           $alert({
@@ -580,6 +584,7 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
     console.debug('Event "CALL_OPENED"', event, call);
     $timeout(
       function() {
+        $('#snd_ringback')[0].pause();
         if (call.incomingCallFlag) {
           var existingContact = false;
           for (var i = 0; i < $scope.contacts.length; i++) {
