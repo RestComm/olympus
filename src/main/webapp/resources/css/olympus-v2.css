@@ -580,9 +580,9 @@ a.action-disabled, .action-disabled a {
 .btn-cam:active{
  box-shadow: 0px 0px 0px 0px rgba(194,192,194,1);
 }*/
-.btn-cam:hover {
+.btn-cam:not(.action-disabled):hover {
     background: #f2f1f1;
-    border: 2px solid#44a5ab;
+    border: 2px solid #44a5ab;
     box-shadow: 1px 2px 1px 0px rgba(194,192,194,1);
 }
 
@@ -618,7 +618,7 @@ a.action-disabled, .action-disabled a {
     position: absolute;
 }
 
-.btn-phone:hover {
+.btn-phone:not(.action-disabled):hover {
     background: #f2f1f1;
     border: 2px solid#44a5ab;
     box-shadow: 1px 2px 1px 0px rgba(194,192,194,1);
