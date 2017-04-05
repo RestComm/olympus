@@ -602,7 +602,6 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
         $interval.cancel($scope.inCall.timerProm);
         $scope.inCall.timerProm = $interval(function() {
           $scope.inCall.callTimer++;
-          console.log($scope.inCall);
         }, 1000);
         $scope.remoteVideo = $sce.trustAsResourceUrl(URL.createObjectURL(
           call.getRemoteBundledAudioVideoMediaStream() ||
