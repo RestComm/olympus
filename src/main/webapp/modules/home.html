@@ -246,13 +246,13 @@
     </a>
     <div id="container-btn">
       <div id="cancel-call-btn">
-        <a href="" class="btn-phone btn-cancel" ng-show="inCall && !inCall.incomingCallFlag && inCall.intStatus === 'CONNECTING...'" ng-click="callHangup()"><img src="resources/images/v2/decline-call.png"></a>
+        <a href="" class="btn-phone btn-cancel" ng-show="inCall && !inCall.incomingCallFlag && (inCall.intStatus === 'CONNECTING...' || inCall.intStatus === 'RINGING...')" ng-click="callHangup()"><img src="resources/images/v2/decline-call.png"></a>
       </div>
       <div id="left-btn">
-        <a href="" class="btn-phone" ng-hide="inCall" ng-class="{'action-disabled': inCall}" ng-click="callContact(ac.address, false)"><img src="resources/images/v2/btn-icon-phone.png"></a>
+        <a href="" class="btn-phone" ng-hide="inCall && !inCall.incomingCallFlag && (inCall.intStatus === 'CONNECTING...' || inCall.intStatus === 'RINGING...')" ng-class="{'action-disabled': inCall}" ng-click="callContact(ac.address, false)"><img src="resources/images/v2/btn-icon-phone.png"></a>
       </div>
       <div>
-        <a href="" class="btn-cam" ng-hide="inCall" ng-class="{'action-disabled': inCall}" ng-click="callContact(ac.address, true)"><img src="resources/images/v2/btn-icon-camera.png"></a>
+        <a href="" class="btn-cam" ng-hide="inCall && !inCall.incomingCallFlag && (inCall.intStatus === 'CONNECTING...' || inCall.intStatus === 'RINGING...')" ng-class="{'action-disabled': inCall}" ng-click="callContact(ac.address, true)"><img src="resources/images/v2/btn-icon-camera.png"></a>
       </div>
     </div>
   </div>
