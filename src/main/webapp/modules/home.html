@@ -148,7 +148,7 @@
     <div id="videos" ng-show="remoteVideo && (ac.id === inCall.callerPhoneNumber || ac.address === inCall.calleePhoneNumber)">
       <div id="big-video">
         <div class="video-controls-top">
-          {{ ("0" + Math.floor(inCall.callTimer / 60)).slice(-2) }}:{{ ("0" + (inCall.callTimer % 60 | number:0)).slice(-2) }}
+          {{ inCall.callTimer | secondsToTime:true }}
           <div style="float: right;">
             <i class="fa fa-th" ng-click="toggleKeypad()"></i>
             <i class="fa fa-television"></i>

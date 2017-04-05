@@ -97,6 +97,23 @@ olyFilters.filter('bytes', function() {
   };
 });
 
+olyFilters.filter('secondsToTime', function() {
+    function padTime(t) {
+        return t < 10 ? '0' + t : t;
+    }
+
+    return function(timeInSeconds, hideHoursIfZero) {
+        if (typeof timeInSeconds !== 'number' || timeInSeconds < 0)
+            return '00:00:00';
+
+        var hours = Math.floor(timeInSeconds / 3600),
+            minutes = Math.floor((timeInSeconds % 3600) / 60),
+            seconds = Math.floor(timeInSeconds % 60);
+
+        return (!hideHoursIfZero || hours > 0 ? (padTime(hours) + ':') : '') + padTime(minutes) + ':' + padTime(seconds);
+    };
+});
+
 /*
 olyFilters.filter('groupMessages', function() {
   return function(messages, time) {
