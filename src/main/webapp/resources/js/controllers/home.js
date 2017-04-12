@@ -98,12 +98,12 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
 
   // $scope.chat = [{"time":1476584495106,"direction":"in","from":"alice","text":"ewrjwej"},{"time":1476584511105,"direction":"in","from":"alice","text":";)"},{"time":1476584544105,"direction":"in","from":"alice","text":"Random Stuff"}];//[];
 
-  var addEntryToChat = function(entry) {
-    $scope.chat.push(entry);
+  var addEntryToChat = function(chatId, entry) {
+    $scope.activeChats[chatId].history.push(entry);
     $timeout(function() {
       // FIXME: make this a directive!
       $(".chat-container").scrollTop($(".chat-container")[0].scrollHeight);
-    });
+    }, 50);
   };
 
   $scope.sendMessage = function (ac) {
@@ -115,11 +115,9 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
       $rootScope.wrtcClient.sendMessage(ac.id, ac.writeText);
     }
     var entry = {time: Date.now(), direction: 'out', status: 'pending', from: $rootScope.loggedUser, text: ac.writeText};
-    // addEntryToChat(entry);
-
     var chatId = ac.id.substr(0, ac.id.indexOf('@') === -1 ? 999 : ac.id.indexOf('@'));
     if ($scope.activeChats[chatId]) {
-      $scope.activeChats[chatId].history.push(entry);
+      addEntryToChat(chatId, entry);
     }
     else {
       $scope.activeChats[chatId] = {id: ac, status: 'normal', history: [entry]};
@@ -134,11 +132,10 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
     $scope.$apply(
       function() {
         //var entry = {time: Date.now(), direction: 'in', from: message.from, text: message.text};
-        //addEntryToChat(entry);
         var entry = {time: Date.now(), direction: 'in', text: message.text};
         var chatId = message.from.substr(0, message.from.indexOf('@') === -1 ? 999 : message.from.indexOf('@'));
         if($scope.activeChats[chatId]) {
-          $scope.activeChats[chatId].history.push(entry);
+          addEntryToChat(chatId, entry);
           if ($scope.activeChats[chatId].status === 'hid') {
             $scope.activeChats[chatId].status = 'normal';
           }
