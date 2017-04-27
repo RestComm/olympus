@@ -569,7 +569,9 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
             show: true, html: true,
             container: '.notifications-container'});
         }
-        $interval.cancel($scope.inCall.timerProm);
+        if ($scope.inCall && $scope.inCall.timerProm) {
+          $interval.cancel($scope.inCall.timerProm);
+        }
         delete $scope.inCall; // FIXME: Anything else ?
         delete $scope.requestStream;
         delete $scope.remoteVideo;
