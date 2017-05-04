@@ -36,6 +36,10 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
       icon: 'thumbs-up', title: 'Welcome back!',
       content: 'Welcome back to Olympus, ' + $rootScope.loggedUser + '. Who will you meet today ?',
       type: 'info', duration: 10});
+
+    window.onbeforeunload = function() {
+        return 'Are you sure you want to leave Olympus ?';
+    };
   }
 
   // -- OLYMPUS v2 -------------------------------------------------------------
