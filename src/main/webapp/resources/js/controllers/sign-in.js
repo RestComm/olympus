@@ -30,7 +30,7 @@ olyMod.controller('SignInCtrl', function ($scope, $rootScope, $location, $timeou
   };
 
   $scope.outboundProxy = {
-    address: WS_PROTOCOL + '://' + $scope.serverAddress + ':5082'
+    address: WS_PROTOCOL + '://' + $scope.serverAddress + ':' + $scope.serverPort
   };
 
   $scope.communicationSettings = {
