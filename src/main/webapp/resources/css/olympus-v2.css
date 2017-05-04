@@ -342,6 +342,7 @@ a.action-disabled, .action-disabled a {
 
 .remote-video {
     margin-top: -30px;
+    max-height: 100%;
 }
 
 .video-controls-top {
@@ -457,6 +458,7 @@ a.action-disabled, .action-disabled a {
     height: 100%;
     width: calc(100% - 160px);
     margin: 3px;
+    text-align: center;
 }
 
 #big-video-full {

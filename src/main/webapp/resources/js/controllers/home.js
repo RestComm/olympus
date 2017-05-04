@@ -612,6 +612,13 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
           call.getRemoteVideoMediaStream() ||
           call.getRemoteAudioMediaStream()));
       }, 0);
+      $timeout(
+        function() {
+          $scope.rvWidth = angular.element('video.remote-video')[0].videoWidth;
+          $scope.rvHeight = angular.element('video.remote-video')[0].videoHeight;
+          $scope.isPortrait = $scope.rvWidth < $scope.rvHeight;
+          console.log('Remote Video Info - width[' + $scope.rvWidth + '] height[' + $scope.rvHeight + '] portrait[' + $scope.isPortrait + ']');
+        }, 500);
   });
 
   // -- CURRENT CALL(S) --------------------------------------------------------
