@@ -232,7 +232,7 @@
           <span class="chat-name">{{ activeChats[ac.id].history[$index].direction === 'in' ? ac.id : loggedUser }}</span>
           <span class="chat-time" am-time-ago="entry.time" title="{{entry.time | amDateFormat:'ddd, DD MMM YYYY, HH:mm:ss'}}"></span>
         </div>
-        <div class="chat-line" ng-class="{'chat-line-margin' : $index >= 1}">{{ entry.text }}</div>
+        <div class="chat-line" ng-class="{'chat-line-margin' : $index >= 1}" ng-bind-html="entry.text | linky:'_blank'"</div>
       </div>
     </div>
   </div>
