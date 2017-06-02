@@ -45,7 +45,8 @@ body {
 }
 
 .main-content {
-    display: flex;
+    // removed display: flex due to resize on login (Issue #74)
+    // display: flex;
     height: 100%;
 }
 
