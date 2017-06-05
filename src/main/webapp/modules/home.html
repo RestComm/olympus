@@ -134,9 +134,22 @@
     <h5 id="incoming-call-message">Incoming Video Call</h5>
     <img id="photo-call" src="resources/images/v2/photo-call.png">
     <h5 id="name-participant">{{ incomingCall.callerPhoneNumber }}</h5>
-    <a href="" ng-click="acceptCall(true)"><img id="answer-video-call" src="resources/images/v2/answer-video-call.png"></a>
-    <a href="" ng-click="acceptCall(false)"><img id="answer-audio-call" src="resources/images/v2/answer-audio-call.png"></a>
-    <a href="" ng-click="rejectCall()"><img id="decline-call" src="resources/images/v2/decline-call.png"></a>
+    <div class="incoming-call-actions">
+      <div class="incoming-call-action">
+        <a href="" ng-click="acceptCall(true)"><img src="resources/images/v2/answer-video-call.png"></a>
+      </div>
+      <div class="incoming-call-action">
+        <a href="" ng-click="acceptCall(false)"><img src="resources/images/v2/answer-audio-call.png"></a>
+      </div>
+      <div class="incoming-call-action">
+        <a href="" ng-click="rejectCall()"><img src="resources/images/v2/decline-call.png"></a>
+      </div>
+    </div>
+    <div class="incoming-call-actions">
+      <div class="incoming-call-action">VIDEO</div>
+      <div class="incoming-call-action">AUDIO</div>
+      <div class="incoming-call-action">REJECT</div>
+    </div>
   </div>
 
   <div id="chat-video-aeria" class="animated" ng-class="videoClass" ng-show="ac">
