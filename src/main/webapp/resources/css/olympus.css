@@ -90,17 +90,19 @@ form[role=login] input {
   font-size: 16px;
 }
 
-form[role=login] input::-webkit-input-placeholder {
-  color: #c1c4c5;
-}
-form[role=login] input:-moz-placeholder {
-  color: #c1c4c5;
-}
-form[role=login] input:-moz-placeholder {
-  color: #c1c4c5;
-}
+form[role=login] input::-webkit-input-placeholder,
+form[role=login] input:-moz-placeholder,
+form[role=login] input:-moz-placeholder,
 form[role=login] input:-ms-input-placeholder {
   color: #c1c4c5;
+}
+
+form[role=login] input:-webkit-autofill,
+form[role=login] input:-webkit-autofill:hover,
+form[role=login] input:-webkit-autofill:focus,
+form[role=login] input:-webkit-autofill:active {
+  transition: background-color 5000s ease-in-out 0s;
+  -webkit-text-fill-color: #6d6e70;
 }
 
 form[role=login] button {
