@@ -453,6 +453,21 @@ a.action-disabled, .action-disabled a {
     overflow: hidden;
 }
 
+#videos.isInFullScreen {
+    width: 100%;
+    height: 100%;
+}
+
+#videos a {
+    color: inherit;
+}
+
+#videos.isInFullScreen .video-controls-bottom {
+    bottom: 0;
+    text-align: center;
+    width: 100%;
+}
+
 #big-video {
     float: left;
     height: 100%;

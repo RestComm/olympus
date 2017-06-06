@@ -161,7 +161,7 @@
 
     <div class="border-separator"></div>
 
-    <div id="videos" ng-show="remoteVideo && (ac.id === inCall.callerPhoneNumber || ac.address === inCall.calleePhoneNumber)">
+    <div id="videos" ng-show="remoteVideo && (ac.id === inCall.callerPhoneNumber || ac.address === inCall.calleePhoneNumber)" fullscreen="remoteVideo && fsVideo">
       <div id="big-video">
         <div class="video-controls-top">
           {{ inCall.callTimer | secondsToTime:true }}
@@ -169,7 +169,7 @@
             <i class="fa fa-th" ng-click="toggleKeypad()"></i>
             <i class="fa fa-television"></i>
             <i class="fa fa-cog"></i>
-            <i class="fa fa-expand"></i>
+            <a href="" ng-click="toggleFullScreen()"><i class="fa fa-expand"></i></a>
           </div>
         </div>
         <div id="keypad" class="keypad" ng-show="showKeypad">

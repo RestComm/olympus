@@ -5,7 +5,7 @@
 
 var olyMod = angular.module('mcWebRTC');
 
-olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, $timeout, $interval, $sce, $window, $alert, Fullscreen) {
+olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, $timeout, $interval, $sce, $window, $alert) {
 
   $scope.Math = window.Math;
 
@@ -380,15 +380,9 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
     );
   };
 
-  $scope.fsLocal = function() {
-    $scope.localFS = true;
-    // debugger;
-    // Set Fullscreen to a specific element (bad practice)
-    // Fullscreen.enable(document.getElementsByClassName('webcam-live'));
-  };
-
-  $scope.fsRemote = function() {
-    $scope.remoteFS = true;
+  $scope.fsVideo = false;
+  $scope.toggleFullScreen = function() {
+    $scope.fsVideo = !$scope.fsVideo;
   };
 
   var requestStream = function(video, callback) {
@@ -456,10 +450,6 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
     else {
       $scope.activeChats[chatId].status = 'normal';
     }
-  };
-
-  $rootScope.toggleFullscreen = function () {
-    $location.path('/');
   };
 
   // -- INCOMING CALL ----------------------------------------------------------
