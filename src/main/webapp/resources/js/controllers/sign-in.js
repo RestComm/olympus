@@ -27,6 +27,10 @@ olyMod.controller('SignInCtrl', function ($scope, $rootScope, $location, $timeou
   };
 
   $scope.turn = {
+    address: 'https://service.xirsys.com/ice',
+    domain: 'cloud.restcomm.com',
+    login: 'atsakiridis',
+    password: '4e89a09e-bf6f-11e5-a15c-69ffdcc2b8a7'
   };
 
   $scope.outboundProxy = {
@@ -61,8 +65,7 @@ olyMod.controller('SignInCtrl', function ($scope, $rootScope, $location, $timeou
   $scope.connect = function() {
     $scope.registering = true;
 
-    // FIXME: This is only valid for api.xirsys.com...
-    if($scope.turn.address && $scope.turn.address.indexOf('https://api.xirsys.com/') === 0) {
+    if($scope.turn.address && $scope.turn.address.indexOf('xirsys.com') > 0) {
       if(!$scope.turn.login || !$scope.turn.password) {
         return;
       }
@@ -78,9 +81,9 @@ olyMod.controller('SignInCtrl', function ($scope, $rootScope, $location, $timeou
         type: 'POST',
         url: $scope.turn.address,
         data: {
-          domain: 'www.' + 'telestax.com', // FIXME: what should go here ?
+          domain: $scope.turn.domain,
           room: 'default',
-          application: 'restcomm-webrtc',
+          application: 'default',
           ident: $scope.turn.login,
           secret: $scope.turn.password,
           username: $scope.sip.username,
@@ -110,7 +113,7 @@ olyMod.controller('SignInCtrl', function ($scope, $rootScope, $location, $timeou
         sipPassword: $scope.sip.password
       },
       RTCPeerConnection: {
-        iceServers: $scope.iceServers,
+        iceServers: $scope.iceServers.iceServers,
         stunServer: $scope.stun.address,
         turnServer: $scope.turn.address,
         turnLogin: $scope.turn.login,
