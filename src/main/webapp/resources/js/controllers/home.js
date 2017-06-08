@@ -73,6 +73,20 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
     $window.localStorage.setItem($scope.loggedUser + '_contacts', angular.toJson($scope.contacts));
   };
 
+  var getContactById = function(contactId, tryAddress) {
+    for (var i = 0; i < $scope.contacts.length; i++) {
+      if (contactId === $scope.contacts[i].id || (tryAddress && contactId === $scope.contacts[i].address)) {
+        return $scope.contacts[i];
+      }
+    }
+  };
+
+  var moveContactToTop = function(contactId) {
+    var contact = getContactById(contactId, true);
+    $scope.contacts.splice(0, 0, $scope.contacts.splice($scope.contacts.indexOf(contact), 1)[0]);
+    saveContacts();
+  };
+
   loadContacts();
 
   $scope.hasContacts = true;
@@ -128,6 +142,8 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
     }
 
     $scope.ac.writeText = '';
+
+    moveContactToTop($scope.ac.id);
   };
 
   $scope.$on('MESSAGE_RECEIVED', function (event, message) {
@@ -139,6 +155,7 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
         var entry = {time: Date.now(), direction: 'in', text: message.text};
         var chatId = message.from.substr(0, message.from.indexOf('@') === -1 ? 999 : message.from.indexOf('@'));
         if($scope.activeChats[chatId]) {
+          moveContactToTop(chatId);
           addEntryToChat(chatId, entry);
           if ($scope.activeChats[chatId].status === 'hid') {
             $scope.activeChats[chatId].status = 'normal';
@@ -152,6 +169,7 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
           var existingContact = false;
           for (var i = 0; i < $scope.contacts.length; i++) {
             if (chatId === $scope.contacts[i].id || chatId === $scope.contacts[i].address) {
+              moveContactToTop($scope.contacts[i].id);
               existingContact = true;
               break;
             }
@@ -400,6 +418,7 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
   };
 
   $scope.callContact = function(contact, video) {
+    moveContactToTop(contact);
     requestStream(video, function() { $scope.makeCall(contact, video); });
   };
 
@@ -458,6 +477,7 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
     $scope.$apply(
       function() {
         $scope.incomingCall = call;
+        moveContactToTop(call.callerPhoneNumber);
         $('#snd_ringing')[0].play(); // FIXME ?
       });
   });
