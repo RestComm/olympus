@@ -330,7 +330,7 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
   };
 
   $scope.addContact = function () {
-    $scope.contacts.push({
+    $scope.contacts.unshift({
       name: $scope.newContact.name || $scope.newContact.address,
       address: $scope.newContact.address,
       id: $scope.newContact.address.substr(0, $scope.newContact.address.indexOf("@")) || $scope.newContact.address,
