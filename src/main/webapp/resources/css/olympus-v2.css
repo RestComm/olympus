@@ -914,7 +914,7 @@ a.action-disabled, .action-disabled a {
     padding-right: 20px;
 }
 
-#sidebar-content:hover {
+#sidebar-content:hover:not(.in-action) {
     overflow-y: auto;
     padding-right: 12px;
 }

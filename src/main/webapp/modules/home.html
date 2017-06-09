@@ -51,7 +51,7 @@
         <a href="" ng-click="hideContacts = !hideContacts">Contacts <span class="pull-right" ng-show="hideContacts">+</span><span class="pull-right" ng-show="!hideContacts">-</span></a>
       </div>
 
-      <div id="sidebar-content">
+      <div id="sidebar-content" ng-class="{ 'in-action': sidebarAction }">
         <div class="sidebar-rooms" ng-show="!sidebarAction && hasRooms">
           <li class="sidebar-brand">
             <a href="">
