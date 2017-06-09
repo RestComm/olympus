@@ -842,6 +842,26 @@ a.action-disabled, .action-disabled a {
     background: none;
 }
 
+.sidebar-action-title {
+    margin-left: 10px;
+}
+
+.sidebar-action-error {
+    color: #dd4126;
+    text-align: right;
+    padding-right: 20px;
+}
+
+.sidebar-add-contact {
+    border: 2px solid #e1e1e1;
+    background-color: #fafafa;
+    height: calc(100% - 10px);
+}
+
+.sidebar-action-button {
+    margin: 15px;
+}
+
 .sidebar-input {
     width: 90%;
     height: 40px;

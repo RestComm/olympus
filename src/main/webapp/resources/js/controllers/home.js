@@ -329,6 +329,16 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
     $scope.showContacts = !$scope.showContacts;
   };
 
+  $scope.$watch('newContact.address', function(newAddress) {
+    for (var i = 0; i < $scope.contacts.length; i++) {
+      if (newAddress === $scope.contacts[i].address) {
+        $scope.duplicateContact = true;
+        return;
+      }
+    }
+    $scope.duplicateContact = false;
+  });
+
   $scope.addContact = function () {
     $scope.contacts.unshift({
       name: $scope.newContact.name || $scope.newContact.address,
@@ -340,6 +350,7 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
       icon: 'users', title: 'Contact added!'});
 
     $scope.newContact = {};
+    $scope.addContactForm.$setPristine();
     saveContacts();
     delete $scope.sidebarAction;
   };
@@ -461,7 +472,6 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
   };
 
   $scope.chatContact = function(contact) {
-    this.$hide && this.$hide();
     var chatId = contact.substr(0, contact.indexOf('@') === -1 ? 999 : contact.indexOf('@'));
     if(!$scope.activeChats[chatId]) {
       $scope.activeChats[chatId] = {id: contact,  status: 'normal', history: []};

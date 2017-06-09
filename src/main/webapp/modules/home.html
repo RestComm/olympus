@@ -95,7 +95,7 @@
         </div>
 
         <div class="sidebar-contacts" ng-show="!sidebarAction && hasContacts">
-          <li class="contact-container" ng-repeat="contact in contacts" ng-click="selectContact(contact)" ng-hide="hideContacts" ng-class="{selected: ac.id === contact.id}">
+          <li class="contact-container" ng-repeat="contact in contacts" ng-click="selectContact(contact)" ng-hide="hideContacts" ng-class="{selected: ac.address === contact.address}">
             <img id="contact-photo-{{ contact.id }}" class="contact-photo" ng-src="resources/images/v2/{{ contact.photo || 'mp-icon-profile.png' }}" ng-if ="contact.photo">
             <i class="fa fa-{{ contact.icon || 'user-o' }} contact-photo" id="contact-icon-{{ contact.id }}" ng-if ="!contact.photo" />
             <span class="contact-chat-unread-min label label-danger" ng-show="activeChats[contact.id].unread > 0">{{ activeChats[contact.id].unread }}</span>
@@ -114,12 +114,16 @@
           </li>
         </div>
 
-        <div class="sidebar-add-contact" ng-show="sidebarAction === 'addContact'" style="border: 2px solid #e1e1e1;background-color: #fafafa;height: calc(100% - 10px);">
-          <h4 style="margin-left: 10px;">Add Contact</h4>
+        <div class="sidebar-add-contact" ng-show="sidebarAction === 'addContact'">
+          <h4 class="sidebar-action-title">Add Contact</h4>
           <hr>
-          <input type="text" class="sidebar-input" placeholder="Contact Name" ng-model="newContact.name">
-          <input type="text" class="sidebar-input" placeholder="Contact Address" ng-model="newContact.address">
-          <button class="btn btn-default pull-right" ng-click="addContact()" style="margin: 15px;">Add Contact</button>
+          <form name="addContactForm">
+            <input name ="ncName" type="text" class="sidebar-input" placeholder="Contact Name" ng-model="newContact.name">
+            <input name ="ncAddress" type="text" class="sidebar-input" placeholder="Contact Address" ng-model="newContact.address" required>
+            <div class="sidebar-action-error" ng-show="addContactForm.ncAddress.$dirty && duplicateContact">The contact already exists</div>
+            <div class="sidebar-action-error" ng-show="addContactForm.ncAddress.$dirty && addContactForm.ncAddress.$error.required">The address is required</div>
+            <button class="btn btn-default pull-right sidebar-action-button" ng-click="addContact()" ng-disabled="duplicateContact || !addContactForm.$valid">Add Contact</button>
+          </form>
         </div>
       </div>
 
