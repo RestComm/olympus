@@ -331,7 +331,8 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
 
   $scope.$watch('newContact.address', function(newAddress) {
     for (var i = 0; i < $scope.contacts.length; i++) {
-      if (newAddress === $scope.contacts[i].address) {
+      if (newAddress === $scope.contacts[i].address &&
+          (!$scope.editingContact || ($scope.editingContact && $scope.curContact !== $scope.contacts[i]))) {
         $scope.duplicateContact = true;
         return;
       }
@@ -355,6 +356,28 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
     delete $scope.sidebarAction;
   };
 
+  $scope.editContact = function (contact) {
+    $scope.editingContact = true;
+    $scope.curContact = contact;
+    $scope.newContact = angular.copy(contact);
+    $scope.toggleSidebar('addContact');
+  };
+
+  $scope.cancelEditContact = function() {
+    delete $scope.editingContact;
+    delete $scope.curContact;
+    $scope.newContact = {};
+    $scope.addContactForm.$setPristine();
+    $scope.toggleSidebar('addContact');
+  };
+
+  $scope.saveEditContact = function() {
+    $scope.curContact.name = $scope.newContact.name;
+    $scope.curContact.address = $scope.newContact.address;
+    saveContacts();
+    $scope.cancelEditContact();
+  };
+
   $scope.isValidContact = function () {
     if ($scope.newContact && $scope.newContact.address) {
       return $filter('filter')($scope.contacts, {address: $scope.newContact.address}, true).length === 0;
@@ -373,6 +396,8 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
     $scope.contacts.splice($scope.contacts.indexOf(contact), 1);
     log('SUCCESS', 'The contact "' + (contact.name || contact.address)  + ' (' + contact.address + ')" has been deleted from the contact list.', {
       icon: 'trash-o', title: 'Contact deleted!'});
+    saveContacts();
+    $scope.cancelEditContact();
   };
 
   $scope.isClient = function(contact) {

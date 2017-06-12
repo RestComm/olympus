@@ -52,7 +52,10 @@ i.contact-photo {
     padding-top: 8px;
 }
 
-.contact-space > a {
+.contact-space > div {
+    cursor: pointer;
+    font-size: 16px;
+    color: #585858;
     padding-top: 5px;
     padding-bottom: 40px;
     max-height: 80px;
@@ -63,15 +66,33 @@ i.contact-photo {
     font-size: 0.7em;
     opacity: 0.5;
     text-overflow: ellipsis;
-    width: 175px;
+    width: 195px;
     overflow: hidden;
+}
+
+.contact-container a.edit-contact {
+    padding-top: 10px;
+    display: none;
+}
+
+.contact-container:hover a.edit-contact {
+    padding: 5px;
+    display: block;
+    opacity: 0.5;
+    text-indent: 0;
+    line-height: 0;
+    margin: 20px -5px 0 0;
+}
+
+.contact-container a.edit-contact:hover {
+    opacity: 1;
 }
 
 .contact-chat-unread {
     float: right;
     text-indent: 0;
     /*margin-top: 12px;*/
-    margin-right: 10px;
+    /*margin-right: 10px;*/
 }
 
 .contact-chat-unread-min {
@@ -860,6 +881,9 @@ a.action-disabled, .action-disabled a {
 
 .sidebar-action-button {
     margin: 15px;
+}
+.sidebar-action-button+.sidebar-action-button {
+    margin-left: 0;
 }
 
 .sidebar-input {
