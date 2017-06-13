@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<olympus>
+
+  <!-- Define the WS server parameter. If 'enabled' is set to 'true' it will use WSS -->
+  <server secure="false">
+    <!-- WS server address. If not defined, it will default to the same as webapp host name -->
+    <address></address>
+    <!-- WS server port. If not defined, it will default to 5082 -->
+    <port>5082</port>
+  </server>
+
+  <!-- STUN configuration. Only used if 'enabled' is set to 'true' -->
+  <stun enabled="true">
+    <!-- STUN server address. If not defined, it will default to 'stun.l.google.com' -->
+    <address>stun.l.google.com</address>
+    <!-- STUN server port. If not defined, it will default to '19302' -->
+    <port>19302</port>
+  </stun>
+
+  <!-- TURN configuration. Only used if 'enabled' is set to 'true' -->
+  <turn enabled="true">
+    <!-- TURN server address. If not defined, it will default to 'https://service.xirsys.com/ice' -->
+    <address>https://service.xirsys.com/ice</address>
+    <!-- TURN domain. If not defined, a default value will NOT be provided -->
+    <domain>cloud.restcomm.com</domain>
+    <!-- TURN login. If not defined, a default value will NOT be provided -->
+    <login>atsakiridis</login>
+    <!-- TURN password. If not defined, a default value will NOT be provided -->
+    <password>4e89a09e-bf6f-11e5-a15c-69ffdcc2b8a7</password>
+  </turn>
+
+</olympus>

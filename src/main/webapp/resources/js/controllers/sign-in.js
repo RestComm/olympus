@@ -2,17 +2,50 @@
 
 var olyMod = angular.module('mcWebRTC');
 
-olyMod.controller('SignInCtrl', function ($scope, $rootScope, $location, $timeout, $animate, wrtcEventListener) {
+olyMod.controller('SignInCtrl', function ($scope, $rootScope, $location, $timeout, $animate, $http, $window, wrtcEventListener) {
 
-  var WS_PROTOCOL = $location.protocol() === 'https' ? 'wss' : 'ws';
+  $http.get("resources/xml/olympus.xml", { transformResponse: function (xmlResponse) {
+      return new X2JS().xml_str2json(xmlResponse); }
+    })
+    .then(function successCallback(response) {
+      var olympusConfig = response.data.olympus;
+      $scope.serverAddress =  olympusConfig.server.address || $window.location.hostname;
+      if ($scope.sip) {
+        $scope.sip.domain = $scope.serverAddress;
+      }
+      $scope.serverPort = olympusConfig.server.port || 5082;
+      if (olympusConfig.server._secure) {
+        $scope.serverProtocol = olympusConfig.server._secure === 'true' ? 'wss' : 'ws';
+      }
+      else {
+        $scope.serverProtocol = $location.protocol() === 'https' ? 'wss' : 'ws';
+      }
+
+      if (olympusConfig.turn && olympusConfig.turn._enabled !== 'false') {
+        $scope.turn = {
+          address: olympusConfig.turn.address || 'https://service.xirsys.com/ice',
+          domain: olympusConfig.turn.domain || '',
+          login: olympusConfig.turn.login || '',
+          password: olympusConfig.turn.password || ''
+        };
+      }
+
+      if (olympusConfig.stun && olympusConfig.stun._enabled === 'true') {
+        $scope.stun = {
+          address: olympusConfig.stun.address ?
+            (olympusConfig.stun.address + ':' + (olympusConfig.stun.port || 19302)) : 'stun.l.google.com:19302'
+        };
+      }
+
+      $scope.outboundProxy = {
+        address: $scope.serverProtocol + '://' + $scope.serverAddress + ':' + $scope.serverPort
+      };
+  });
 
   $rootScope.loggedUser = '';
 
   $scope.simplified = true;
   $scope.showAdvanced = false;
-
-  $scope.serverAddress = window.location.hostname;
-  $scope.serverPort = '5082';
 
   $scope.sip = {
     displayName: 'Alice Alissys',
@@ -20,21 +53,6 @@ olyMod.controller('SignInCtrl', function ($scope, $rootScope, $location, $timeou
     domain: $scope.serverAddress,
     // login: 'alice',
     // password: '1234'
-  };
-
-  $scope.stun = {
-    address: 'stun.l.google.com:19302'
-  };
-
-  $scope.turn = {
-    address: 'https://service.xirsys.com/ice',
-    domain: 'cloud.restcomm.com',
-    login: 'atsakiridis',
-    password: '4e89a09e-bf6f-11e5-a15c-69ffdcc2b8a7'
-  };
-
-  $scope.outboundProxy = {
-    address: WS_PROTOCOL + '://' + $scope.serverAddress + ':' + $scope.serverPort
   };
 
   $scope.communicationSettings = {
@@ -53,7 +71,7 @@ olyMod.controller('SignInCtrl', function ($scope, $rootScope, $location, $timeou
   $scope.mirrorServer = function() {
     $scope.validServer = validate($scope.serverAddress);
     if($scope.validServer) {
-      $scope.outboundProxy.address = WS_PROTOCOL + '://' + $scope.serverAddress + ':' + $scope.serverPort;
+      $scope.outboundProxy.address = $scope.serverProtocol + '://' + $scope.serverAddress + ':' + $scope.serverPort;
       $scope.sip.domain = $scope.serverAddress;
     }
   };
