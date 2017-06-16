@@ -128,7 +128,7 @@ olyMod.controller('SignInCtrl', function ($scope, $rootScope, $location, $timeou
   $scope.registering = false;
   $scope.shakeit = false;
 
-  $scope.$on('REGISTRATION_STATUS', function(event, status/*, error*/) {
+  $scope.$on('REGISTRATION_STATUS', function(event, status, error) {
     $timeout(
       function() {
         $scope.registering = false;
@@ -139,6 +139,13 @@ olyMod.controller('SignInCtrl', function ($scope, $rootScope, $location, $timeou
         else {
           $scope.registerFailed = true;
           $scope.shakeit = true;
+          if (error === 'Connection to WebRTCommServer has failed') {
+            $scope.loginError = 'Service is temporarily unavailable. Please try again later.<br>' +
+              'If the problem persists, check <a target="_blank" href="http://status.restcomm.com/">Restcomm Status</a> for information.';
+          }
+          else {
+            $scope.loginError = 'Invalid Username or Password. Please try again.';
+          }
         }
       });
   });
