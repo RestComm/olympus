@@ -17,11 +17,9 @@
         </div>
       </div>
       <button type="submit" ng-click="connect()" ng-disabled="loginForm.$invalid">Sign in</button>
-      <section style="color: #df3e00;" ng-show="registerFailed">
-        Invalid Username/Password. Please try again.
-      </section>
+      <section style="color: #df3e00;" ng-show="registerFailed" ng-bind-html="loginError"></section>
       <section>
-        <a href="">Forgot password?</a>
+        <a href="/#/numbers/clients">Forgot password?</a>
       </section>
     </form>
   </section>
