@@ -25,6 +25,16 @@
     margin: 13px 0px 5px 10px;
 }
 
+.no-select {
+      -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+}
+
 /** Contacts Section **/
 
 .contact-container {
@@ -427,9 +437,11 @@ a.action-disabled, .action-disabled a {
     font-size: 3em;
     z-index: 1;
 }
-
-.video-controls-bottom i {
+.video-controls-bottom a.control-button {
+    color: inherit;
     margin-right: 30px;
+    font-size: 1em;
+    width: 70px;
 }
 
 #chat-video-aeria-full {
@@ -495,6 +507,7 @@ a.action-disabled, .action-disabled a {
     width: calc(100% - 160px);
     margin: 3px;
     text-align: center;
+    background: url('../images/v2/big-video-background.jpg') no-repeat center center fixed;
 }
 
 #big-video-full {

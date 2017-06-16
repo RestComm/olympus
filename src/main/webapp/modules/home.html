@@ -169,7 +169,7 @@
 
     <div class="border-separator"></div>
 
-    <div id="videos" ng-show="remoteVideo && (ac.id === inCall.callerPhoneNumber || ac.address === inCall.calleePhoneNumber)" fullscreen="remoteVideo && fsVideo">
+    <div id="videos" class="no-select" ng-show="remoteVideo && (ac.id === inCall.callerPhoneNumber || ac.address === inCall.calleePhoneNumber)" fullscreen="remoteVideo && fsVideo">
       <div id="big-video">
         <div class="video-controls-top">
           {{ inCall.callTimer | secondsToTime:true }}
@@ -205,15 +205,15 @@
           </table>
         </div>
         <div class="video-controls-bottom" style="margin-top: -75px; font-size: 3em;">
-          <span class="btn" style="font-size: 1em;">
-            <i class="fa" ng-class="inCall.localVideoMuted ? 'fa-eye-slash muted' : 'fa-video-camera'" ng-click="localMuteVideo()"></i>
-          </span>
-          <span class="btn" style="font-size: 1em;">
-            <i class="fa fa-phone" style="transform: rotate(135deg);" ng-click="callHangup()"></i>
-          </span>
-          <span class="btn" style="font-size: 1em;">
-            <i class="fa" ng-class="inCall.localAudioMuted ? 'fa-microphone-slash muted' : 'fa-microphone'" ng-click="localMuteAudio()"></i>
-          </span>
+          <a href="" class="btn control-button" ng-click="localMuteVideo()">
+            <i class="fa" ng-class="inCall.localVideoMuted ? 'fa-eye-slash muted' : 'fa-video-camera'" ></i>
+          </a>
+          <a href="" class="btn control-button" ng-click="callHangup()">
+            <i class="fa fa-phone" style="transform: rotate(135deg);"></i>
+          </a>
+          <a href="" class="btn control-button" ng-click="localMuteAudio()">
+            <i class="fa" ng-class="inCall.localAudioMuted ? 'fa-microphone-slash muted' : 'fa-microphone'"></i>
+          </a>
         </div>
         <video
             class="remote-video"
