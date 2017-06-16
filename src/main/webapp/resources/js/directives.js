@@ -37,8 +37,8 @@ olyDirectives.directive('shake', ['$animate', function ($animate) {
       scope.$watch('shakeit', function(newValue, oldValue) {
         if (newValue === oldValue || !newValue ) return;
 
-        $animate.addClass(element, 'shake').then(function() {
-          element.removeClass('shake');
+        $animate.addClass(element, 'animated shake').then(function() {
+          element.removeClass('animated shake');
           scope.shakeit = false;
           scope.$apply();
         });
