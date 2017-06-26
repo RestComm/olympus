@@ -87,7 +87,8 @@ form[role=login] input {
   padding-left: 40px;
   border: 1px solid #d1d1d1;
   margin-bottom: 20px;
-  font-size: 16px;
+  font-size: 18px;
+  font-weight: 300;
 }
 
 form[role=login] input::-webkit-input-placeholder,
@@ -133,4 +134,11 @@ form[role=login] button:enabled:hover {
 
 .login-form .form-control {
   padding-left: 10px;
+}
+
+.login-form .form-control:focus{
+    border: 1px solid #d1d1d1;
+    box-shadow: inset 0 0 6px #ffffff;
+    -webkit-box-shadow: 0 0 6px #ffffff;
+    -moz-box-shadow: 0 0 6px #ffffff;
 }
