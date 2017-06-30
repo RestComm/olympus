@@ -4,7 +4,7 @@ var olyMod = angular.module('mcWebRTC');
 
 olyMod.controller('SignInCtrl', function ($scope, $rootScope, $location, $timeout, $animate, $http, $window, wrtcEventListener) {
 
-  $http.get("resources/xml/olympus.xml", { transformResponse: function (xmlResponse) {
+  $http.get('resources/xml/olympus.xml', { transformResponse: function (xmlResponse) {
       return new X2JS().xml_str2json(xmlResponse); }
     })
     .then(function successCallback(response) {
@@ -13,15 +13,15 @@ olyMod.controller('SignInCtrl', function ($scope, $rootScope, $location, $timeou
       if ($scope.sip) {
         $scope.sip.domain = $scope.serverAddress;
       }
-      $scope.serverPort = olympusConfig.server.port || 5082;
-      if (olympusConfig.server._secure) {
+      if (olympusConfig.server._secure && olympusConfig.server._secure.toLowerCase() === 'true') {
         $scope.serverProtocol = olympusConfig.server._secure === 'true' ? 'wss' : 'ws';
       }
       else {
         $scope.serverProtocol = $location.protocol() === 'https' ? 'wss' : 'ws';
       }
+      $scope.serverPort = ($scope.serverProtocol === 'wss' ? (olympusConfig.server['secure-port'] || 5083) : (olympusConfig.server.port || 5082));
 
-      if (olympusConfig.turn && olympusConfig.turn._enabled !== 'false') {
+      if (olympusConfig.turn && olympusConfig.turn._enabled.toLowerCase() !== 'false') {
         $scope.turn = {
           address: olympusConfig.turn.address || 'https://service.xirsys.com/ice',
           domain: olympusConfig.turn.domain || '',
@@ -30,7 +30,7 @@ olyMod.controller('SignInCtrl', function ($scope, $rootScope, $location, $timeou
         };
       }
 
-      if (olympusConfig.stun && olympusConfig.stun._enabled === 'true') {
+      if (olympusConfig.stun && olympusConfig.stun._enabled.toLowerCase() === 'true') {
         $scope.stun = {
           address: olympusConfig.stun.address ?
             (olympusConfig.stun.address + ':' + (olympusConfig.stun.port || 19302)) : 'stun.l.google.com:19302'

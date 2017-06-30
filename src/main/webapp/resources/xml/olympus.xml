@@ -8,6 +8,8 @@
     <address></address>
     <!-- WS server port. If not defined, it will default to 5082 -->
     <port>5082</port>
+    <!-- WSS secure server port. If not defined, it will default to 5083 -->
+    <secure-port>5083</secure-port>
   </server>
 
   <!-- STUN configuration. Only used if 'enabled' is set to 'true' -->
