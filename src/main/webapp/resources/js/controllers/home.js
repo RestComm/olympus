@@ -9,6 +9,19 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
 
   $scope.Math = window.Math;
 
+  var TOGGLE_KEYPAD_KEY = 190; // '.'
+
+  $rootScope.onKeyUp = function(key) {
+    if (key === TOGGLE_KEYPAD_KEY) {
+      // let's make sure we don't trigger when writing on text elements
+      var activeElement = document.activeElement;
+      var inputs = ['input', 'select', 'textarea'];
+      if (activeElement && inputs.indexOf(activeElement.tagName.toLowerCase()) === -1) {
+        $scope.toggleKeypad();
+      }
+    }
+  };
+
   $rootScope.logs = [
     {time: Date.now(), level: 'INFO', message: 'Loaded Olympus v2!'}
   ];
