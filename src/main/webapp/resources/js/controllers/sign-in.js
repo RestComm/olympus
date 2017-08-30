@@ -81,6 +81,7 @@ olyMod.controller('SignInCtrl', function ($scope, $rootScope, $location, $timeou
   };
 
   $scope.connect = function() {
+    $scope.registerFailed = false;
     $scope.registering = true;
 
     if($scope.turn.address && $scope.turn.address.indexOf('xirsys.com') > 0) {
@@ -158,8 +159,10 @@ olyMod.controller('SignInCtrl', function ($scope, $rootScope, $location, $timeou
           $scope.registerFailed = true;
           $scope.shakeit = true;
           if (error === 'Connection to WebRTCommServer has failed') {
-            $scope.loginError = 'Service is temporarily unavailable. Please try again later.<br>' +
-              'If the problem persists, check <a target="_blank" href="http://status.restcomm.com/">Restcomm Status</a> for information.';
+            $scope.loginError = 'Service is temporarily unavailable. Please try again later.';
+            if ($location.host().endsWith('.restcomm.com')) {
+              $scope.loginError += '<br>If the problem persists, check <a target="_blank" href="http://status.restcomm.com/">Restcomm Status</a> for information.';
+            }
           }
           else {
             $scope.loginError = 'Invalid Username or Password. Please try again.';
