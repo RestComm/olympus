@@ -130,7 +130,21 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
   // $scope.chat = [{"time":1476584495106,"direction":"in","from":"alice","text":"ewrjwej"},{"time":1476584511105,"direction":"in","from":"alice","text":";)"},{"time":1476584544105,"direction":"in","from":"alice","text":"Random Stuff"}];//[];
 
   var addEntryToChat = function(chatId, entry) {
-    $scope.activeChats[chatId].history.push(entry);
+    if ($scope.activeChats[chatId]) {
+      $scope.activeChats[chatId].history.push(entry);
+    }
+    else {
+      $scope.activeChats[chatId] = {id: chatId, status: 'normal', history: [entry]};
+    }
+
+    // reveal the chat in case it is hidden (for windowed chats)
+    if ($scope.activeChats[chatId].status === 'hid') {
+      $scope.activeChats[chatId].status = 'normal';
+    }
+    else if ($scope.activeChats[chatId].status === 'min' || !$scope.ac || chatId !== $scope.ac.id) {
+      $scope.activeChats[chatId].unread = ($scope.activeChats[chatId].unread || 0) + 1;
+    }
+
     $timeout(function() {
       // FIXME: make this a directive!
       $(".chat-container").scrollTop($(".chat-container")[0].scrollHeight);
@@ -147,12 +161,7 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
     }
     var entry = {time: Date.now(), direction: 'out', status: 'pending', from: $rootScope.loggedUser, text: ac.writeText};
     var chatId = ac.id.substr(0, ac.id.indexOf('@') === -1 ? 999 : ac.id.indexOf('@'));
-    if ($scope.activeChats[chatId]) {
-      addEntryToChat(chatId, entry);
-    }
-    else {
-      $scope.activeChats[chatId] = {id: ac, status: 'normal', history: [entry]};
-    }
+    addEntryToChat(chatId, entry);
 
     $scope.ac.writeText = '';
 
@@ -170,12 +179,6 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
         if($scope.activeChats[chatId]) {
           moveContactToTop(chatId);
           addEntryToChat(chatId, entry);
-          if ($scope.activeChats[chatId].status === 'hid') {
-            $scope.activeChats[chatId].status = 'normal';
-          }
-          else if ($scope.activeChats[chatId].status === 'min' || !$scope.ac || chatId !== $scope.ac.id) {
-            $scope.activeChats[chatId].unread = ($scope.activeChats[chatId].unread || 0) + 1;
-          }
         }
         else {
           $scope.activeChats[chatId] = {id: message.from, status: 'normal', history: [entry], unread: ($scope.ac && chatId === $scope.ac.id ? 0 : 1)};
@@ -536,9 +539,11 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
         if ($scope.incomingCall) {
           delete $scope.incomingCall;
           $('#snd_ringing')[0].pause(); // FIXME ?
+
           log('INFO', call.callerPhoneNumber + ' tried to contact you on ' + new Date().toUTCString(), {
             title: 'Missed Call',
             icon: 'whatsapp', type: 'info', duration: 3600});
+          registerCallEvent('missed', call.callerPhoneNumber);
         }
         else if (currentCall) {
           currentCall = undefined;
@@ -630,9 +635,14 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
             type: 'info', duration: 30,
             show: true, html: true,
             container: '.notifications-container'});
+          registerCallEvent('unanswered', $scope.inCall.calleePhoneNumber);
         }
         if ($scope.inCall && $scope.inCall.timerProm) {
           $interval.cancel($scope.inCall.timerProm);
+          registerCallEvent('oncall', $scope.inCall.calleePhoneNumber || $scope.inCall.callerPhoneNumber);
+        }
+        if (!$scope.inCall) {
+          registerCallEvent('rejected', call.callerPhoneNumber);
         }
         delete $scope.inCall; // FIXME: Anything else ?
         delete $scope.requestStream;
@@ -640,6 +650,29 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
       });
   });
 
+  var registerCallEvent = function(eventType, participant) {
+    var entry = {
+      time: Date.now(),
+      direction: 'system',
+      status: 'system',
+      from: 'system',
+      type: eventType
+    };
+    participant = participant.substr(0, participant.indexOf('@') === -1 ? 999 : participant.indexOf('@'));
+    if (eventType === 'oncall') {
+      entry.text = 'You were on a call with ' + participant + ' on ' + new Date().toUTCString() + ' for ' + $filter('secondsToTime')($scope.inCall.callTimer, true) + '.';
+    }
+    else if (eventType === 'rejected') {
+      entry.text = 'You rejected a call from ' + participant + ' on ' + new Date().toUTCString() + '.';
+    }
+    else if (eventType === 'missed') {
+      entry.text = 'Missed call from ' + participant + ' on ' + new Date().toUTCString() + '.';
+    }
+    else if (eventType === 'unanswered') {
+      entry.text = 'Your call to ' + participant + ' on ' + new Date().toUTCString() + ' was not answered.';
+    }
+    addEntryToChat(participant, entry);
+  };
 
   $scope.$on('CALL_OPENED', function (event, call) {
     console.debug('Event "CALL_OPENED"', event, call);

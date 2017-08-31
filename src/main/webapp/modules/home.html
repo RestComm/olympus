@@ -248,12 +248,18 @@
 
     <div class="chat-container" ng-class="{'chat-with-video': (remoteVideo && (ac.id === inCall.callerPhoneNumber || ac.address === inCall.calleePhoneNumber))}">
       <div class="chat-participant-block" ng-repeat="entry in activeChats[ac.id].history">
-        <img class="chat-photo" ng-if="$index === 0 || activeChats[ac.id].history[$index].direction !== activeChats[ac.id].history[$index-1].direction" src="resources/images/v2/mp-photo2-chat.png">
-        <div class="chat-header" ng-if="$index === 0 || activeChats[ac.id].history[$index].direction !== activeChats[ac.id].history[$index-1].direction">
-          <span class="chat-name">{{ activeChats[ac.id].history[$index].direction === 'in' ? ac.id : loggedUser }}</span>
-          <span class="chat-time" am-time-ago="entry.time" title="{{entry.time | amDateFormat:'ddd, DD MMM YYYY, HH:mm:ss'}}"></span>
-        </div>
-        <div class="chat-line" ng-class="{'chat-line-margin' : $index >= 1}" ng-bind-html="entry.text | linky:'_blank'"</div>
+        <span class="system-message" ng-if="entry.from === 'system'">
+          <i class="fa fa-phone call-event" ng-class="{'missed-call': entry.type === 'missed'}"></i>
+          <span class="system-message-text" ng-bind-html="entry.text"></span>
+        </span>
+        <span ng-if="entry.from !== 'system'">
+          <img class="chat-photo" ng-if="$index === 0 || activeChats[ac.id].history[$index].direction !== activeChats[ac.id].history[$index-1].direction" src="resources/images/v2/mp-photo2-chat.png">
+          <div class="chat-header" ng-if="$index === 0 || activeChats[ac.id].history[$index].direction !== activeChats[ac.id].history[$index-1].direction">
+            <span class="chat-name">{{ activeChats[ac.id].history[$index].direction === 'in' ? ac.id : loggedUser }}</span>
+            <span class="chat-time" am-time-ago="entry.time" title="{{entry.time | amDateFormat:'ddd, DD MMM YYYY, HH:mm:ss'}}"></span>
+          </div>
+          <div class="chat-line" ng-class="{'chat-line-margin' : $index >= 1}" ng-bind-html="entry.text | linky:'_blank'"</div>
+        </span>
       </div>
     </div>
   </div>
