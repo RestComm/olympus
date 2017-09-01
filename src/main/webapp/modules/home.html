@@ -4,47 +4,23 @@
   <div id="sidebar-wrapper">
     <ul class="sidebar-nav">
 
-      <h3 id="company-logo">TeleStax
-        <a href="" ng-click="signOut()">
-          <img src="resources/images/v2/mp-icon-signout.png" width="66px" height="15px">
-        </a>
+      <h3 id="company-logo">
+        <img src="resources/images/v2/restcomm-web-rtc-demo-logo.png" style="margin: -5px -15px 10px;">
       </h3>
 
       <img id="user-photo" src="resources/images/v2/mp-images-sidebar-frame-example.png">
-      <h4 id="user-name">{{ loggedUser }}</h4>
+      <h4 id="user-name">{{ loggedUser }}
+        <a href="" ng-click="signOut()" title="Sign Out">
+          <i class="fa fa-sign-out" style="font-size: 17px; margin-left: 10px;"></i>
+        </a>
+      </h4>
       <div class="nav-menu" id="icons-settings">
-        <ul>
-          <div class="profile action-disabled" tooltip="User Profile">
-            <li>
-              <a href=""><img src="resources/images/v2/mp-icon-profile.png"></a>
-            </li>
-          </div>
-
-          <div class="preferences action-disabled" tooltip="Preferences">
-            <li><a href=""><img src="resources/images/v2/mp-icon-preferences.png"></a>
-            </li>
-          </div>
-
-          <div class="mentions action-disabled" tooltip="Mentions">
-            <li><a href=""><img src="resources/images/v2/mp-icon-mentions.png"></a>
-            </li>
-          </div>
-
-          <div class="favorites action-disabled" tooltip="Favorites">
-            <li><a href=""><img src="resources/images/v2/mp-icon-favorites.png"></a>
-            </li>
-          </div>
-
-          <div class="files action-disabled" tooltip="Files">
-            <li><a href=""><img src="resources/images/v2/mp-icon-files.png"></a>
-            </li>
-          </div>
-
-          <div class="add" tooltip="Add Contact">
-            <li><a href="" ng-click="!editingContact && toggleSidebar('addContact')"><img src="resources/images/v2/mp-icon-add.png"></a>
-            </li>
-          </div>
-        </ul>
+        <a href="" class="action-disabled" style="margin-left: 10px;"><img src="resources/images/v2/mp-icon-profile.png"></a>
+        <a href="" class="action-disabled"><img src="resources/images/v2/mp-icon-preferences.png"></a>
+        <a href="" class="action-disabled"><img src="resources/images/v2/mp-icon-mentions.png"></a>
+        <a href="" class="action-disabled"><img src="resources/images/v2/mp-icon-favorites.png"></a>
+        <a href="" class="action-disabled"><img src="resources/images/v2/mp-icon-files.png"></a>
+        <a href="" ng-click="!editingContact && toggleSidebar('addContact')" title="Add Contact"><img src="resources/images/v2/mp-icon-add.png"></a>
       </div>
 
       <div class="sidebar-brand">

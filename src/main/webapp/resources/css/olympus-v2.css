@@ -14,11 +14,9 @@
 }
 
 #user-photo {
-    padding-left: 10px;
     float: left;
-    margin: 10 0px 10px 10px;
-    margin-top: 0px;
 }
+
 .room-icon {
     padding-left: 10px;
     float: left;
@@ -126,11 +124,11 @@ i.contact-photo {
 }
 
 #user-name {
-    padding-left: 90px;
-    padding-top:  -100px;
+    padding-left: 70px;
+    margin-top: 15px;
+    margin-bottom: 5px;
     color: #4e4f51;
     font-weight: normal;
-
 }
 
 
@@ -348,14 +346,13 @@ a.action-disabled, .action-disabled a {
     cursor: not-allowed;
 }
 
-
 #icons-settings {
-    width: 0px;
     height: 30px;
 }
 
-
-
+#icons-settings a {
+    margin: 0px 7px;
+}
 
 #chat-video-aeria {
     margin-left: 70px;
@@ -971,7 +968,7 @@ a.action-disabled, .action-disabled a {
 }
 
 #sidebar-content {
-    height: calc(100% - 150px);
+    height: calc(100% - 230px);
     overflow-y: hidden;
     width: 300px;
     margin-top: 10px;
