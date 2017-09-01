@@ -389,7 +389,6 @@ a.action-disabled, .action-disabled a {
 .video-controls-top i {
     margin-right: 10px;
     cursor: pointer;
-
 }
 
 .video-controls-top i:hover {
@@ -432,16 +431,23 @@ a.action-disabled, .action-disabled a {
     position: fixed;
     bottom: 230px;
     width: calc(100% - 515px);
-    color: rgba(123, 123, 123, 0.5);
+    color: #aeacab;
     text-align: center;
-    font-size: 3em;
+    font-size: 2.6em;
     z-index: 1;
+    background-color: rgba(0, 0, 0, 0.5);
 }
 .video-controls-bottom a.control-button {
     color: inherit;
     margin-right: 30px;
     font-size: 1em;
     width: 70px;
+    padding: 0;
+}
+
+.video-controls-bottom .telestax-logo-video {
+    margin-top: 15px;
+    margin-right: 10px;
 }
 
 #chat-video-aeria-full {
@@ -507,7 +513,8 @@ a.action-disabled, .action-disabled a {
     width: calc(100% - 160px);
     margin: 3px;
     text-align: center;
-    background: url('../images/v2/big-video-background.jpg') 100% 100%;
+    background: url('../images/v2/big-video-background.jpg') no-repeat center center;
+    background-size: cover;
 }
 
 #big-video-full {
@@ -1057,12 +1064,12 @@ a.action-disabled, .action-disabled a {
 
 .incoming-call-wrapper {
     position: absolute;
-    height: 350px;
     width: 300px;
     background-color: #343434;
-    left: 50%;
-    top: 10%;
+    left: 46%;
+    top: 19%;
     z-index: 1;
+    padding-bottom: 15px;
 }
 
 .inc-call-title {
@@ -1077,6 +1084,13 @@ a.action-disabled, .action-disabled a {
     width: 200px;
     margin-left: 50px;
     margin-top: 10px;
+}
+
+.inc-call-icon {
+    font-size: 175px;
+    color: #cecece;
+    width: 100%;
+    text-align: center;
 }
 
 .inc-call-name {
@@ -1125,7 +1139,6 @@ a.action-disabled, .action-disabled a {
 
 #incoming-call {
     width: 300px;
-    height: 370px;
     background: #4a4a4b;
     box-shadow: 3px 3px 2px #6d6e70;
     display: block;
@@ -1186,26 +1199,21 @@ a.action-disabled, .action-disabled a {
 
 #photo-call {
     display: block;
+    width: 175px;
     margin-right: auto;
     margin-left: auto;
     border-radius: 17px 17px 17px 17px;
     -moz-border-radius: 17px 17px 17px 17px;
     -webkit-border-radius: 17px 17px 17px 17px;
-
 }
 
 #photo-call-current {
-
-
     float: right;
     margin-right: 5px;
-
     margin-top: 5px;
     border-radius: 17px 17px 17px 17px;
     -moz-border-radius: 17px 17px 17px 17px;
     -webkit-border-radius: 17px 17px 17px 17px;
-
-
 }
 
 #inside-curent {
@@ -1221,13 +1229,12 @@ a.action-disabled, .action-disabled a {
 }
 
 #incoming-call-message {
-    float: left;
     font-weight: 300;
     font-size: 20px;
     color: #f3f3f3;
-    margin-left: 65px;
     margin-top: 15px;
     margin-bottom: 15px;
+    text-align: center;
 }
 
 .incoming-call-actions {

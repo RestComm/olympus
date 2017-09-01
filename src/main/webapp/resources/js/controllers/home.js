@@ -469,12 +469,12 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
     });
   };
 
-  $scope.callContact = function(contact, video) {
-    moveContactToTop(contact);
-    requestStream(video, function() { $scope.makeCall(contact, video); });
+  $scope.callContact = function(contactId, video) {
+    moveContactToTop(contactId);
+    requestStream(video, function() { $scope.makeCall(contactId, video); });
   };
 
-  $scope.makeCall = function(contact, video) {
+  $scope.makeCall = function(contactId, video) {
     var callConfiguration = {
       displayName: $rootScope.loggedUser,
       localMediaStream: $rootScope.myStream,
@@ -485,7 +485,7 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
       videoCodecsFilter: ''  // TODO ?
     };
 
-    currentCall = $rootScope.wrtcClient.call(contact, callConfiguration);
+    currentCall = $rootScope.wrtcClient.call(contactId, callConfiguration);
     $scope.inCall = extractCallToScope(currentCall);
     $scope.inCall.intStatus = 'CONNECTING...';
   };
@@ -495,6 +495,7 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
       calleePhoneNumber: call.calleePhoneNumber,
       callerDisplayName: call.callerDisplayName,
       callerPhoneNumber: call.callerPhoneNumber,
+      contact: getContactById(call.calleePhoneNumber || call.callerPhoneNumber, true),
       //configuration: Object
       //connector: PrivateJainSipCallConnector
       //dtmfSender: undefined
@@ -527,6 +528,7 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
   $scope.$on('CALL_INCOMING', function (event, call) {
     $scope.$apply(
       function() {
+        $scope.inCall = extractCallToScope(call);
         $scope.incomingCall = call;
         moveContactToTop(call.callerPhoneNumber);
         $('#snd_ringing')[0].play(); // FIXME ?
@@ -712,6 +714,7 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
           $scope.rvWidth = angular.element('video.remote-video')[0].videoWidth;
           $scope.rvHeight = angular.element('video.remote-video')[0].videoHeight;
           $scope.isPortrait = $scope.rvWidth < $scope.rvHeight;
+          $scope.inCall.hasRemoteVideo = $scope.rvWidth > 10;
           console.log('Remote Video Info - width[' + $scope.rvWidth + '] height[' + $scope.rvHeight + '] portrait[' + $scope.isPortrait + ']');
         }, 500);
   });

@@ -138,25 +138,33 @@
   <!-- Page Content -->
   <a href=""><img id="expand-chat" src="resources/images/v2/mp-arrow-onchat.png" ng-show="ac"></a>
 
-  <div id="incoming-call" class="incoming-call-wrapper" ng-show="incomingCall">
-    <h5 id="incoming-call-message">Incoming Video Call</h5>
-    <img id="photo-call" src="resources/images/v2/photo-call.png">
-    <h5 id="name-participant">{{ incomingCall.callerPhoneNumber }}</h5>
+  <div id="incoming-call" class="incoming-call-wrapper" ng-show="incomingCall || (inCall && !inCall.hasRemoteVideo && ac === inCall.contact)">
+    <h5 id="incoming-call-message" ng-show="inCall.incomingCallFlag && inCall.intStatus !== 'ESTABLISHED'">Incoming Call</h5>
+    <h5 id="incoming-call-message" ng-show="inCall && inCall.intStatus === 'ESTABLISHED'">{{ inCall.contact.name }}</h5>
+    <h5 id="incoming-call-message" ng-show="inCall && inCall.intStatus !== 'ESTABLISHED' && !inCall.incomingCallFlag">Calling {{ inCall.contact.name }}</h5>
+    <i class="fa fa-{{ inCall.contact.icon || 'user-o' }} inc-call-icon" ng-show="!inCall.contact.photo"></i>
+    <img id="photo-call" ng-src="resources/images/v2/{{ inCall.contact.photo || 'mp-icon-profile.png' }}" ng-show="inCall.contact.photo">
+    <h5 id="name-participant" ng-show="inCall.incomingCallFlag && inCall.intStatus !== 'ESTABLISHED'">{{ inCall.contact.name }}</h5>
+    <h5 id="name-participant" ng-show="inCall && inCall.intStatus !== 'ESTABLISHED'">{{ inCall.intStatus }}</h5>
     <div class="incoming-call-actions">
-      <div class="incoming-call-action">
+      <div class="incoming-call-action" ng-show="incomingCall">
         <a href="" ng-click="acceptCall(true)"><img src="resources/images/v2/answer-video-call.png"></a>
       </div>
-      <div class="incoming-call-action">
+      <div class="incoming-call-action" ng-show="incomingCall">
         <a href="" ng-click="acceptCall(false)"><img src="resources/images/v2/answer-audio-call.png"></a>
       </div>
-      <div class="incoming-call-action">
+      <div class="incoming-call-action" ng-show="incomingCall">
         <a href="" ng-click="rejectCall()"><img src="resources/images/v2/decline-call.png"></a>
+      </div>
+      <div class="incoming-call-action" style="width: 90%;" ng-show="inCall && inCall.intStatus !== 'ESTABLISHED' && !inCall.incomingCallFlag">
+        <a href="" ng-click="callHangup()"><img src="resources/images/v2/decline-call.png"></a>
       </div>
     </div>
     <div class="incoming-call-actions">
-      <div class="incoming-call-action">VIDEO</div>
-      <div class="incoming-call-action">AUDIO</div>
-      <div class="incoming-call-action">REJECT</div>
+      <div class="incoming-call-action" ng-show="incomingCall">VIDEO</div>
+      <div class="incoming-call-action" ng-show="incomingCall">AUDIO</div>
+      <div class="incoming-call-action" ng-show="incomingCall">REJECT</div>
+      <div class="incoming-call-action" ng-show="inCall && inCall.intStatus !== 'ESTABLISHED' && !inCall.incomingCallFlag" style="width: 90%;">CANCEL</div>
     </div>
   </div>
 
@@ -204,8 +212,8 @@
             </tr>
           </table>
         </div>
-        <div class="video-controls-bottom" style="margin-top: -75px; font-size: 3em;">
-          <a href="" class="btn control-button" ng-click="localMuteVideo()">
+        <div class="video-controls-bottom video-controls-top">
+          <a href="" class="btn control-button" ng-click="localMuteVideo()" style="margin-left: 175px;">
             <i class="fa" ng-class="inCall.localVideoMuted ? 'fa-eye-slash muted' : 'fa-video-camera'" ></i>
           </a>
           <a href="" class="btn control-button" ng-click="callHangup()">
@@ -214,6 +222,7 @@
           <a href="" class="btn control-button" ng-click="localMuteAudio()">
             <i class="fa" ng-class="inCall.localAudioMuted ? 'fa-microphone-slash muted' : 'fa-microphone'"></i>
           </a>
+          <img class="pull-right telestax-logo-video" src="resources/images/v2/telestax-logo-small-white.png">
         </div>
         <video
             class="remote-video"
@@ -229,6 +238,7 @@
           <webcam
               class="block"
               ng-if="loggedUser && requestStream"
+              ng-show="inCall.hasRemoteVideo"
               placeholder="resources/images/loading.gif"
               audio="true"
               video="isVideoCall"
