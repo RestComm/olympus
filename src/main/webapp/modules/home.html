@@ -114,32 +114,32 @@
   <!-- Page Content -->
   <a href=""><img id="expand-chat" src="resources/images/v2/mp-arrow-onchat.png" ng-show="ac"></a>
 
-  <div id="incoming-call" class="incoming-call-wrapper" ng-show="incomingCall || (inCall && !inCall.hasRemoteVideo && ac === inCall.contact)">
-    <h5 id="incoming-call-message" ng-show="inCall.incomingCallFlag && inCall.intStatus !== 'ESTABLISHED'">Incoming Call</h5>
+  <div id="incoming-call" class="incoming-call-wrapper" ng-show="inCall && !inCall.hasRemoteVideo && ac === inCall.contact">
+    <h5 id="incoming-call-message" ng-show="inCall.incomingCallFlag && inCall.intStatus !== 'ESTABLISHED'">Incoming {{ inCall.isVideo ? 'Video' : 'Audio' }} Call</h5>
     <h5 id="incoming-call-message" ng-show="inCall && inCall.intStatus === 'ESTABLISHED'">{{ inCall.contact.name }}</h5>
     <h5 id="incoming-call-message" ng-show="inCall && inCall.intStatus !== 'ESTABLISHED' && !inCall.incomingCallFlag">Calling {{ inCall.contact.name }}</h5>
     <i class="fa fa-{{ inCall.contact.icon || 'user-o' }} inc-call-icon" ng-show="!inCall.contact.photo"></i>
     <img id="photo-call" ng-src="resources/images/v2/{{ inCall.contact.photo || 'mp-icon-profile.png' }}" ng-show="inCall.contact.photo">
     <h5 id="name-participant" ng-show="inCall.incomingCallFlag && inCall.intStatus !== 'ESTABLISHED'">{{ inCall.contact.name }}</h5>
     <h5 id="name-participant" ng-show="inCall && inCall.intStatus !== 'ESTABLISHED'">{{ inCall.intStatus }}</h5>
-    <div class="incoming-call-actions">
-      <div class="incoming-call-action" ng-show="incomingCall">
+    <div class="incoming-call-actions" ng-hide="inCall.intStatus === 'ESTABLISHED'">
+      <div class="incoming-call-action" ng-show="inCall && inCall.isVideo">
         <a href="" ng-click="acceptCall(true)"><img src="resources/images/v2/answer-video-call.png"></a>
       </div>
-      <div class="incoming-call-action" ng-show="incomingCall">
+      <div class="incoming-call-action" ng-class="{'audio-only': !inCall.isVideo}" ng-show="inCall && inCall.incomingCallFlag">
         <a href="" ng-click="acceptCall(false)"><img src="resources/images/v2/answer-audio-call.png"></a>
       </div>
-      <div class="incoming-call-action" ng-show="incomingCall">
+      <div class="incoming-call-action" ng-class="{'audio-only': !inCall.isVideo}" ng-show="inCall && inCall.incomingCallFlag">
         <a href="" ng-click="rejectCall()"><img src="resources/images/v2/decline-call.png"></a>
       </div>
       <div class="incoming-call-action" style="width: 90%;" ng-show="inCall && inCall.intStatus !== 'ESTABLISHED' && !inCall.incomingCallFlag">
         <a href="" ng-click="callHangup()"><img src="resources/images/v2/decline-call.png"></a>
       </div>
     </div>
-    <div class="incoming-call-actions">
-      <div class="incoming-call-action" ng-show="incomingCall">VIDEO</div>
-      <div class="incoming-call-action" ng-show="incomingCall">AUDIO</div>
-      <div class="incoming-call-action" ng-show="incomingCall">REJECT</div>
+    <div class="incoming-call-actions" ng-hide="inCall.intStatus === 'ESTABLISHED'">
+      <div class="incoming-call-action" ng-show="inCall && inCall.incomingCallFlag && inCall.isVideo">VIDEO</div>
+      <div class="incoming-call-action" ng-class="{'audio-only': !inCall.isVideo}" ng-show="inCall && inCall.incomingCallFlag">AUDIO</div>
+      <div class="incoming-call-action" ng-class="{'audio-only': !inCall.isVideo}" ng-show="inCall && inCall.incomingCallFlag">REJECT</div>
       <div class="incoming-call-action" ng-show="inCall && inCall.intStatus !== 'ESTABLISHED' && !inCall.incomingCallFlag" style="width: 90%;">CANCEL</div>
     </div>
   </div>

@@ -409,11 +409,14 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
     if (contact.deleteConfirm) {
       $timeout.cancel(contact.deleteConfirm);
     }
-    $scope.contacts.splice($scope.contacts.indexOf(contact), 1);
+    var contactIdx = $scope.contacts.indexOf(contact);
+    $scope.contacts.splice(contactIdx, 1);
+    delete $scope.activeChats[contact.id];
     log('SUCCESS', 'The contact "' + (contact.name || contact.address)  + ' (' + contact.address + ')" has been deleted from the contact list.', {
       icon: 'trash-o', title: 'Contact deleted!'});
     saveContacts();
     $scope.cancelEditContact();
+    $scope.selectContact($scope.contacts[Math.min($scope.contacts.length - 1, contactIdx)]);
   };
 
   $scope.isClient = function(contact) {
@@ -496,6 +499,7 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
       callerDisplayName: call.callerDisplayName,
       callerPhoneNumber: call.callerPhoneNumber,
       contact: getContactById(call.calleePhoneNumber || call.callerPhoneNumber, true),
+      isVideo: call.remoteSdpOffer && call.remoteSdpOffer.indexOf(VIDEO_CALL_SDP) > -1,
       //configuration: Object
       //connector: PrivateJainSipCallConnector
       //dtmfSender: undefined
@@ -525,35 +529,48 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
 
   // -- INCOMING CALL ----------------------------------------------------------
 
+  var AUDIO_CALL_SDP = 'a=group:BUNDLE audio';
+  var VIDEO_CALL_SDP = 'a=group:BUNDLE audio video';
+
   $scope.$on('CALL_INCOMING', function (event, call) {
+    currentCall = call;
     $scope.$apply(
       function() {
+        var chatId = call.callerPhoneNumber.substr(0, call.callerPhoneNumber.indexOf('@') === -1 ? 999 : call.callerPhoneNumber.indexOf('@'));
+        if ($scope.activeChats[chatId]) {
+          moveContactToTop(chatId);
+        }
+        else {
+          $scope.activeChats[chatId] = {id: call.callerPhoneNumber, status: 'normal', history: [], unread: 0};
+          var existingContact = false;
+          for (var i = 0; i < $scope.contacts.length; i++) {
+            if (chatId === $scope.contacts[i].id || chatId === $scope.contacts[i].address) {
+              moveContactToTop($scope.contacts[i].id);
+              existingContact = true;
+              break;
+            }
+          }
+          if (!existingContact) {
+            $scope.contacts.unshift({id: chatId, name: chatId, address: call.callerPhoneNumber, icon: 'user-secret'});
+          }
+        }
+
         $scope.inCall = extractCallToScope(call);
-        $scope.incomingCall = call;
         moveContactToTop(call.callerPhoneNumber);
         $('#snd_ringing')[0].play(); // FIXME ?
       });
   });
 
   $scope.$on('CALL_HANGUP', function (event, call) {
-    $scope.$apply(
-      function() {
-        if ($scope.incomingCall) {
-          delete $scope.incomingCall;
-          $('#snd_ringing')[0].pause(); // FIXME ?
-
-          log('INFO', call.callerPhoneNumber + ' tried to contact you on ' + new Date().toUTCString(), {
-            title: 'Missed Call',
-            icon: 'whatsapp', type: 'info', duration: 3600});
-          registerCallEvent('missed', call.callerPhoneNumber);
-        }
-        else if (currentCall) {
-          currentCall = undefined;
-          // $interval.cancel($scope.inCall.timerProm);
-          // delete $scope.inCall;
-          // delete $scope.requestStream;
-        }
-      });
+    if (call.peerConnectionState === 'established') {
+      // call was established, we were on a call
+      registerCallEvent('oncall', call.incomingCallFlag ? call.callerPhoneNumber : call.calleePhoneNumber);
+    }
+    else if (call.incomingCallFlag) {
+      // we have rejected it
+      registerCallEvent('missed', call.callerPhoneNumber);
+    }
+    cleanupCurrentCall();
   });
 
   $scope.acceptCall = function(video) {
@@ -570,18 +587,25 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
       messageMediaFlag: false
     };
 
-    $scope.incomingCall.accept(callConfiguration);
-
-    // currentCall = $scope.incomingCall;
-    // $scope.inCall = extractCallToScope($scope.incomingCall);
-    // $scope.inCall.intStatus = 'CONNECTED';
-    delete $scope.incomingCall;
+    currentCall.accept(callConfiguration);
   };
 
   $scope.rejectCall = function() {
-    $('#snd_ringing')[0].pause(); // FIXME ?
-    $scope.incomingCall.reject();
-    delete $scope.incomingCall;
+    currentCall.reject();
+  };
+
+  var cleanupCurrentCall = function() {
+    $timeout(function() {
+      angular.element('#snd_ringing')[0].pause();
+      angular.element('#snd_ringback')[0].pause();
+      if ($scope.inCall && $scope.inCall.timerProm) {
+        $interval.cancel($scope.inCall.timerProm);
+      }
+      delete $scope.requestStream;
+      delete $scope.remoteVideo;
+      delete $scope.inCall;
+      currentCall = undefined;
+    });
   };
 
   // -- OUTGOING CALL ----------------------------------------------------------
@@ -600,7 +624,7 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
   $scope.$on('CALL_ERROR', function (event, call, error) {
     $scope.$apply(
       function() {
-        // TODO: CALL_ERROR can occur both in outgoing & incoming calls, but for incoming I can't get access to the number of the peer (for outgoing it's calleePhoneNumber and for incoming callerPhoneNumberi is undefined for some reason). Let's leave the number out for now since the user has enough context to figure it out. Once we migrate to restcomm-web-sdk, the number will be there in the Connection object
+        // TODO: CALL_ERROR can occur both in outgoing & incoming calls, but for incoming I can't get access to the number of the peer (for outgoing it's calleePhoneNumber and for incoming callerPhoneNumber is undefined for some reason). Let's leave the number out for now since the user has enough context to figure it out. Once we migrate to restcomm-web-sdk, the number will be there in the Connection object
         //log('WARN', 'Call with ' + $scope.inCall.calleePhoneNumber + ' has failed with "' + error + '".');
         $('#snd_ringback')[0].pause();
         log('WARN', 'Call has failed with "' + error + '".');
@@ -614,42 +638,29 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
       });
   });
 
-  // TODO: Switch alert between _OPEN_ERROR and _CLOSED ?
   $scope.$on('CALL_OPEN_ERROR', function (event, call, error) {
-    $scope.$apply(
-      function() {
-        $('#snd_ringback')[0].pause();
-        log('WARN', 'Call to ' + $scope.inCall.calleePhoneNumber + ' has failed with "' + error + '".');
-      });
+    registerCallEvent('unanswered', call.calleePhoneNumber);
+    cleanupCurrentCall();
   });
 
   $scope.$on('CALL_CLOSED', function (event, call) {
-    $scope.$apply(
-      function() {
-        $('#snd_ringback')[0].pause();
-        // TODO: Stop video, etc..
-        if ($scope.inCall && ($scope.inCall.intStatus === 'CONNECTING...' || $scope.inCall.intStatus === 'RINGING...')) {
-          $alert({
-            title: '<i class="fa fa-user-times"></i> No Answer/Rejected!',
-            content: 'Your call to ' + $scope.inCall.calleePhoneNumber + ' was not answered.',
-            // FIXME: Implement Redial
-            // content: 'Your call to ' + $scope.inCall.calleePhoneNumber + ' was not answered. Would you like to try again ? <button class="btn btn-xs btn-primary"><i class="fa fa-phone"></i> Redial..</button>',
-            type: 'info', duration: 30,
-            show: true, html: true,
-            container: '.notifications-container'});
-          registerCallEvent('unanswered', $scope.inCall.calleePhoneNumber);
-        }
-        if ($scope.inCall && $scope.inCall.timerProm) {
-          $interval.cancel($scope.inCall.timerProm);
-          registerCallEvent('oncall', $scope.inCall.calleePhoneNumber || $scope.inCall.callerPhoneNumber);
-        }
-        if (!$scope.inCall) {
+    if (currentCall) {
+      if (call.peerConnectionState === 'established') {
+        // we didn't make it through CALL_HANGUP, means we have disconnected
+        registerCallEvent('oncall', call.incomingCallFlag ? call.callerPhoneNumber : call.calleePhoneNumber);
+      }
+      else {
+        if (call.incomingCallFlag) {
+          // we have rejected an incoming call
           registerCallEvent('rejected', call.callerPhoneNumber);
         }
-        delete $scope.inCall; // FIXME: Anything else ?
-        delete $scope.requestStream;
-        delete $scope.remoteVideo;
-      });
+        else {
+          // remote party didn't answer and/or we cancelled our outgoing
+          registerCallEvent('unanswered', call.calleePhoneNumber);
+        }
+      }
+    }
+    cleanupCurrentCall();
   });
 
   var registerCallEvent = function(eventType, participant) {
@@ -698,6 +709,7 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
         }
         currentCall = call;
         $scope.inCall = extractCallToScope(currentCall);
+        $scope.inCall.hasRemoteVideo = call.remoteBundledAudioVideoMediaStream.getVideoTracks().length > 0;
         $scope.inCall.intStatus = 'ESTABLISHED';
         $scope.inCall.callTimer = 0;
         $interval.cancel($scope.inCall.timerProm);
@@ -714,7 +726,6 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
           $scope.rvWidth = angular.element('video.remote-video')[0].videoWidth;
           $scope.rvHeight = angular.element('video.remote-video')[0].videoHeight;
           $scope.isPortrait = $scope.rvWidth < $scope.rvHeight;
-          $scope.inCall.hasRemoteVideo = $scope.rvWidth > 10;
           console.log('Remote Video Info - width[' + $scope.rvWidth + '] height[' + $scope.rvHeight + '] portrait[' + $scope.isPortrait + ']');
         }, 500);
   });
@@ -766,7 +777,6 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
     if ($scope.inCall) {
       currentCall.close();
     }
-    // TODO: Do more ? disable/enable buttons... or just delegate to CALL_CLOSED listener...
   };
 
   // -- CHAT -------------------------------------------------------------------

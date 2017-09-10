@@ -1136,6 +1136,7 @@ a.action-disabled, .action-disabled a {
 
 #incoming-call {
     width: 300px;
+    min-height: 270px;
     background: #4a4a4b;
     box-shadow: 3px 3px 2px #6d6e70;
     display: block;
@@ -1244,6 +1245,10 @@ a.action-disabled, .action-disabled a {
     width: 30%;
     text-align: center;
     color: #9e9e9e;
+}
+
+.incoming-call-action.audio-only {
+    margin-left: 25px;
 }
 
 #outgoing-call-message {
