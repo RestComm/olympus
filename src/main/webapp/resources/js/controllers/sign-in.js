@@ -38,7 +38,8 @@ olyMod.controller('SignInCtrl', function ($scope, $rootScope, $location, $timeou
       }
 
       $scope.outboundProxy = {
-        address: $scope.serverProtocol + '://' + $scope.serverAddress + ':' + $scope.serverPort
+        // TODO: Add path to configuration
+        address: $scope.serverProtocol + '://' + $scope.serverAddress + ':' + $scope.serverPort + '/webrtc'
       };
   });
 
