@@ -529,8 +529,8 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
 
   // -- INCOMING CALL ----------------------------------------------------------
 
-  var AUDIO_CALL_SDP = 'a=group:BUNDLE audio';
-  var VIDEO_CALL_SDP = 'a=group:BUNDLE audio video';
+  var AUDIO_CALL_SDP = 'm=audio';
+  var VIDEO_CALL_SDP = 'm=video';
 
   $scope.$on('CALL_INCOMING', function (event, call) {
     currentCall = call;
