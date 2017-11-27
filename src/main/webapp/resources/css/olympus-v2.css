@@ -74,7 +74,7 @@ i.contact-photo {
     font-size: 0.7em;
     opacity: 0.5;
     text-overflow: ellipsis;
-    width: 195px;
+    width: 190px;
     overflow: hidden;
 }
 
@@ -210,10 +210,6 @@ opacity:0;
 }
 .add-participant-full:hover {
     transform: scale(0.9);
-}
-
-::-moz-placeholder {
-    opacity: 1;
 }
 
 ul {
