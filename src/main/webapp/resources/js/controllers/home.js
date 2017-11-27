@@ -59,8 +59,8 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
 
   // FIXME: fake contacts
   $scope.contacts = [
-    {id: 'jgrey',   name: 'Jean Dylan',        address: 'dylan@telestax.com',   photo: 'test1.png'},
-    {id: 'charlie', name: 'Charles Xavier',    address: 'charlie@telestax.com', photo: 'test4.png'},
+    {id: 'jgrey',   name: 'Jean Dylan',        address: 'dylan',                photo: 'test1.png'},
+    {id: 'charlie', name: 'Charles Xavier',    address: 'charlie',              photo: 'test4.png'},
     {id: '1234',    name: 'Hello Play Demo',   address: '+1234',                 icon: 'play'},
     {id: '1235',    name: 'Hello Say Demo',    address: '+1235',                 icon: 'bullhorn'},
     {id: '1236',    name: 'Hello Gather Demo', address: '+1236',                 icon: 'hand-o-up'},
@@ -70,10 +70,10 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
 
   // TODO: Remove, just for demo...
   if($scope.loggedUser !== 'alice' && $scope.loggedUser !== 'Alice Alissys') {
-    $scope.contacts.splice(0, 0, {id: 'alice', name: 'Alice Alissys', address: 'alice@telestax.com', photo: 'test3.png'});
+    $scope.contacts.splice(0, 0, {id: 'alice', name: 'Alice Alissys', address: 'alice', photo: 'test3.png'});
   }
   if ($scope.loggedUser !== 'bob') {
-    $scope.contacts.splice(0, 0, {id: 'bob', name: 'Bob Robert', address: 'bob@telestax.com', photo: 'test2.png'});
+    $scope.contacts.splice(0, 0, {id: 'bob', name: 'Bob Robert', address: 'bob', photo: 'test2.png'});
   }
 
   var loadContacts = function() {

@@ -23,7 +23,7 @@ olyMod.controller('SignInCtrl', function ($scope, $rootScope, $location, $timeou
 
       if (olympusConfig.turn && olympusConfig.turn._enabled.toLowerCase() !== 'false') {
         $scope.turn = {
-          address: olympusConfig.turn.address || 'https://service.xirsys.com/ice',
+          address: olympusConfig.turn.address || 'https://es.xirsys.com/_turn/',
           domain: olympusConfig.turn.domain || '',
           login: olympusConfig.turn.login || '',
           password: olympusConfig.turn.password || ''
@@ -92,25 +92,19 @@ olyMod.controller('SignInCtrl', function ($scope, $rootScope, $location, $timeou
 
       // because Firefox is picky...
       $.ajaxSetup({beforeSend: function(xhr) {
+        xhr.setRequestHeader ("Authorization", "Basic " + btoa($scope.turn.login + ":" + $scope.turn.password));
         if (xhr.overrideMimeType) {
           xhr.overrideMimeType('application/json');
         }
       }});
 
       $.ajax({
-        type: 'POST',
+        type: 'PUT',
         url: $scope.turn.address,
         data: {
-          domain: $scope.turn.domain,
-          room: 'default',
-          application: 'default',
-          ident: $scope.turn.login,
-          secret: $scope.turn.password,
-          username: $scope.sip.username,
-          secure: '1'
         },
         success: function (data) {
-          $scope.iceServers = data.d;
+          $scope.iceServers = data.v;
           delete $scope.turn.address;
           delete $scope.turn.login;
           delete $scope.turn.password;

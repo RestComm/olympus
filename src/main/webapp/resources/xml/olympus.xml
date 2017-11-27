@@ -23,7 +23,7 @@
   <!-- TURN configuration. Only used if 'enabled' is set to 'true' -->
   <turn enabled="true">
     <!-- TURN server address. If not defined, it will default to 'https://service.xirsys.com/ice' -->
-    <address>https://service.xirsys.com/ice</address>
+    <address>https://es.xirsys.com/_turn/</address>
     <!-- TURN domain. If not defined, a default value will NOT be provided -->
     <domain>cloud.restcomm.com</domain>
     <!-- TURN login. If not defined, a default value will NOT be provided -->
