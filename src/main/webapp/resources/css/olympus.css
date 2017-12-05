@@ -184,6 +184,7 @@ form[role=login] button:enabled:hover {
 .restcomm-logo {
   margin-top: 10%;
   margin-left: 2%;
+  width: 285px;
 }
 
 .login-form .form-control {
