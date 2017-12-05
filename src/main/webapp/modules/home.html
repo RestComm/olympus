@@ -9,6 +9,7 @@
       </h3>
 
       <img id="user-photo" src="resources/images/v2/mp-images-sidebar-frame-example.png">
+      <i class="user-status fa {{ imAlive ? 'fa-check-circle' : 'fa-exclamation-circle' }}" title="{{ imAlive ? 'Online' : 'Connectivity Issues' }}"></i>
       <h4 id="user-name">{{ loggedUser }}
         <a href="" ng-click="signOut()" title="Sign Out">
           <i class="fa fa-sign-out" style="font-size: 17px; margin-left: 10px;"></i>

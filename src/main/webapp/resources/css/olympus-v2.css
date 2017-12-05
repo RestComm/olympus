@@ -17,6 +17,18 @@
     float: left;
 }
 
+.user-status {
+    float: left;
+    margin-left: -12px;
+    font-size: 1.5em;
+    margin-top: -7px;
+    color: #9F9F9F;
+}
+
+.user-status.fa-check-circle {
+    color: #85C063;
+}
+
 .room-icon {
     padding-left: 10px;
     float: left;

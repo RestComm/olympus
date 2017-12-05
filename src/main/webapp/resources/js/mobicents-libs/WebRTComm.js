@@ -1572,6 +1572,7 @@ PrivateJainSipClientConnector.prototype.processRequest = function(requestEvent) 
 		var jainSipRequestMethod = jainSipRequest.getMethod();
 		if (jainSipRequestMethod === "OPTIONS") {
 			this.processSipOptionRequest(requestEvent);
+			this.webRTCommClient.onPrivateClientConnectorKeepAliveEvent();
 		} else {
 			// Find related PrivateJainSipCallConnector (subsequent request)
 			var sipSessionId = jainSipRequest.getCallId().getCallId();
@@ -4813,6 +4814,25 @@ WebRTCommClient.prototype.onPrivateClientConnectorClosedEvent = function() {
 	}
 };
 
+/**
+ * Implements PrivateClientConnector keep alive event listener interface
+ * @private
+ */
+
+WebRTCommClient.prototype.onPrivateClientConnectorKeepAliveEvent = function() {
+	console.debug("WebRTCommClient:onPrivateClientConnectorKeepAliveEvent()");
+	if (this.eventListener.onWebRTCommClientKeepAliveEvent !== undefined) {
+		var that = this;
+		setTimeout(function() {
+			try {
+				that.eventListener.onWebRTCommClientKeepAliveEvent();
+			} catch (exception) {
+				console.error("WebRTCommClient:onPrivateClientConnectorKeepAliveEvent(): catched exception in event listener:" + exception);
+			}
+		}, 1);
+	}
+};
+
 // Notice that in order to gain some speed (since this will be invoked A LOT), we use a hardcoded number of digits
 // This add padding for a padding size that is equal or less than 2x inputNumber string length. For bigger padding sizes
 // it will just return original inputNumber
@@ -4970,7 +4990,13 @@ WebRTCommClientEventListenerInterface.prototype.onWebRTCommClientOpenWarningEven
  */
 WebRTCommClientEventListenerInterface.prototype.onWebRTCommClientClosedEvent = function() {
 	throw "WebRTCommClientEventListenerInterface:onWebRTCommClientClosedEvent(): not implemented;";
-};/**
+};
+
+WebRTCommClientEventListenerInterface.prototype.onWebRTCommClientKeepAliveEvent = function() {
+	throw "WebRTCommClientEventListenerInterface:onWebRTCommClientKeepAliveEvent(): not implemented;";
+};
+
+/**
  * @class WebRTCommCallEventListenerInterface
  * @classdesc Abstract class describing  WebRTCommClient event listener interface 
  *            required to be implented by the webapp 

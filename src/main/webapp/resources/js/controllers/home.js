@@ -849,4 +849,24 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
     $scope.selectContact($scope.contacts[0]);
   }
 
+  var regStatusTimer;
+  var ALIVE_TIMEOUT = 90 * 1000;
+  $scope.imAlive = true;
+
+  $scope.$on('REGISTRATION_STATUS', function(event, status, error) {
+    $timeout(
+      function() {
+        if (status === 1) { // keep-alive received
+          $scope.imAlive = true;
+          $timeout.cancel(regStatusTimer);
+          regStatusTimer = $timeout(function () {
+            $scope.imAlive = false;
+          }, ALIVE_TIMEOUT);
+        }
+        else {
+          console.warn('Unexpected REGISTRATION_STATUS ' + status + ' while logged in.');
+        }
+      });
+  });
+
 });

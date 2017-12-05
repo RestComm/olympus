@@ -16,6 +16,12 @@ olyServices.service('wrtcEventListener', function($rootScope, $timeout) {
     });
   };
 
+  this.onWebRTCommClientKeepAliveEvent = function() {
+    $timeout(function() {
+      $rootScope.$broadcast('REGISTRATION_STATUS', 1);
+    });
+  };
+
   this.onWebRTCommClientClosedEvent = function () {
     // TODO: this.onClickStopVideoStreamButtonViewEventHandler();
     // alert('// TODO: this.onClickStopVideoStreamButtonViewEventHandler();');
