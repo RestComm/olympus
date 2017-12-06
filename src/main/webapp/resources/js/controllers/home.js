@@ -50,12 +50,24 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
       content: 'Welcome back to Olympus, ' + $rootScope.loggedUser + '. Who will you meet today ?',
       type: 'info', duration: 10});
 
-    window.onbeforeunload = function() {
+    $window.onbeforeunload = function() {
+      if ($rootScope.loggedUser) {
         return 'Are you sure you want to leave Olympus ?';
+      }
+    };
+
+    $window.onunload = function() {
+      $scope.closeConnection();
     };
   }
 
   // -- OLYMPUS v2 -------------------------------------------------------------
+
+  $scope.closeConnection = function () {
+    if ($rootScope.loggedUser && $rootScope.wrtcClient) {
+      $rootScope.wrtcClient.close();
+    }
+  };
 
   // FIXME: fake contacts
   $scope.contacts = [
@@ -268,9 +280,7 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
   // TODO: Move to service/factory
 
   $rootScope.signOut = function () {
-    if ($rootScope.wrtcClient) {
-      $rootScope.wrtcClient.close();
-    }
+    $scope.closeConnection();
     delete $rootScope.loggedUser;
     $location.path('/');
   };
