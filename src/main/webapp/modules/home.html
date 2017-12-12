@@ -4,9 +4,10 @@
   <div id="sidebar-wrapper">
     <ul class="sidebar-nav">
 
-      <h3 id="company-logo">
+      <div id="company-logo">
         <img src="resources/images/v2/restcomm-web-rtc-demo-logo.svg" style="margin: -5px -15px 10px; width: 285px;">
-      </h3>
+        <span class="pull-right version-banner" style="margin-right: 12px; margin-top: -14px;">v{{ clientVersion }}</span>
+      </div>
 
       <img id="user-photo" src="resources/images/v2/mp-images-sidebar-frame-example.png">
       <i class="user-status fa {{ imAlive ? 'fa-check-circle' : 'fa-exclamation-circle' }}" title="{{ imAlive ? 'Online' : 'Connectivity Issues' }}"></i>

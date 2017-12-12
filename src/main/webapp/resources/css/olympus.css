@@ -187,6 +187,15 @@ form[role=login] button:enabled:hover {
   width: 285px;
 }
 
+.restcomm-logo > img {
+  width: 100%;
+}
+
+.version-banner {
+  color: #d0d0d0;
+  margin-bottom: 10px;
+}
+
 .login-form .form-control {
   padding-left: 10px;
 }

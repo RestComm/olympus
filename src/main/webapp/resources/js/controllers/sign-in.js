@@ -4,6 +4,8 @@ var olyMod = angular.module('mcWebRTC');
 
 olyMod.controller('SignInCtrl', function ($scope, $rootScope, $location, $timeout, $animate, $http, $window, wrtcEventListener) {
 
+  $rootScope.clientVersion = '1.0.0';
+
   $http.get('resources/xml/olympus.xml', { transformResponse: function (xmlResponse) {
       return new X2JS().xml_str2json(xmlResponse); }
     })
@@ -117,7 +119,7 @@ olyMod.controller('SignInCtrl', function ($scope, $rootScope, $location, $timeou
     var wrtcConfiguration = {
       communicationMode: WebRTCommClient.prototype.SIP,
       sip: {
-        sipUserAgent: 'TelScale RTM Olympus/1.0.0',
+        sipUserAgent: 'TelScale RTM Olympus/' +  $rootScope.clientVersion,
         sipRegisterMode: true,
         sipOutboundProxy: $scope.outboundProxy.address,
         sipDomain: $scope.sip.domain,

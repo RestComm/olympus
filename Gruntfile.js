@@ -11,8 +11,22 @@ module.exports = function(grunt) {
         dest: 'target/dist',
       },
     },
-    version: {
-
+    replace: {
+      dist: {
+        options: {
+          patterns: [
+            {
+              match: '$rootScope.clientVersion = \'1.0.0\';',
+              replacement: '$rootScope.clientVersion = \'' + grunt.option('clientVersion') + '\';'
+            }
+          ],
+          usePrefix: false
+        },
+        files: [{
+          expand: true,
+          src: ['target/dist/resources/js/controllers/sign-in.js']
+        }]
+      }
     },
     uglify: {
       options: {
@@ -55,8 +69,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-cache-bust');
-
-  grunt.registerTask('default', ['clean', 'copy', 'ngtemplates', 'cacheBust']);
+  grunt.loadNpmTasks('grunt-replace');
+  
+  grunt.registerTask('default', ['clean', 'copy', 'replace', 'ngtemplates', 'cacheBust']);
 
 };
 

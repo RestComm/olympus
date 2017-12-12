@@ -51,7 +51,7 @@
 							<goal>grunt</goal>
 						</goals>
 						<configuration>
-							<arguments>--no-color</arguments>
+							<arguments>--clientVersion=${project.version} --no-color</arguments>
 						</configuration>
 					</execution>
 				</executions>

@@ -4,6 +4,9 @@
 # IntelliJ Files
 .idea
 
+# Output Files
+target
+
 # Node Files
 node
 node_modules
