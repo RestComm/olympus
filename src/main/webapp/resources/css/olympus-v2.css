@@ -20,7 +20,7 @@
     float: left;
     margin-left: -12px;
     font-size: 1.5em;
-    margin-top: -7px;
+    margin-top: -3px;
     color: #9F9F9F;
 }
 
@@ -57,18 +57,79 @@
     font-weight: bold;
 }
 
-.contact-photo {
-    padding-left: 10px;
+.contact-avatar {
+    font-size: 2.2em;
+    line-height: 50px;
+    color: white;
+    border-radius: 5px 5px;
+    height: 50px;
+    width: 50px;
+    margin-left: 17px;
+    margin-top: 10px;
     float: left;
-    margin: 8px 0px 5px 10px;
     cursor: pointer;
 }
 
-i.contact-photo {
+.contact-avatar > div {
+    font-weight: 300;
+    text-align: center;
+    text-indent: 0;
+}
+
+.contact-avatar i {
+    padding-left: 10px;
     width: 67px;
     font-size: 40px;
     padding-left: 0px;
     padding-top: 8px;
+    color: #4e4f50;
+}
+
+.user-avatar {
+    font-size: 3em;
+    line-height: 61px;
+    color: white;
+    border-radius: 5px 25px;
+    height: 60px;
+    width: 60px;
+    margin-left: 12px;
+    margin-top: 5px;
+    float: left;
+}
+
+.user-avatar > div {
+    font-weight: 600;
+    text-align: center;
+    text-indent: 0;
+}
+
+.user-avatar.user-online {
+    background-color: #7fba5a;
+}
+
+.user-avatar.user-offline {
+    background-color: #777777;
+}
+
+.chat-participant-block .avatar {
+    float: left;
+    height: 38px;
+    width: 38px;
+    margin-left: 12px;
+    margin-right: 10px;
+    margin-top: 2px;
+    font-size: 2em;
+    line-height: 37px;
+    color: white;
+    background-color: #7fba5a;
+}    
+
+.chat-participant-block .avatar.user-avatar {
+    border-radius: 4px 14px;
+}
+
+.chat-participant-block .avatar.contact-avatar {
+    border-radius: 4px 4px;
 }
 
 .contact-space > div {
@@ -135,7 +196,7 @@ i.contact-photo {
 }
 
 #user-name {
-    padding-left: 70px;
+    padding-left: 83px;
     margin-top: 15px;
     margin-bottom: 5px;
     color: #4e4f51;
@@ -850,6 +911,10 @@ a.action-disabled, .action-disabled a {
     margin-bottom: 20px;
 }
 
+.sidebar-nav li i {
+    text-indent: -14px;
+}
+
 .sidebar-nav li a {
     display: block;
     text-decoration: none;
@@ -1025,7 +1090,7 @@ a.action-disabled, .action-disabled a {
 }
 
 .chat-line-margin {
-    padding-left: 43px;
+    padding-left: 60px;
 }
 
 .system-message {
@@ -1430,6 +1495,10 @@ ul {
         font-weight: normal;
     }
 
+    .sidebar-nav .action-disabled {
+        display: none;
+    }
+
     .contact-container {
         width: 70px;
     }
@@ -1442,13 +1511,8 @@ ul {
         display: none;
     }
 
-    .contact-photo {
-        margin: 8px 0px 0px 1px;
-        padding-left: 2px;
-    }
-
-    i.contact-photo {
-        margin-left: -7px;
+    .contact-avatar {
+        margin-left: 7px;
     }
 
     .contact-chat-unread-min {

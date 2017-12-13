@@ -71,21 +71,21 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
 
   // FIXME: fake contacts
   $scope.contacts = [
-    {id: 'jgrey',   name: 'Jean Dylan',        address: 'dylan',                photo: 'test1.png'},
-    {id: 'charlie', name: 'Charles Xavier',    address: 'charlie',              photo: 'test4.png'},
-    {id: '1234',    name: 'Hello Play Demo',   address: '+1234',                 icon: 'play'},
-    {id: '1235',    name: 'Hello Say Demo',    address: '+1235',                 icon: 'bullhorn'},
-    {id: '1236',    name: 'Hello Gather Demo', address: '+1236',                 icon: 'hand-o-up'},
-    {id: '1310',    name: 'Conference Client', address: '+1310',                 icon: 'headphones'},
-    {id: '1311',    name: 'Conference Admin',  address: '+1311',                 icon: 'briefcase'}
+    {id: 'jgrey',   name: 'Jean Dylan',        address: 'dylan'},
+    {id: 'charlie', name: 'Charles Xavier',    address: 'charlie'},
+    {id: '1234',    name: 'Hello Play Demo',   address: '+1234', icon: 'play'},
+    {id: '1235',    name: 'Hello Say Demo',    address: '+1235', icon: 'bullhorn'},
+    {id: '1236',    name: 'Hello Gather Demo', address: '+1236', icon: 'hand-o-up'},
+    {id: '1310',    name: 'Conference Client', address: '+1310', icon: 'headphones'},
+    {id: '1311',    name: 'Conference Admin',  address: '+1311', icon: 'briefcase'}
   ];
 
   // TODO: Remove, just for demo...
   if($scope.loggedUser !== 'alice' && $scope.loggedUser !== 'Alice Alissys') {
-    $scope.contacts.splice(0, 0, {id: 'alice', name: 'Alice Alissys', address: 'alice', photo: 'test3.png'});
+    $scope.contacts.splice(0, 0, {id: 'alice', name: 'Alice Alissys', address: 'alice'});
   }
   if ($scope.loggedUser !== 'bob') {
-    $scope.contacts.splice(0, 0, {id: 'bob', name: 'Bob Robert', address: 'bob', photo: 'test2.png'});
+    $scope.contacts.splice(0, 0, {id: 'bob', name: 'Bob Robert', address: 'bob'});
   }
 
   var loadContacts = function() {
@@ -370,8 +370,7 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
     $scope.contacts.unshift({
       name: $scope.newContact.name || $scope.newContact.address,
       address: $scope.newContact.address,
-      id: $scope.newContact.address.substr(0, $scope.newContact.address.indexOf("@")) || $scope.newContact.address,
-      icon: 'user-circle-o'
+      id: $scope.newContact.address.substr(0, $scope.newContact.address.indexOf("@")) || $scope.newContact.address
     });
     log('SUCCESS', 'The contact "' + ($scope.newContact.name || $scope.newContact.address)  + ' (' + $scope.newContact.address + ')" has been added to the contact list.', {
       icon: 'users', title: 'Contact added!'});
@@ -795,7 +794,8 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
 
   $scope.timeToGroup = 60000;
 
-  var colors = ['#F44336','#E91E63','#9C27B0','#673AB7','#3F51B5','#2196F3','#03A9F4','#00BCD4','#009688','#4CAF50','#8BC34A','#CDDC39','#FFEB3B','#FFC107','#FF9800','#FF5722','#795548','#9E9E9E','#607D8B','#000000'];
+  var colors = ['#F44336','#E91E63','#9C27B0','#673AB7','#3F51B5','#2196F3','#03A9F4','#00BCD4','#009688','#4CAF50','#8BC34A','#CDDC39','#FFEB3B','#FFC107','#FF9800','#FF5722','#795548','#607D8B'];//,'#9E9E9E','#000000'];
+  // var colors200 = ['#EF9A9A','#F48FB1','#CE93D8','#B39DDB','#9FA8DA','#90CAF9','#81D4FA','#80DEEA','#80CBC4','#A5D6A7','#C5E1A5','#E6EE9C','#FFF59D','#FFE082','#FFCC80','#FFAB91','#BCAAA4','#B0BEC5'];//,'#EEEEEE','#000000'];
   var colorsBackup = colors.slice(0);
   var usedColors = {};
 
@@ -823,9 +823,9 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
       }
       var idx = Math.abs(hash(name)) % colors.length;
       var color = colors[idx];
-      usedColors[name] = color;
       colors.splice(idx, 1);
-      return color;
+      usedColors[name] = color;
+      return usedColors[name];
     }
   };
 

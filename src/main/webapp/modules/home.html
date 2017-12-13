@@ -9,8 +9,11 @@
         <span class="pull-right version-banner" style="margin-right: 12px; margin-top: -14px;">v{{ clientVersion }}</span>
       </div>
 
-      <img id="user-photo" src="resources/images/v2/mp-images-sidebar-frame-example.png">
-      <i class="user-status fa {{ imAlive ? 'fa-check-circle' : 'fa-exclamation-circle' }}" title="{{ imAlive ? 'Online' : 'Connectivity Issues' }}"></i>
+      <div class="user-avatar" ng-class="imAlive ? 'user-online' : 'user-offline'" ng-show="!contact.icon" title="{{ imAlive ? 'Online' : 'Connectivity Issues' }}">
+        <div>
+          {{ loggedUser | limitTo : 1 | uppercase }}
+        </div>
+      </div>
       <h4 id="user-name">{{ loggedUser }}
         <a href="" ng-click="signOut()" title="Sign Out">
           <i class="fa fa-sign-out" style="font-size: 17px; margin-left: 10px;"></i>
@@ -74,12 +77,14 @@
 
         <div class="sidebar-contacts" ng-show="!sidebarAction && hasContacts">
           <li class="contact-container" ng-repeat="contact in contacts" ng-click="selectContact(contact)" ng-hide="hideContacts" ng-class="{selected: ac.address === contact.address}">
-            <img id="contact-photo-{{ contact.id }}" class="contact-photo" ng-src="resources/images/v2/{{ contact.photo || 'mp-icon-profile.png' }}" ng-if ="contact.photo">
-            <i class="fa fa-{{ contact.icon || 'user-o' }} contact-photo" id="contact-icon-{{ contact.id }}" ng-if ="!contact.photo" />
+            <div class="contact-avatar clickable" style="{{ contact.icon ? '' : ('background-color: ' + getChatColor(contact.address)) + ';' }}">
+              <div ng-show="!contact.icon">
+                {{ contact.name | limitTo : 1 | uppercase }}
+              </div>
+              <i class="fa fa-{{ contact.icon }}" id="contact-icon-{{ contact.id }}" ng-if ="!contact.photo && contact.icon" />
+            </div>
+
             <span class="contact-chat-unread-min label label-danger" ng-show="activeChats[contact.id].unread > 0">{{ activeChats[contact.id].unread }}</span>
-            <!--
-            <img id="contact-status-{{ contact.id }}" class="contact-status" ng-src="resources/images/v2/mp-{{ contact.status }}.png">
-            -->
             <div class="contact-space">
               <div id="contact-space-{{ contact.id }}">
                 <i class="fa fa-phone" style="text-indent: 0; margin-left: -18px;" ng-show="(inCall.incomingCallFlag && inCall.callerPhoneNumber === contact.id) || (!inCall.incomingCallFlag && inCall.calleePhoneNumber === contact.address)"></i>
@@ -241,9 +246,14 @@
           <span class="system-message-text" ng-bind-html="entry.text"></span>
         </span>
         <span ng-if="entry.from !== 'system'">
-          <img class="chat-photo" ng-if="$index === 0 || activeChats[ac.id].history[$index].direction !== activeChats[ac.id].history[$index-1].direction" src="resources/images/v2/mp-photo2-chat.png">
+          <div class="avatar" ng-class="activeChats[ac.id].history[$index].direction === 'in' ? 'contact-avatar' : 'user-avatar'" ng-show="!contact.icon" ng-if="$index === 0 || activeChats[ac.id].history[$index].direction !== activeChats[ac.id].history[$index-1].direction" style="
+            background-color: {{ activeChats[ac.id].history[$index].direction === 'in' ? getChatColor(ac.address) : '' }};">
+              <div style="">
+                {{ (activeChats[ac.id].history[$index].direction === 'in' ? ac.name : loggedUser) | limitTo : 1 | uppercase }}
+              </div>
+            </div>
           <div class="chat-header" ng-if="$index === 0 || activeChats[ac.id].history[$index].direction !== activeChats[ac.id].history[$index-1].direction">
-            <span class="chat-name">{{ activeChats[ac.id].history[$index].direction === 'in' ? ac.id : loggedUser }}</span>
+            <span class="chat-name">{{ activeChats[ac.id].history[$index].direction === 'in' ? ac.name : loggedUser }}</span>
             <span class="chat-time" am-time-ago="entry.time" title="{{entry.time | amDateFormat:'ddd, DD MMM YYYY, HH:mm:ss'}}"></span>
           </div>
           <div class="chat-line" ng-class="{'chat-line-margin' : $index >= 1}" ng-bind-html="entry.text | linky:'_blank'"</div>
