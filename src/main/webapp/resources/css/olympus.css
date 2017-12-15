@@ -121,17 +121,80 @@ form[role=login] > section {
   margin-top: 2em;
 }
 
-form[role=login] section a {
+.clickable {
+  cursor: pointer;
+}
+
+.no-select {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+}
+
+.sign-in-users-list {
+  margin: 25px 0;
+}
+
+.sign-in-user {
+  min-width: 150px;
+  color: #1f85ae;
+}
+
+.sign-in-user.ng-leave {
+  display: none;
+}
+
+.sign-in-users-list div {
+  display: inline-block;
+}
+
+.sign-in-users-list-scroll {
+  font-size: 5em;
+  vertical-align: text-bottom;
+  margin-bottom: 10px;
+  color: #1F85AE;
+  cursor: pointer;
+}
+
+.sign-in-users-list-scroll-disabled {
+  color: #E6E6E6;
+  cursor: auto;
+}
+
+a.sign-in-link {
   color: #a8a8a9;
 }
 
-form[role=login] h3 {
+.sign-in-text {
   font-size: 30px;
   font-weight: 300;
   font-family: lato;
   text-align: center;
   color: #6d6e70;
-  padding: 70px 0 12px 0;
+  padding: 50px 0 12px 0;
+}
+
+@media(max-width:768px) {
+  .sign-in-users-list-scroll {
+    font-size: 3em;
+  }
+
+  .sign-in-users-list {
+    margin: 25px 0;
+  }
+  
+  .sign-in-user {
+    min-width: 100px;
+  }
+
+  .sign-in-user > img {
+    width: 50px;
+  }
+  
 }
 
 form[role=login] input {

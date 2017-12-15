@@ -132,6 +132,10 @@
     border-radius: 4px 4px;
 }
 
+.chat-participant-block .avatar.contact-avatar i {
+    border-radius: 4px 4px;
+}
+
 .contact-space > div {
     cursor: pointer;
     font-size: 16px;

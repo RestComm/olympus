@@ -168,4 +168,47 @@ olyMod.controller('SignInCtrl', function ($scope, $rootScope, $location, $timeou
       });
   });
 
+  // Auto-login functionality, based on stored credentials
+
+  if (sessionStorage.sid && sessionStorage.auth_token) {
+    var auth_header = sessionStorage.sid + ":" + sessionStorage.auth_token;
+    auth_header = "Basic " + btoa(auth_header);
+    $http({
+      method: 'GET',
+      url: '/restcomm/2012-04-24/Accounts/' + sessionStorage.sid + '/Clients.json',
+      headers: {
+        'Authorization': auth_header
+      },  
+    }).then(
+      function successCallback(response) {
+        $scope.predefinedClients = response.data;
+      },
+      function errorCallback(response) {
+        // noop
+      });
+  }
+
+  $scope.loginAs = function(login) {
+    $scope.sip.username = login;
+    $scope.mirrorUsername();
+    angular.forEach($scope.predefinedClients, function(client) {
+      if (client.login === login) {
+        $scope.sip.password = client.password;
+      }
+    });
+    $timeout(function() {
+      $scope.connect();
+    });
+  }
+
+  $scope.startUser = 0;
+  $scope.maxUsers = 3;
+
+  $scope.nextUsers = function() {
+    $scope.startUser = Math.min($scope.predefinedClients.length - $scope.maxUsers, $scope.startUser + $scope.maxUsers);
+  }
+
+  $scope.prevUsers = function() {
+    $scope.startUser = Math.max(0, $scope.startUser - $scope.maxUsers);
+  }
 });
