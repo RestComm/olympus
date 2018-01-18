@@ -6,8 +6,12 @@ olyMod.controller('SignInCtrl', function ($scope, $rootScope, $location, $timeou
 
   $rootScope.clientVersion = '1.0.0';
 
-  $http.get('resources/xml/olympus.xml', { transformResponse: function (xmlResponse) {
-      return new X2JS().xml_str2json(xmlResponse); }
+  $scope.iceServers = [];
+
+  $http.get('resources/xml/olympus.xml', {
+    transformResponse: function (xmlResponse) {
+      return new X2JS().xml_str2json(xmlResponse);
+    }
     })
     .then(function successCallback(response) {
       var olympusConfig = response.data.olympus;
@@ -22,10 +26,11 @@ olyMod.controller('SignInCtrl', function ($scope, $rootScope, $location, $timeou
         $scope.serverProtocol = $location.protocol() === 'https' ? 'wss' : 'ws';
       }
       $scope.serverPort = ($scope.serverProtocol === 'wss' ? (olympusConfig.server['secure-port'] || 5083) : (olympusConfig.server.port || 5082));
+      $scope.serverPath = olympusConfig.server.path || '';
 
       if (olympusConfig.turn && olympusConfig.turn._enabled.toLowerCase() !== 'false') {
-        $scope.turn = {
-          address: olympusConfig.turn.address || 'https://es.xirsys.com/_turn/',
+        $scope.iceAutoConfig = {
+          address: olympusConfig.turn.address || 'https://global.xirsys.net/_turn/',
           domain: olympusConfig.turn.domain || '',
           login: olympusConfig.turn.login || '',
           password: olympusConfig.turn.password || ''
@@ -33,87 +38,65 @@ olyMod.controller('SignInCtrl', function ($scope, $rootScope, $location, $timeou
       }
 
       if (olympusConfig.stun && olympusConfig.stun._enabled.toLowerCase() === 'true') {
-        $scope.stun = {
-          address: olympusConfig.stun.address ?
-            (olympusConfig.stun.address + ':' + (olympusConfig.stun.port || 19302)) : 'stun.l.google.com:19302'
-        };
+        $scope.iceServers.push(
+          { url: 'stun:' + (olympusConfig.stun.address ?
+              (olympusConfig.stun.address + ':' + (olympusConfig.stun.port || 19302)) : 'stun.l.google.com:19302') });
       }
 
       $scope.outboundProxy = {
-        // TODO: Add path to configuration
-        address: $scope.serverProtocol + '://' + $scope.serverAddress + ':' + $scope.serverPort + '/webrtc'
+        address: $scope.serverProtocol + '://' + $scope.serverAddress + ':' + $scope.serverPort + '/' + $scope.serverPath
       };
   });
 
   $rootScope.loggedUser = '';
 
-  $scope.simplified = true;
-  $scope.showAdvanced = false;
-
   $scope.sip = {
     displayName: 'Alice Alissys',
     // username: 'alice',
-    domain: $scope.serverAddress,
     // login: 'alice',
-    // password: '1234'
-  };
-
-  $scope.communicationSettings = {
-    audioCodecs: undefined,
-    videoCodecs: undefined,
-    localVideoFormat: '{}'
+    // password: '1234',
+    domain: $scope.serverAddress
   };
 
   $scope.mirrorUsername = function() {
     $scope.sip.displayName = $scope.sip.login = $scope.sip.username;
   };
 
-  // Should be valid at start, we are accessing it!
-  $scope.validServer = true;
-
-  $scope.mirrorServer = function() {
-    $scope.validServer = validate($scope.serverAddress);
-    if($scope.validServer) {
-      $scope.outboundProxy.address = $scope.serverProtocol + '://' + $scope.serverAddress + ':' + $scope.serverPort;
-      $scope.sip.domain = $scope.serverAddress;
+  var processICEAutoConfig = function () {
+    if (!$scope.iceAutoConfig.address) {
+      return;
     }
-  };
 
-  var validate = function(str) {
-    return (/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9RTCPeerConnection: ,][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$|^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$|^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$/).test(str);
+    if (!$scope.iceAutoConfig.login || !$scope.iceAutoConfig.password) {
+      console.warn('Not all parameters for ICE Auto Config are set, please check.');
+    }
+
+    // because Firefox is picky...
+    $.ajaxSetup({
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader ("Authorization", "Basic " + btoa($scope.iceAutoConfig.login + ":" + $scope.iceAutoConfig.password));
+        if (xhr.overrideMimeType) {
+          xhr.overrideMimeType('application/json');
+        }
+      }
+    });
+
+    $.ajax({
+      type: 'PUT',
+      url: $scope.iceAutoConfig.address,
+      data: {},
+      success: function (data) {
+        $scope.iceServers = $scope.iceServers.concat(data.v.iceServers);
+      },
+      async: false
+    });
   };
 
   $scope.connect = function() {
     $scope.registerFailed = false;
     $scope.registering = true;
 
-    if($scope.turn.address && $scope.turn.address.indexOf('xirsys.com') > 0) {
-      if(!$scope.turn.login || !$scope.turn.password) {
-        return;
-      }
-
-      // because Firefox is picky...
-      $.ajaxSetup({beforeSend: function(xhr) {
-        xhr.setRequestHeader ("Authorization", "Basic " + btoa($scope.turn.login + ":" + $scope.turn.password));
-        if (xhr.overrideMimeType) {
-          xhr.overrideMimeType('application/json');
-        }
-      }});
-
-      $.ajax({
-        type: 'PUT',
-        url: $scope.turn.address,
-        data: {
-        },
-        success: function (data) {
-          $scope.iceServers = data.v;
-          delete $scope.turn.address;
-          delete $scope.turn.login;
-          delete $scope.turn.password;
-        },
-        async: false
-      });
-    }
+    processICEAutoConfig();
 
     // TODO: Make scope config match this, so we don't need to re-format it here
     var wrtcConfiguration = {
@@ -129,11 +112,7 @@ olyMod.controller('SignInCtrl', function ($scope, $rootScope, $location, $timeou
         sipPassword: $scope.sip.password
       },
       RTCPeerConnection: {
-        iceServers: $scope.iceServers.iceServers,
-        stunServer: $scope.stun.address,
-        turnServer: $scope.turn.address,
-        turnLogin: $scope.turn.login,
-        turnPassword: $scope.turn.password
+        iceServers: $scope.iceServers
       }
     };
 
@@ -178,7 +157,7 @@ olyMod.controller('SignInCtrl', function ($scope, $rootScope, $location, $timeou
       url: '/restcomm/2012-04-24/Accounts/' + sessionStorage.sid + '/Clients.json',
       headers: {
         'Authorization': auth_header
-      },  
+      }
     }).then(
       function successCallback(response) {
         $scope.predefinedClients = response.data;
@@ -199,14 +178,14 @@ olyMod.controller('SignInCtrl', function ($scope, $rootScope, $location, $timeou
     $timeout(function() {
       $scope.connect();
     });
-  }
+  };
 
   $scope.startUser = 0;
   $scope.maxUsers = 3;
 
   $scope.nextUsers = function() {
     $scope.startUser = Math.min($scope.predefinedClients.length - $scope.maxUsers, $scope.startUser + $scope.maxUsers);
-  }
+  };
 
   $scope.prevUsers = function() {
     $scope.startUser = Math.max(0, $scope.startUser - $scope.maxUsers);

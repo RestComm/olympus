@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <olympus>
 
   <!-- Define the WS server parameter. If 'enabled' is set to 'true' it will use WSS -->
@@ -10,6 +9,8 @@
     <port>5082</port>
     <!-- WSS secure server port. If not defined, it will default to 5083 -->
     <secure-port>5083</secure-port>
+    <!-- WS path to use in WS(S) url. If not defined, a default value will NOT be provided -->
+    <path>webrtc</path>
   </server>
 
   <!-- STUN configuration. Only used if 'enabled' is set to 'true' -->
@@ -22,8 +23,8 @@
 
   <!-- TURN configuration. Only used if 'enabled' is set to 'true' -->
   <turn enabled="true">
-    <!-- TURN server address. If not defined, it will default to 'https://service.xirsys.com/ice' -->
-    <address>https://es.xirsys.com/_turn/</address>
+    <!-- TURN server address. If not defined, it will default to 'https://global.xirsys.net/_turn' -->
+    <address>https://global.xirsys.net/_turn/</address>
     <!-- TURN domain. If not defined, a default value will NOT be provided -->
     <domain>cloud.restcomm.com</domain>
     <!-- TURN login. If not defined, a default value will NOT be provided -->
