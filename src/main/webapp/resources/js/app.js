@@ -22,12 +22,10 @@ var olyMod = angular.module('mcWebRTC', [
   'mcWebRTC.directives',
   'mcWebRTC.controllers'
 ]);
+
 olyMod.config(['$routeProvider', /*'$locationProvider',*/ function($routeProvider, $locationProvider) {
   $routeProvider.
     when('/', {templateUrl: 'modules/sign-in.html', controller: 'SignInCtrl'}).
     when('/home', {templateUrl: 'modules/home.html', controller: 'HomeCtrl'}).
-    // when('/room', {templateUrl: 'modules/room.html', controller: 'RoomCtrl'}).
     otherwise({redirectTo: '/'});
-
-  // $locationProvider.html5Mode(true);
 }]);
