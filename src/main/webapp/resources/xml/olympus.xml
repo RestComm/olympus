@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <olympus>
 
-  <!-- Define the WS server parameter. If 'enabled' is set to 'true' it will use WSS -->
+  <!-- Define the WS server parameter. If 'secure' is set to 'true' it will use WSS, defaults to false/WS -->
   <server secure="false">
     <!-- WS server address. If not defined, it will default to the same as webapp host name -->
     <address></address>
@@ -12,6 +12,14 @@
     <!-- WS path to use in WS(S) url. If not defined, a default value will NOT be provided -->
     <path>webrtc</path>
   </server>
+
+  <!-- Define the SIP client parameter. If 'register' is set to 'false' will use registerless mode, defaults to true -->
+  <client register="true">
+    <!-- Domain to be used in the SIP URI <user>@<domain>. If not defined, it will default to the webapp host name -->
+    <domain></domain>
+    <!-- User Agent string. If not defined, it will default to 'TelScale RTM Olympus'. '/<version>' is appended -->
+    <user-agent>TelScale RTM Olympus</user-agent>
+  </client>
 
   <!-- STUN configuration. Only used if 'enabled' is set to 'true' -->
   <stun enabled="true">

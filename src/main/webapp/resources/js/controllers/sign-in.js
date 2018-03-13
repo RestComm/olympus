@@ -16,9 +16,7 @@ olyMod.controller('SignInCtrl', function ($scope, $rootScope, $location, $timeou
     .then(function successCallback(response) {
       var olympusConfig = response.data.olympus;
       $scope.serverAddress =  olympusConfig.server.address || $window.location.hostname;
-      if ($scope.sip) {
-        $scope.sip.domain = $scope.serverAddress;
-      }
+
       if (olympusConfig.server._secure && olympusConfig.server._secure.toLowerCase() === 'true') {
         $scope.serverProtocol = olympusConfig.server._secure === 'true' ? 'wss' : 'ws';
       }
@@ -27,6 +25,10 @@ olyMod.controller('SignInCtrl', function ($scope, $rootScope, $location, $timeou
       }
       $scope.serverPort = ($scope.serverProtocol === 'wss' ? (olympusConfig.server['secure-port'] || 5083) : (olympusConfig.server.port || 5082));
       $scope.serverPath = olympusConfig.server.path || '';
+
+      $scope.sipRegisterMode = olympusConfig.client._register !== 'false';
+      $scope.sipDomain =  olympusConfig.client.domain || $window.location.hostname;
+      $scope.sipUserAgent =  olympusConfig.client['user-agent'] || 'TelScale RTM Olympus';
 
       if (olympusConfig.turn && olympusConfig.turn._enabled.toLowerCase() !== 'false') {
         $scope.iceAutoConfig = {
@@ -55,7 +57,7 @@ olyMod.controller('SignInCtrl', function ($scope, $rootScope, $location, $timeou
     // username: 'alice',
     // login: 'alice',
     // password: '1234',
-    domain: $scope.serverAddress
+    // domain: $scope.serverAddress
   };
 
   $scope.mirrorUsername = function() {
@@ -102,10 +104,10 @@ olyMod.controller('SignInCtrl', function ($scope, $rootScope, $location, $timeou
     var wrtcConfiguration = {
       communicationMode: WebRTCommClient.prototype.SIP,
       sip: {
-        sipUserAgent: 'TelScale RTM Olympus/' +  $rootScope.clientVersion,
-        sipRegisterMode: true,
+        sipUserAgent: $scope.sipUserAgent + '/' +  $rootScope.clientVersion,
+        sipRegisterMode: $scope.sipRegisterMode,
         sipOutboundProxy: $scope.outboundProxy.address,
-        sipDomain: $scope.sip.domain,
+        sipDomain: $scope.sipDomain,
         sipDisplayName: $scope.sip.displayName,
         sipUserName: $scope.sip.username,
         sipLogin: $scope.sip.login,
