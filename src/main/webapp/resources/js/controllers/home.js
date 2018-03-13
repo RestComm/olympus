@@ -566,6 +566,7 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
 
         $scope.inCall = extractCallToScope(call);
         moveContactToTop(call.callerPhoneNumber);
+        $scope.selectContact($scope.contacts[0]);
         $('#snd_ringing')[0].play(); // FIXME ?
       });
   });
