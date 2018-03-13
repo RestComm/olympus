@@ -5,7 +5,7 @@
 
 var olyMod = angular.module('mcWebRTC');
 
-olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, $timeout, $interval, $sce, $window, $alert) {
+olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, $timeout, $interval, $window, $alert) {
 
   $scope.Math = window.Math;
 
@@ -438,7 +438,7 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
     $scope.$apply(
       function () {
         $rootScope.myStream = stream;
-        $scope.localVideo = $sce.trustAsResourceUrl(URL.createObjectURL(stream));
+        $scope.localVideo = stream;
       }
     );
   };
@@ -725,10 +725,10 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
         $scope.inCall.timerProm = $interval(function() {
           $scope.inCall.callTimer++;
         }, 1000);
-        $scope.remoteVideo = $sce.trustAsResourceUrl(URL.createObjectURL(
-          call.getRemoteBundledAudioVideoMediaStream() ||
+        $scope.remoteVideo = call.getRemoteBundledAudioVideoMediaStream() ||
           call.getRemoteVideoMediaStream() ||
-          call.getRemoteAudioMediaStream()));
+          call.getRemoteAudioMediaStream();
+        angular.element('.remote-video')[0].srcObject = $scope.remoteVideo;
       }, 0);
       $timeout(
         function() {
