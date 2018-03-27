@@ -88,7 +88,12 @@ olyMod.controller('SignInCtrl', function ($scope, $rootScope, $location, $timeou
       url: $scope.iceAutoConfig.address,
       data: {},
       success: function (data) {
-        $scope.iceServers = $scope.iceServers.concat(data.v.iceServers);
+        if (data.v.iceServers) {
+          $scope.iceServers = $scope.iceServers.concat(data.v.iceServers);
+        }
+        else {
+          console.warn('Invalid answer from ICE Auto Config server', data);
+        }
       },
       async: false
     });
