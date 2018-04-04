@@ -85,7 +85,7 @@ olyMod.controller('SignInCtrl', function ($scope, $rootScope, $location, $timeou
 
     $.ajax({
       type: 'PUT',
-      url: $scope.iceAutoConfig.address,
+      url: $scope.iceAutoConfig.address + ($scope.iceAutoConfig.domain || ''),
       data: {},
       success: function (data) {
         if (data.v.iceServers) {
