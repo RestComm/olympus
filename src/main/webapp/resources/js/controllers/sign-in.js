@@ -177,13 +177,19 @@ olyMod.controller('SignInCtrl', function ($scope, $rootScope, $location, $timeou
   $scope.loginAs = function(login) {
     $scope.sip.username = login;
     $scope.mirrorUsername();
+    $scope.showLoginOther = true;
+    // disabled as it's not possible to retrieve plaintext password
+    // https://github.com/restcomm/olympus/issues/164
+    /*
     angular.forEach($scope.predefinedClients, function(client) {
       if (client.login === login) {
         $scope.sip.password = client.password;
       }
     });
+    */
     $timeout(function() {
-      $scope.connect();
+      // $scope.connect();
+      angular.element("input[type=password]").focus();
     });
   };
 
