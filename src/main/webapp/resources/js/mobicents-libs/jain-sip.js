@@ -21527,6 +21527,7 @@ SIPMessage.prototype.computeContentLength =function(content){
     var length = 0;
     if (content != null) {
         if (content.constructor.name == "String") {
+            /*
             var cpt = 0;					
             var codeChar;
             for (var i = 0; i < content.length; ++i)
@@ -21538,6 +21539,9 @@ SIPMessage.prototype.computeContentLength =function(content){
                 else  cpt=cpt+4;
             }
             length = cpt;
+            */
+            // length = new TextEncoder('utf-8').encode(content)
+            length = new Blob([content]).size;
         }
         else if (content.constructor==Array) {
             length = content.length;
