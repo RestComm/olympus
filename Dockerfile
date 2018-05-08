@@ -50,6 +50,7 @@ RUN echo $JBOSS_HOME
 RUN rm -rf $JBOSS_HOME/standalone/deployments/ROOT.war
 
 ADD docker/bootstrap.sh ./bootstrap.sh
+ADD docker/config-wildfly.py ./config-wildfly.py
 ADD docker/process-config.py ./process-config.py
 ADD target/olympus.war ./olympus.war
 RUN unzip -q ./olympus.war -d $JBOSS_HOME/standalone/deployments/olympus.war

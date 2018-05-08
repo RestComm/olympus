@@ -1,5 +1,10 @@
 #!/bin/bash
 
+echo "Configuring Wildfly"
+python ./config-wildfly.py
+cat $JBOSS_HOME/standalone/configuration/standalone.xml
+echo
+
 echo "Processing Olympus configuration"
 python ./process-config.py
 cat $JBOSS_HOME/standalone/deployments/olympus.war/resources/xml/olympus.xml
