@@ -2,9 +2,9 @@
 <olympus>
 
   <!-- Define the WS server parameter. If 'secure' is set to 'true' it will use WSS, defaults to false/WS -->
-  <server secure="false">
+  <server secure="true">
     <!-- WS server address. If not defined, it will default to the same as webapp host name -->
-    <address></address>
+    <address/>
     <!-- WS server port. If not defined, it will default to 5082 -->
     <port>5082</port>
     <!-- WSS secure server port. If not defined, it will default to 5083 -->
@@ -16,7 +16,7 @@
   <!-- Define the SIP client parameter. If 'register' is set to 'false' will use registerless mode, defaults to true -->
   <client register="true">
     <!-- Domain to be used in the SIP URI <user>@<domain>. If not defined, it will default to the webapp host name -->
-    <domain></domain>
+    <domain/>
     <!-- User Agent string. If not defined, it will default to 'TelScale RTM Olympus'. '/<version>' is appended -->
     <user-agent>TelScale RTM Olympus</user-agent>
   </client>
@@ -40,5 +40,17 @@
     <!-- TURN password. If not defined, a default value will NOT be provided -->
     <password>4e89a09e-bf6f-11e5-a15c-69ffdcc2b8a7</password>
   </turn>
+
+  <!-- WebRTC related media configuration. TODO: @Alex, I think it would be better to make stun and turn elements above,
+  children to webrtc-configuration, but didn't want to change the olympusConfig too much on first commit. Let me know if you 're good with it so that I do the change -->
+  <webrtc-configuration>
+    <!-- After how long does the WebRTC candidate gathering procedures timeout, in miliseconds. This setting provides a ceiling on how long to wait for WebRTC candidates as a way
+      to further constrain WebRTC's own internal timeout, which is pretty big (40 seconds as of now) and makes experience pretty bad in some exotic client networking setups. If
+      WebRTC takes longer to transition to 'ice gathering complete' than this parameter, then the SDK underneath will attempt to go ahead with any candidates it has already gathered
+      at the time of the timeout. Notice that if WebRTC doesn't encounter any issues and transitions to 'ice gathering complete' before this timeout, then the timer is ignored and call
+      is resumed normally.
+      A sensible value is typically between 1000-5000 miliseconds. -->
+    <candidate-timeout>1</candidate-timeout>
+  </webrtc-configuration>
 
 </olympus>
