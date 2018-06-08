@@ -41,8 +41,7 @@
     <password>4e89a09e-bf6f-11e5-a15c-69ffdcc2b8a7</password>
   </turn>
 
-  <!-- WebRTC related media configuration. TODO: @Alex, I think it would be better to make stun and turn elements above,
-  children to webrtc-configuration, but didn't want to change the olympusConfig too much on first commit. Let me know if you 're good with it so that I do the change -->
+  <!-- WebRTC related media configuration -->
   <webrtc-configuration>
     <!-- After how long does the WebRTC candidate gathering procedures timeout, in miliseconds. This setting provides a ceiling on how long to wait for WebRTC candidates as a way
       to further constrain WebRTC's own internal timeout, which is pretty big (40 seconds as of now) and makes experience pretty bad in some exotic client networking setups. If
