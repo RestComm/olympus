@@ -49,7 +49,7 @@
       at the time of the timeout. Notice that if WebRTC doesn't encounter any issues and transitions to 'ice gathering complete' before this timeout, then the timer is ignored and call
       is resumed normally.
       A sensible value is typically between 1000-5000 miliseconds. -->
-    <candidate-timeout>1</candidate-timeout>
+    <candidate-timeout>3000</candidate-timeout>
   </webrtc-configuration>
 
 </olympus>
