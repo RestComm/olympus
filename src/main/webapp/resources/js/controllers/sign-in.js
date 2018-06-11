@@ -45,6 +45,8 @@ olyMod.controller('SignInCtrl', function ($scope, $rootScope, $location, $timeou
               (olympusConfig.stun.address + ':' + (olympusConfig.stun.port || 19302)) : 'stun.l.google.com:19302') });
       }
 
+      $scope.candidateTimeout = olympusConfig['webrtc-configuration']['candidate-timeout'];
+
       $scope.outboundProxy = {
         address: $scope.serverProtocol + '://' + $scope.serverAddress + ':' + $scope.serverPort + '/' + $scope.serverPath
       };
@@ -119,7 +121,8 @@ olyMod.controller('SignInCtrl', function ($scope, $rootScope, $location, $timeou
         sipPassword: $scope.sip.password
       },
       RTCPeerConnection: {
-        iceServers: $scope.iceServers
+        iceServers: $scope.iceServers,
+        candidateTimeout: $scope.candidateTimeout
       }
     };
 

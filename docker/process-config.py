@@ -18,6 +18,7 @@
 # TURN_DOMAIN
 # TURN_LOGIN
 # TURN_PASSWORD
+# CANDIDATE_TIMEOUT
 #
 
 import sys, os
@@ -69,5 +70,7 @@ if 'TURN_LOGIN' in os.environ:
     root.find('turn').find('login').text = os.environ['TURN_LOGIN']
 if 'TURN_PASSWORD' in os.environ:
     root.find('turn').find('password').text = os.environ['TURN_PASSWORD']
+if 'CANDIDATE_TIMEOUT' in os.environ:
+    root.find('webrtc-configuration').find('candidate-timeout').text = os.environ['CANDIDATE_TIMEOUT']
 
 tree.write(config_filename)
