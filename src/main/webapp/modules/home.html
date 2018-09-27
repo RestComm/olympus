@@ -4,8 +4,8 @@
   <div id="sidebar-wrapper">
     <ul class="sidebar-nav">
 
-      <div id="company-logo">
-        <img src="resources/images/v2/restcomm-web-rtc-demo-logo.svg" style="margin: -5px -15px 10px; width: 285px;">
+      <div id="company-logo-container">
+        <div class="company-logo"></div>
         <span class="pull-right version-banner" style="margin-right: 12px; margin-top: -14px;">v{{ clientVersion }}</span>
       </div>
 
@@ -196,16 +196,17 @@
           </table>
         </div>
         <div class="video-controls-bottom video-controls-top">
-          <a href="" class="btn control-button" ng-click="localMuteVideo()" style="margin-left: 175px;">
-            <i class="fa" ng-class="inCall.localVideoMuted ? 'fa-eye-slash muted' : 'fa-video-camera'" ></i>
-          </a>
-          <a href="" class="btn control-button" ng-click="callHangup()">
-            <i class="fa fa-phone" style="transform: rotate(135deg);"></i>
-          </a>
-          <a href="" class="btn control-button" ng-click="localMuteAudio()">
-            <i class="fa" ng-class="inCall.localAudioMuted ? 'fa-microphone-slash muted' : 'fa-microphone'"></i>
-          </a>
-          <img class="pull-right telestax-logo-video" src="resources/images/v2/telestax-logo-small-white.png">
+          <div class="center-block">
+            <a href="" class="btn control-button" ng-click="localMuteVideo()">
+              <i class="fa" ng-class="inCall.localVideoMuted ? 'fa-eye-slash muted' : 'fa-video-camera'" ></i>
+            </a>
+            <a href="" class="btn control-button" ng-click="callHangup()">
+              <i class="fa fa-phone" style="transform: rotate(135deg);"></i>
+            </a>
+            <a href="" class="btn control-button" ng-click="localMuteAudio()">
+              <i class="fa" ng-class="inCall.localAudioMuted ? 'fa-microphone-slash muted' : 'fa-microphone'"></i>
+            </a>
+          </div>
         </div>
         <video
             class="remote-video"

@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html class="{{ loggedUser ? 'loggedIn' : 'login' }}" lang="en" ng-app="mcWebRTC" class="no-js">
+<html class="{{ loggedUser ? 'loggedIn' : 'login' }}" lang="en" class="no-js">
   <head>
     <meta charset="utf-8">
     <link rel="icon" type="image/png" href="resources/images/favicon.png">
@@ -61,6 +61,7 @@
     <link href="lib/ng-emoticons/dist/ng-emoticons.min.css" rel="stylesheet">
     <link href="resources/css/olympus.css" rel="stylesheet" />
     <link href="resources/css/olympus-v2.css" rel="stylesheet" />
+    <link ng-href="resources/vnd/{{ vndId }}/olympus.css" ng-if="vndId" rel="stylesheet" />
 
     <title>&lt;OLYMPUS/&gt;</title>
   </head>
@@ -74,8 +75,8 @@
 
     <div class="footer" ng-hide="loggedUser">
       <div class="container">
-        <img src="resources/images/v2/telestax-logo-small-white.png" class="telestax-logo">
-        <div class="telestax-rights">&copy; 2016 Telestax, Inc. All rights reserved</div>
+        <div class="telestax-logo"></div>
+        <div ng-if="wls.copyrightText" class="telestax-rights">&copy; {{ wls.copyrightText }}</div>
       </div>
     </div>
 
@@ -97,7 +98,8 @@
     </div>
 
     <script src="lib/jquery/dist/jquery.js"></script>
-
+    <script type="text/javascript" src="lib/underscore/underscore.js"></script>
+    <script type="text/javascript" src="lib/underscore/underscore.string.js"></script>
     <script src="resources/js/adapter/adapter.js"></script>
     <script src="resources/js/mobicents-libs/jain-sip.js"></script>
     <script src="resources/js/mobicents-libs/WebRTComm.js"></script>
