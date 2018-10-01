@@ -38,30 +38,15 @@ angular.element(document).ready(['$http', function ($http) {
   var $q = initInjector.get('$q');
   var $window = initInjector.get('$window');
 
-/*
-  var configPromise = $q.defer();
-  $http.get($window.location.pathname + 'conf/dashboard.json?v=' + (+new Date())).success(function (response) {
-    angular.module('rcApp.services').factory('PublicConfig', function () {
-      var pConfig = typeof response === 'string' ? JSON.parse(response) : response;
-      // initialize countly key, if provided
-      loadCountly(pConfig.countlyKey);
-      return pConfig;
-    });
-    configPromise.resolve(response);
-  }).error(function () {
-    configPromise.reject();
-  });
-*/
-
   let wlDefaultPromise = $q.defer();
-  $http.get($window.location.pathname + 'conf/settings.json?v=' + (+new Date())).success((response) => {
+  $http.get($window.location.pathname + 'conf/olympus-settings.json?v=' + (+new Date())).success((response) => {
     wlDefaultPromise.resolve(response);
   }).error(() => {
     wlDefaultPromise.resolve({});
   });
 
   let wlPromise = $q.defer();
-  $http.get($window.location.pathname + `resources/vnd/${vndId}/settings.json?v=` + (+new Date())).success((response) => {
+  $http.get($window.location.pathname + `resources/vnd/${vndId}/olympus-settings.json?v=` + (+new Date())).success((response) => {
     wlPromise.resolve(response);
   }).error(() => {
     wlPromise.resolve({});
