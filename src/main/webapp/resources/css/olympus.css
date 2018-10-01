@@ -1,3 +1,8 @@
+:root {
+    --app-logo-login-url: url('../images/v2/restcomm-web-rtc-demo-logo.svg') no-repeat;
+    --company-logo-url: url('../images/v2/telestax-logo-small-white.png') no-repeat;
+}
+
 @font-face{
   font-family: 'Lato';
   src: url('../fonts/Lato/Lato-Hairline.ttf') format('truetype');
@@ -88,8 +93,13 @@ body {
 }
 
 .telestax-logo {
+  background: var(--company-logo-url);
+  background-size: contain;
   margin-top: 33px;
   margin-left: 50px;
+  height: 24px;
+  width: 139px;
+  display: inline-block;
 }
 
 .telestax-rights {
@@ -244,14 +254,18 @@ form[role=login] button:enabled:hover {
     background: #44a5ab;
 }
 
-.restcomm-logo {
+.restcomm-logo-container {
   margin-top: 10%;
   margin-left: 2%;
   width: 285px;
 }
 
-.restcomm-logo > img {
-  width: 100%;
+.restcomm-logo {
+  background: var(--app-logo-login-url);
+  background-size: contain;
+  height: 75px;
+  width: 285px;
+  display: inline-block;
 }
 
 .version-banner {
