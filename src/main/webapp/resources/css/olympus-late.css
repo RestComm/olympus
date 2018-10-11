@@ -1,0 +1,10 @@
+/* Put here all css stuff for default installations that is typically customized by vendors. It will allow hiding
+ * default styles in the interval after olympus.css but before vnd/olympus.css are loaded such as logo.
+ * The main reason for this is that it solves a flashing issue where the an image provided by a vendor is show late
+ * and after the default image is first shown for an instant.
+ */
+:root {
+    --app-logo-login-url: url('../images/v2/restcomm-web-rtc-demo-logo.svg') no-repeat;
+    --app-logo-home-url: url('../images/v2/restcomm-web-rtc-demo-logo.svg') no-repeat;
+    --company-logo-url: url('../images/v2/telestax-logo-small-white.png') no-repeat;
+}
