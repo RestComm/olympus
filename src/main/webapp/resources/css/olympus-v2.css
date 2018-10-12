@@ -4,11 +4,6 @@
  * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap/blob/gh-pages/LICENSE)
  */
 
-:root {
-    --app-logo-home-url: url('../images/v2/restcomm-web-rtc-demo-logo.svg') no-repeat;
-}
-
-
 /* Toggle Styles */
 #company-logo-container {
     margin-top: 20px;
