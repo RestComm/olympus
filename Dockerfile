@@ -35,6 +35,8 @@ FROM jboss/wildfly:10.1.0.Final
 #   TURN login. If not defined, a default value will NOT be provided
 # TURN_PASSWORD
 #   TURN password. If not defined, a default value will NOT be provided
+# CANDIDATE_TIMEOUT
+#   Timeout waiting for ICE candidates. If not defined a value of 0 is used, meaning no timeout
 #
 # Note, JBOSS will start on port 8080 by default only on the instance's IP
 #
@@ -46,6 +48,7 @@ FROM jboss/wildfly:10.1.0.Final
 USER root
 
 RUN yum -y update && yum clean all
+RUN yum install -y wget
 RUN echo $JBOSS_HOME
 RUN rm -rf $JBOSS_HOME/standalone/deployments/ROOT.war
 
