@@ -521,6 +521,10 @@ a.action-disabled, .action-disabled a {
     padding: 0;
 }
 
+.video-controls-bottom a.control-button-left {
+    margin-left: 45px;
+}
+
 .video-controls-bottom .telestax-logo-video {
     margin-top: 15px;
     margin-right: 10px;
