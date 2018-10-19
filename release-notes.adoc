@@ -1,4 +1,22 @@
-= Olympus Release Notes
+= Restcomm WebRTC Demo Release Notes
+
+== 1.1.1 (docker tag 1.1.1-212)
+
+=== New Features
+
+* Add support for configuration file URL for Docker. It should be enabled by setting ENVCONFURL to the URL of the configuration file, along with REPOUSR and REPOPWRD with user and password for accessing.
+
+=== Breaking Changes
+
+NA
+
+=== Bugs
+
+* Fixed alignment of buttons after removal of Telestax log when making a call in Restcomm WebRTC Demo
+
+=== Dependencies
+
+NA
 
 == 1.1.0 (docker tag 1.1.0-209)
 
