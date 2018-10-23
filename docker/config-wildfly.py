@@ -10,6 +10,31 @@ config_filename = os.environ['JBOSS_HOME'] + "/standalone/configuration/standalo
 tree = ElementTree.parse(config_filename)
 root = tree.getroot()
 
+# configure logging
+logging_subsystem = root.find('{urn:jboss:domain:4.2}profile/{urn:jboss:domain:logging:3.0}subsystem')
+
+rolling_file_handler = logging_subsystem.find('{urn:jboss:domain:logging:3.0}periodic-rotating-file-handler')
+
+# remove rolling file handler if present
+if rolling_file_handler is not None:
+    logging_subsystem.remove(rolling_file_handler)
+
+# add size rotating file handler if not present
+if logging_subsystem.find('{urn:jboss:domain:logging:3.0}size-rotating-file-handler') is None:
+    size_rot_file_handler = ElementTree.SubElement(logging_subsystem, '{urn:jboss:domain:logging:3.0}size-rotating-file-handler')
+    size_rot_file_handler.set('name', 'FILE')
+    size_rot_file_handler.set('autoflush', 'true')
+    size_rot_file_handler__file = ElementTree.SubElement(size_rot_file_handler, '{urn:jboss:domain:logging:3.0}file')
+    size_rot_file_handler__file.set('relative-to', 'jboss.server.log.dir')
+    size_rot_file_handler__file.set('path', 'server.log')
+    size_rot_file_handler__rotate_size = ElementTree.SubElement(size_rot_file_handler, '{urn:jboss:domain:logging:3.0}rotate-size')
+    size_rot_file_handler__rotate_size.set('value', '2m')
+    size_rot_file_handler__max_backup_index = ElementTree.SubElement(size_rot_file_handler, '{urn:jboss:domain:logging:3.0}max-backup-index')
+    size_rot_file_handler__max_backup_index.set('value', '5')
+    size_rot_file_handler__append = ElementTree.SubElement(size_rot_file_handler, '{urn:jboss:domain:logging:3.0}append')
+    size_rot_file_handler__append.set('value', 'true')
+
+# configure undertow
 undertow_subsystem = root.find('{urn:jboss:domain:4.2}profile/{urn:jboss:domain:undertow:3.1}subsystem')
 
 undertow_filters = undertow_subsystem.find('{urn:jboss:domain:undertow:3.1}filters')
