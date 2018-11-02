@@ -7,4 +7,7 @@
     --app-logo-login-url: url('../images/v2/restcomm-web-rtc-demo-logo.svg') no-repeat;
     --app-logo-home-url: url('../images/v2/restcomm-web-rtc-demo-logo.svg') no-repeat;
     --company-logo-url: url('../images/v2/telestax-logo-small-white.png') no-repeat;
+
+    --takeatour-bg-color: #1ea5db;
+    --takeatour-text-color: white;
 }

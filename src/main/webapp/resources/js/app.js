@@ -85,3 +85,13 @@ olyMod.run(function($rootScope, $location, $anchorScroll, $http, WLSettings) {
 
   $rootScope.wls = WLSettings;
 });
+
+olyMod.run(function ($rootScope, backdropService) {
+  // Make backdropService available in the scope
+  $rootScope.backdropService = backdropService;
+
+
+
+});
+
+

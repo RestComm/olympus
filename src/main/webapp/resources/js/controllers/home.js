@@ -5,7 +5,7 @@
 
 var olyMod = angular.module('mcWebRTC');
 
-olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, $timeout, $interval, $window, $alert) {
+olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, $timeout, $interval, $window, $alert, tourManager) {
 
   $scope.Math = window.Math;
 
@@ -367,13 +367,16 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
   });
 
   $scope.addContact = function () {
-    $scope.contacts.unshift({
+    var contact = {
       name: $scope.newContact.name || $scope.newContact.address,
       address: $scope.newContact.address,
       id: $scope.newContact.address.substr(0, $scope.newContact.address.indexOf("@")) || $scope.newContact.address
-    });
+    }
+    $scope.contacts.unshift(contact);
     log('SUCCESS', 'The contact "' + ($scope.newContact.name || $scope.newContact.address)  + ' (' + $scope.newContact.address + ')" has been added to the contact list.', {
       icon: 'users', title: 'Contact added!'});
+    $scope.selectContact(contact);
+    tourManager.goto('step-make-the-call','step-enter-contact-address');
 
     $scope.newContact = {};
     $scope.addContactForm.$setPristine();
@@ -879,5 +882,10 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
         }
       });
   });
+
+//  // show take a tour hint if needed
+//  if (tourManager.stepActive('step-enter-creds')) {
+//    tourManager.goto('step-add-contact');
+//  }
 
 });

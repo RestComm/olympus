@@ -285,3 +285,99 @@ form[role=login] button:enabled:hover {
     -webkit-box-shadow: 0 0 6px #ffffff;
     -moz-box-shadow: 0 0 6px #ffffff;
 }
+
+/* take a tour styling */
+.tour-popover.popover {
+  background-color: var(--takeatour-bg-color);
+  color: var(--takeatour-text-color);
+  padding: 24px;
+}
+.tour-popover.popover.right .arrow:after {
+  border-right-color: var(--takeatour-bg-color);
+}
+.tour-popover.popover.left .arrow:after {
+  border-left-color: var(--takeatour-bg-color);
+}
+.tour-popover.popover.top .arrow:after {
+  border-top-color: var(--takeatour-bg-color);
+}
+.tour-popover.popover.bottom .arrow:after {
+  border-bottom-color: var(--takeatour-bg-color);
+}
+.tour-popover.popover.top-left .arrow:after {
+  border-top-color: var(--takeatour-bg-color);
+}
+.tour-popover.popover.top-right .arrow:after {
+  border-top-color: var(--takeatour-bg-color);
+}
+.tour-popover.popover.bottom-left .arrow:after {
+  border-bottom-color: var(--takeatour-bg-color);
+}
+.tour-popover.popover.bottom-right .arrow:after {
+  border-bottom-color: var(--takeatour-bg-color);
+}
+.tour-popover .ts-heading .close-button {
+    position: absolute;
+    top: 6px;
+    right: 11px;
+    color: var(--takeatour-text-color);
+}
+.tour-popover .ts-heading .close-button:hover {
+  opacity: 0.7;
+}
+.tour-popover .ts-heading a.close-button:hover,
+.tour-popover .ts-heading a.close-button:focus {
+  text-decoration: none;
+}
+.tour-popover .popover-content {
+    text-align: left;
+    min-width: 226px;
+    margin-bottom: 7px;
+    padding: 0;
+}
+.tour-popover .ts-nav {
+  text-align: right;
+}
+.tour-popover .ts-nav .btn {
+  background-color: #26395d;
+  border-color: #26395d;
+  border-radius: 2px;
+  color: var(--takeatour-text-color);
+  padding: 6px 20px;
+}
+.tour-popover .ts-nav .btn {
+  margin-left: 10px;
+}
+/* backdrop shadowing */
+/* backdrop feature (grey out all screen but an element) */
+.backdrop-area {
+  display: none;
+}
+.backdrop-enable {
+  display: block;
+  position: absolute;
+  background-color:black;
+  z-index: 1000;
+  opacity: 0.2;
+}
+.backdrop-top.backdrop-enable {
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+.backdrop-bottom.backdrop-enable {
+  left: 0;
+  bottom: 0px;
+  width: 100%;
+}
+.backdrop-left.backdrop-enable {
+  left: 0px;
+}
+.backdrop-right.backdrop-enable {
+  right: 0px;
+}
+
+
+.mydiv {
+  width: 200px;
+}

@@ -58,6 +58,7 @@
     <![endif]-->
 
     <link href="lib/animate.css/animate.css" rel="stylesheet">
+    <link href="lib/bootstrap-additions/bootstrap-additions.min.css" rel="stylesheet">
     <link href="lib/ng-emoticons/dist/ng-emoticons.min.css" rel="stylesheet">
     <link href="resources/css/olympus.css" rel="stylesheet" />
     <link href="resources/css/olympus-v2.css" rel="stylesheet" />
@@ -66,7 +67,13 @@
 
     <title>&lt;OLYMPUS/&gt;</title>
   </head>
-  <body class="{{ loggedUser ? 'loggedIn' : 'login' }}" ng-keyup="onKeyUp($event.keyCode)" ng-cloak>
+  <body class="{{ loggedUser ? 'loggedIn' : 'login' }}" ng-keyup="onKeyUp($event.keyCode)" ng-cloak touring>
+    <!-- grey out space for take-a-tour -->
+    <div class="backdrop-area backdrop-top" ng-class="{'backdrop-enable':backdropService.shown()}"></div>
+    <div class="backdrop-area backdrop-left" ng-class="{'backdrop-enable':backdropService.shown()}"></div>
+    <div class="backdrop-area backdrop-right" ng-class="{'backdrop-enable':backdropService.shown()}"></div>
+    <div class="backdrop-area backdrop-bottom" ng-class="{'backdrop-enable':backdropService.shown()}"></div>
+
     <oly-console ng-show="showConsole"></oly-console>
     <div class="notifications-container" ng-show="loggedUser && false"></div>
     <!-- Begin page content -->
@@ -115,7 +122,8 @@
     <script src="lib/angular-animate/angular-animate.js"></script>
     <script src="lib/bootstrap/dist/js/bootstrap.js"></script>
 
-    <!-- <script src="lib/angular-bootstrap/ui-bootstrap-tpls.js"></script> -->
+    <!--<script src="lib/angular-bootstrap/ui-bootstrap-tpls.js"></script>-->
+    <!--<script src="lib/angular-bootstrap-popover/ui-bootstrap-custom-tpls-2.5.0.js"></script>-->
 
     <script src="lib/angular-strap/dist/angular-strap.js"></script>
     <script src="lib/angular-strap/dist/angular-strap.tpl.js"></script>
@@ -138,6 +146,8 @@
     <script src="resources/js/directives.js"></script>
     <script src="resources/js/filters.js"></script>
     <script src="resources/js/services.js"></script>
+
+    <script src="resources/js/takeatour.js"></script>
 
   </body>
 </html>

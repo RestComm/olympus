@@ -2,7 +2,7 @@
 
 var olyMod = angular.module('mcWebRTC');
 
-olyMod.controller('SignInCtrl', function ($scope, $rootScope, $location, $timeout, $animate, $http, $window, wrtcEventListener) {
+olyMod.controller('SignInCtrl', function ($scope, $rootScope, $location, $timeout, $animate, $http, $window, wrtcEventListener, tourManager) {
 
   $rootScope.clientVersion = '1.0.0';
 
@@ -139,6 +139,11 @@ olyMod.controller('SignInCtrl', function ($scope, $rootScope, $location, $timeou
         $scope.registering = false;
         if (status === 0) {
           $rootScope.loggedUser = $scope.sip.displayName;
+          //$rootScope.$broadcast('step-add-contact');
+          // show take a tour hint if needed
+          if (tourManager.stepActive('step-enter-creds')) {
+            tourManager.goto('step-add-contact');
+          }
           $location.path('home');
         }
         else {
@@ -205,5 +210,10 @@ olyMod.controller('SignInCtrl', function ($scope, $rootScope, $location, $timeou
 
   $scope.prevUsers = function() {
     $scope.startUser = Math.max(0, $scope.startUser - $scope.maxUsers);
+  }
+
+  // take-a-tour: if we're touring, directly show the login form
+  if (tourManager.currentStep()) {
+    $scope.showLoginOther = true;
   }
 });
