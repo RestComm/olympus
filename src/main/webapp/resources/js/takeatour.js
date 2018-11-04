@@ -8,8 +8,7 @@ angular.module('mcWebRTC').run(function (tourManager, $rootScope, $location) {
     name:'step-enter-creds',
     body:"Add your credentials and click 'Sign-in'",
     order: 1,
-    placement: 'right',
-    active: true
+    placement: 'right'
     //buttons:[{label: 'End Tour', click: "tourManager.stopTour()"}]
     //done: {byEvent:{eventName: 'tour-user-logged-in', nextStep: "step-add-contact"}}
     //done: {byUrl: {'/home': {nextStep: "step-add-contact"}}}
@@ -18,6 +17,7 @@ angular.module('mcWebRTC').run(function (tourManager, $rootScope, $location) {
   tourManager.registerStep('step-add-contact',{
     name: 'step-add-contact',
     body: 'Click here to add you new number and test your application.',
+    placement: 'right',
     order: 3
   },"main");
 
@@ -31,7 +31,8 @@ angular.module('mcWebRTC').run(function (tourManager, $rootScope, $location) {
   tourManager.registerStep('step-make-the-call', {
     name: 'step-make-the-call',
     body: 'Call the number and test your application',
-    order: 5
+    order: 5,
+    placement: 'left'
   }, "main");
 
 

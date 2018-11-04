@@ -161,119 +161,74 @@ olyDirectives.directive('olyConsole', function () {
   };
 });
 
-olyDirectives.directive('tourStep', function($compile, tourManager, $interval) {
+olyDirectives.directive('tourStep', function($compile, tourManager, $interval, $popover, $rootScope, $timeout) {
+  var myPopover;
   return {
     restrict: 'A',
-    priority: 1000,
     scope: true,
-    terminal: true, // this is important!
-    compile: function compile(element, attrs) {
-      var stepInfo = tourManager.getStep(attrs.tourStep, attrs.tourName)
-      element.removeAttr("tour-step"); //remove the attribute to avoid indefinite loop
-      element.attr('bs-popover',"");
-      //element.attr('bs-show', "tourStep.visible");
-      element.attr('data-placement', stepInfo.placement);
-      //element.attr('data-content','some content');
-      //element.attr('title','the title');
-      element.attr('data-template', "modules/templates/tour-step.html")
-      element.attr('data-content',stepInfo.content);
-      element.attr('trigger','manual');
+    controller: function($scope) {
+       $scope.onShow = function () {
+        console.log('onShow()');
+        myPopover.toggle();
+       }
+       console.log('initializing controller');
+    },
+    link: function postLink(scope, element,attrs) {
+      var stepInfo = tourManager.getStep(attrs.tourStep, attrs.tourName);
+      scope.tourStep = stepInfo;
+      scope.crap = 'crappppy';
+      console.log('creating tour step', attrs.tourStep );
+      console.log('visibility: ', attrs.tourStep, elementIsVisible(element), element.length);
 
-      //element.attr('uib-popover-template', "'templates/tour-step.html'");
-      //element.attr('popover-is-open',"tourStep.active");
-      //element.attr('popover-class', "tour-popover" + (stepInfo.customClasses ? " "+stepInfo.customClasses: ''));
-      //element.attr('popover-placement', "{{tourStep.placement}}");
-      //element.attr('popover-trigger', "'none'"); // control popover only programmaticaly
-      return {
-        pre: function preLink(scope, iElement, iAttrs, controller) {
-        },
-        post: function postLink(scope, iElement, iAttrs, controller) {
-          $compile(iElement)(scope);
-          var stepInfo = tourManager.getStep(iAttrs.tourStep, iAttrs.tourName);
-          var targetElement = iElement;
-          if (iAttrs.target) {
-            targetElement = $(iAttrs.target);
-          }
-          if (stepInfo)
-            stepInfo.parentScope = scope.$parent;
-          //if (!stepInfo.routerState && !stepInfo.anyview)
-            //stepInfo.routerState = $state.current.name;
-          scope.tourManager = tourManager;
-          scope.tourStep = stepInfo;
-
-          // step visibility - only name the step visible if both the tourstep is active and the hosting element is visible
-          var stepActive = undefined;
-          var elementVisible = undefined;
-
-          function checkStepStatus() {
-            if (stepActive && elementVisible ) {
-              scope.tourStep.visible = true;
-            } else {
-              scope.tourStep.visible = false;
-            }
-          }
-          scope.$watch("tourStep.active",function(newVal, oldVal) {
-            console.warn('tourStep activation: ', iAttrs.tourStep, newVal);
-            stepActive = newVal;
-            checkStepStatus();
-          });
-          scope.$watch(function() {
-            // returns 'true' if the targetElement is visible, false otherwise
-            return (!!targetElement[0] && (targetElement[0].offsetParent !== null));
-          }, function(newVal, oldVal) {
-            console.warn('tourStep visibility: ', iAttrs.tourStep,  newVal);
-            if (newVal)
-              console.warn('tourStep visibility: ', newVal);
-            elementVisible = newVal;
-            checkStepStatus();
-          });
-          var clearElementVisibilityInterval = $interval(function () {
-            console.warn('running inerval for', iAttrs.tourStep);
-            if (iAttrs.target) {
-              targetElement = $(iAttrs.target);
-            }
-            var newVal = (!!targetElement[0] && (targetElement[0].offsetParent !== null));
-            if (newVal !== elementVisible) {
-              elementVisible = newVal;
-              checkStepStatus();
-            }
-           }, 1000);
-
-          if (stepInfo && stepInfo.done ) {
-              if (stepInfo.done.byExpression) {
-              var byExpression = stepInfo.done.byExpression;
-              for (var i=0; i < byExpression.length; i++) {
-                var handler = byExpression[i];
-                var clearWatch = scope.$parent.$watch(handler.expression, function (newValue, oldValue) {
-                  if (tourManager.currentStep()) {
-                    if (!!newValue) {
-                      tourManager.goto(handler.nextStep);
-                      scope.$emit('tour-step-next', {name: attrs.tourStep});
-                    }
-                  }
-                });
+      // start monitoring visibility of step target.Called when tourStep.active turns true
+      stepInfo.visible = undefined;
+      var clearIntervalHandle;
+      var myPopover;
+      function activate() {
+        console.log('will start monitoring visibility for ', attrs.tourStep)
+        clearIntervalHandle = $interval(function () {
+          if (elementIsVisible(element)) {
+            if (!stepInfo.visible) {
+              if (! myPopover) {
+                myPopover = $popover(element, {title: 'My Title', content: stepInfo, template:'modules/templates/tour-step.html', placement: stepInfo.placement,target:attrs.target, container:'body', trigger:"'manual'"});
+                return;
               }
+              myPopover.show();
+              stepInfo.visible = true;
+              console.log('set visibility to ', stepInfo.visible);
             }
-            if (stepInfo.done.byEvent) {
-              var byEvent = stepInfo.done.byEvent;
-              scope.$on(byEvent.eventName, function () {
-                console.log('step byEvent triggered for ', byEvent.eventName );
-                if (byEvent.nextStep) {
-                  console.log('byEvent advancing to next step: ', attrs.tourStep);
-                  tourManager.goto(byEvent.nextStep);
-                  scope.$emit('tour-step-next', {name: attrs.tourStep});
-                }
-              });
+          } else {
+            if (myPopover && stepInfo.visible) {
+              myPopover.hide();
+              myPopover.destroy();
+              stepInfo.visible = false;
+              console.log('set visibility to ', stepInfo.visible);
             }
           }
-
-          scope.$on('$destroy', function() {
-            //console.warn('destroying ', iAttrs.tourStep);
-            $interval.cancel(clearElementVisibilityInterval);
-          });
-        }
+        },500);
       }
-    }
+
+      scope.$watch('tourStep.active', function (newVal, oldVal) {
+        if (newVal) {
+          activate();
+        } else {
+          if (clearIntervalHandle) {
+            $interval.cancel(clearIntervalHandle);
+            console.log('stopped monitoring visibility for ', attrs.tourStep);
+          }
+          clearIntervalHandle = null;
+          if (stepInfo.visible) {
+            myPopover.hide();
+            stepInfo.visible = false;
+          }
+        }
+      });
+
+      function elementIsVisible(element) {
+        return (!!element[0] && (element[0].offsetParent !== null));
+      }
+     }
+
   }
 });
 

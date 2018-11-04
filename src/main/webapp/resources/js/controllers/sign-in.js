@@ -139,7 +139,6 @@ olyMod.controller('SignInCtrl', function ($scope, $rootScope, $location, $timeou
         $scope.registering = false;
         if (status === 0) {
           $rootScope.loggedUser = $scope.sip.displayName;
-          //$rootScope.$broadcast('step-add-contact');
           // show take a tour hint if needed
           if (tourManager.stepActive('step-enter-creds')) {
             tourManager.goto('step-add-contact');

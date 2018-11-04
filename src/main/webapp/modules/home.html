@@ -1,10 +1,8 @@
 <div id="wrapper">
 
-  <div tour-step="step-add-contact" tour-name="main"  target="#icons-settings" container="body" backdrop="tourStep.visible" backdrop-selector="#icons-settings" placement='right'></div>
-  <div tour-step="step-enter-contact-address" tour-name="main" target=".add-contact-form" container="body" backdrop="tourStep.active" backdrop-selector=".add-contact-form"></div>
-  <div tour-step="step-make-the-call" tour-name="main" target="#phone-button-image" container="body" backdrop="tourStep.visible" backdrop-selector="#phone-button-image" placement="top-right"></div>
-
-  <div bs-popover content="the content" title="the title" target="#left-btn" container="body" placement="left">aasasasdaf</div>
+  <!-- take a tour step definition -->
+  <div tour-step="step-add-contact" tour-name="main" target="#icons-settings" backdrop="tourStep.visible" backdrop-selector="#icons-settings"></div>
+  <div tour-step="step-make-the-call" tour-name="main" target="#phone-button-image" backdrop="tourStep.visible" backdrop-selector="#phone-button-image"></div>
 
   <!-- Sidebar -->
   <div id="sidebar-wrapper">
@@ -28,16 +26,15 @@
       <div class="nav-menu" id="icons-settings">
         <a href="" class="action-disabled" style="margin-left: 10px;"><img src="resources/images/v2/mp-icon-profile.png"></a>
         <a href="" class="action-disabled"><img src="resources/images/v2/mp-icon-preferences.png"></a>
-        <a href="" class="action-disabled"><img src="resourcetour/images/v2/mp-icon-favorites.png"></a>
+        <a href="" class="action-disabled"><img src="resources/images/v2/mp-icon-mentions.png"></a>
+        <a href="" class="action-disabled"><img src="resources/images/v2/mp-icon-favorites.png"></a>
         <a href="" class="action-disabled"><img src="resources/images/v2/mp-icon-files.png"></a>
         <a href="" ng-click="!editingContact && toggleSidebar('addContact') || tourManager.goto('step-enter-contact-address','step-add-contact')" title="Add Contact"><img src="resources/images/v2/mp-icon-add.png"></a>
       </div>
 
       <div class="sidebar-brand">
         <a href="" ng-click="hideContacts = !hideContacts">Contacts <span class="pull-right" ng-show="hideContacts">+</span><span class="pull-right" ng-show="!hideContacts">-</span></a>
-        <span ng-click="tourManager.startTour('step-add-contact','main')">Start tour</span>
       </div>
-
 
       <div id="sidebar-content" ng-class="{ 'in-action': sidebarAction }">
         <div class="sidebar-rooms" ng-show="!sidebarAction && hasRooms">
@@ -105,11 +102,13 @@
         </div>
 
         <div class="sidebar-add-contact" ng-show="sidebarAction === 'addContact'">
+          <!-- take a tour step definition -->
+          <div tour-step="step-enter-contact-address" tour-name="main" target=".add-contact-form" backdrop="tourStep.visible" backdrop-selector=".add-contact-form"></div>
           <h4 class="sidebar-action-title">{{ editingContact ? "Edit" : "Add" }} Contact</h4>
           <hr>
           <form name="addContactForm" class="add-contact-form">
             <input name ="ncName" type="text" class="sidebar-input" placeholder="Contact Name" ng-model="newContact.name">
-            <input name ="ncAddress" id="ncAddressId" type="text" class="sidebar-input" placeholder="Contact Address" ng-model="newContact.address" required>
+            <input name ="ncAddress" type="text" class="sidebar-input" placeholder="Contact Address" ng-model="newContact.address" required>
             <div class="sidebar-action-error" ng-show="addContactForm.ncAddress.$dirty && duplicateContact">The contact already exists</div>
             <div class="sidebar-action-error" ng-show="addContactForm.ncAddress.$dirty && addContactForm.ncAddress.$error.required">The address is required</div>
             <div class="row">
@@ -124,6 +123,7 @@
           </form>
         </div>
       </div>
+
     </ul>
   </div>
   <!-- /#sidebar-wrapper -->

@@ -3,7 +3,7 @@
     <div class="ts-heading">
         <a href="" ng-click='tourManager.stopTour()' class='close-button'>×</a>
     </div>
-    <div class="popover-content" ng-bind-html="tourStep.body"></div>
+    <div class="popover-content" ng-bind-html="content.body"></div>
     <div class="ts-nav">
         <button ng-repeat="button in tourStep.buttons" ng-click="tourManager.stepButtonClicked(button, tourStep)" type="button" class="btn btn-default">{{ button.label }}</button>
     </div>
