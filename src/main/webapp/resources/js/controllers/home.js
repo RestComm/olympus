@@ -5,7 +5,7 @@
 
 var olyMod = angular.module('mcWebRTC');
 
-olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, $timeout, $interval, $window, $alert, tourManager) {
+olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, $timeout, $interval, $window, $alert, tourManager, $modal) {
 
   $scope.Math = window.Math;
 
@@ -883,9 +883,21 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
       });
   });
 
-//  // show take a tour hint if needed
-//  if (tourManager.stepActive('step-enter-creds')) {
-//    tourManager.goto('step-add-contact');
-//  }
+    // take-a-tour splash screen shown upon successfull call
+    $scope.showTourSplash = function() {
+      console.log('IN showTourSplash()');
+      $modal({
+          template: "modules/templates/tour-splash-screen.html",
+          show: true,
+          prefixEvent: 'splash'
+      });
+    }
+    // when splash is closed redirect to Console
+    $rootScope.$on('splash.hide', function (event, params) {
+      console.log('modal hidden: ', params.$scope.status);
+      if (params.$scope.status == 'ok') {
+        window.location = '/';
+      }
+    });
 
 });

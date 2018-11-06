@@ -1,8 +1,8 @@
 <div id="wrapper">
 
   <!-- take a tour step definition -->
-  <div tour-step="step-add-contact" tour-name="main" target="#icons-settings" backdrop="tourStep.visible" backdrop-selector="#icons-settings"></div>
-  <div tour-step="step-make-the-call" tour-name="main" target="#phone-button-image" backdrop="tourStep.visible" backdrop-selector="#phone-button-image"></div>
+  <div tour-step="step-add-contact" tour-name="main" target="#icons-settings" backdrop="tourStep.active" backdrop-selector="#icons-settings"></div>
+  <div tour-step="step-make-the-call" tour-name="main" target="#phone-button-image" backdrop="tourStep.active" backdrop-selector="#phone-button-image"></div>
 
   <!-- Sidebar -->
   <div id="sidebar-wrapper">
@@ -103,7 +103,7 @@
 
         <div class="sidebar-add-contact" ng-show="sidebarAction === 'addContact'">
           <!-- take a tour step definition -->
-          <div tour-step="step-enter-contact-address" tour-name="main" target=".add-contact-form" backdrop="tourStep.visible" backdrop-selector=".add-contact-form"></div>
+          <div tour-step="step-enter-contact-address" tour-name="main" target=".add-contact-form" backdrop="tourStep.active" backdrop-selector=".add-contact-form"></div>
           <h4 class="sidebar-action-title">{{ editingContact ? "Edit" : "Add" }} Contact</h4>
           <hr>
           <form name="addContactForm" class="add-contact-form">

@@ -9,9 +9,6 @@ angular.module('mcWebRTC').run(function (tourManager, $rootScope, $location) {
     body:"Add your credentials and click 'Sign-in'",
     order: 1,
     placement: 'right'
-    //buttons:[{label: 'End Tour', click: "tourManager.stopTour()"}]
-    //done: {byEvent:{eventName: 'tour-user-logged-in', nextStep: "step-add-contact"}}
-    //done: {byUrl: {'/home': {nextStep: "step-add-contact"}}}
   }, "main");
 
   tourManager.registerStep('step-add-contact',{
@@ -32,7 +29,8 @@ angular.module('mcWebRTC').run(function (tourManager, $rootScope, $location) {
     name: 'step-make-the-call',
     body: 'Call the number and test your application',
     order: 5,
-    placement: 'left'
+    placement: 'left',
+    done: [{byExpression: "inCall && inCall.intStatus === 'ESTABLISHED'", doNext: 'tourManager.stopTour(); showTourSplash();'}]
   }, "main");
 
 

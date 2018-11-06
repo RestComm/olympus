@@ -166,17 +166,9 @@ olyDirectives.directive('tourStep', function($compile, tourManager, $interval, $
   return {
     restrict: 'A',
     scope: true,
-    controller: function($scope) {
-       $scope.onShow = function () {
-        console.log('onShow()');
-        myPopover.toggle();
-       }
-       console.log('initializing controller');
-    },
     link: function postLink(scope, element,attrs) {
       var stepInfo = tourManager.getStep(attrs.tourStep, attrs.tourName);
       scope.tourStep = stepInfo;
-      scope.crap = 'crappppy';
       console.log('creating tour step', attrs.tourStep );
       console.log('visibility: ', attrs.tourStep, elementIsVisible(element), element.length);
 
@@ -184,6 +176,7 @@ olyDirectives.directive('tourStep', function($compile, tourManager, $interval, $
       stepInfo.visible = undefined;
       var clearIntervalHandle;
       var myPopover;
+      var watchesToClear = [];
       function activate() {
         console.log('will start monitoring visibility for ', attrs.tourStep)
         clearIntervalHandle = $interval(function () {
@@ -206,6 +199,17 @@ olyDirectives.directive('tourStep', function($compile, tourManager, $interval, $
             }
           }
         },500);
+        // set up 'done' expression watches
+        if (stepInfo.done) {
+          angular.forEach(stepInfo.done, function (item) {
+            if (item.byExpression && item.doNext) {
+              watchesToClear.push(scope.$watch(item.byExpression, function (newVal, oldVal) {
+                if (newVal)
+                  scope.$eval(item.doNext);
+              }));
+            }
+          })
+        }
       }
 
       scope.$watch('tourStep.active', function (newVal, oldVal) {
@@ -227,8 +231,14 @@ olyDirectives.directive('tourStep', function($compile, tourManager, $interval, $
       function elementIsVisible(element) {
         return (!!element[0] && (element[0].offsetParent !== null));
       }
-     }
 
+      // clear any watches for stepInfo.done
+      scope.$on('$destroy', function () {
+        angular.forEach(watchesToClear, function (item) {
+          item(); // clears the watch
+        });
+      });
+     }
   }
 });
 

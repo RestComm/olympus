@@ -13,6 +13,7 @@ var olyMod = angular.module('mcWebRTC', [
   'mgcrea.ngStrap.popover',
   'mgcrea.ngStrap.dropdown',
   'mgcrea.ngStrap.alert',
+  'mgcrea.ngStrap.modal',
   'webcam',
   'angularMoment',
   'ngEmoticons',

@@ -338,7 +338,7 @@ form[role=login] button:enabled:hover {
 .tour-popover .ts-nav {
   text-align: right;
 }
-.tour-popover .ts-nav .btn {
+.tour-popover .ts-nav .btn, .tour-modal .modal-footer button {
   background-color: #26395d;
   border-color: #26395d;
   border-radius: 2px;
@@ -376,8 +376,41 @@ form[role=login] button:enabled:hover {
 .backdrop-right.backdrop-enable {
   right: 0px;
 }
-
-
-.mydiv {
-  width: 200px;
+/* take-a-tour splash shown upon success */
+.tour-modal .modal-content {
+  background-color: var(--takeatour-bg-color);
+  color: var(--takeatour-text-color);
 }
+.tour-modal .modal-header {
+  border-bottom: none;
+}
+.tour-modal .modal-footer {
+  border-top: none;
+  text-align: center;
+  padding-top: 7px;
+  padding-bottom: 36px;
+}
+.tour-modal .modal-body {
+  text-align: center;
+}
+.tour-modal .modal-header .close {
+  color: var(--takeatour-text-color);
+}
+.tour-modal h3.modal-title {
+  font-size: 32px;
+}
+.tour-modal .happy-guy {
+    background: no-repeat center url(../images/v2/happy-guy.svg);
+    height: 200px;
+    margin-top: 35px;
+}
+.tour-modal .message {
+  margin-top: 16px;
+  margin-bottom: 10px;
+  font-size: 1.2em;
+}
+.tour-modal .modal-footer button {
+  font-size: 1.2em;
+}
+
+
