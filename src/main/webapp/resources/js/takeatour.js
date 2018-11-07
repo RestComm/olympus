@@ -33,6 +33,12 @@ angular.module('mcWebRTC').run(function (tourManager, $rootScope, $location) {
     done: [{byExpression: "inCall && inCall.intStatus === 'ESTABLISHED'", doNext: 'tourManager.stopTour(); showTourSplash();'}]
   }, "main");
 
+  tourManager.registerStep('step-send-the-message', {
+    name: 'step-send-the-message',
+    body: 'Send the message and test your application',
+    order: 5,
+    placement: 'top-left',
+  }, "main");
 
   $rootScope.$on('tour-enter-step',function (event,args) {
     // hook step entering

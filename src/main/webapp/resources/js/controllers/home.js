@@ -174,6 +174,11 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
     var entry = {time: Date.now(), direction: 'out', status: 'pending', from: $rootScope.loggedUser, text: ac.writeText};
     var chatId = ac.id.substr(0, ac.id.indexOf('@') === -1 ? 999 : ac.id.indexOf('@'));
     addEntryToChat(chatId, entry);
+    // if we're touring terminate the tour and show success splash
+    if (tourManager.currentStep() && tourManager.currentStep().name == 'step-send-the-message') {
+      tourManager.stopTour();
+      $scope.showTourSplash();
+    }
 
     $scope.ac.writeText = '';
 
@@ -376,7 +381,10 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
     log('SUCCESS', 'The contact "' + ($scope.newContact.name || $scope.newContact.address)  + ' (' + $scope.newContact.address + ')" has been added to the contact list.', {
       icon: 'users', title: 'Contact added!'});
     $scope.selectContact(contact);
-    tourManager.goto('step-make-the-call','step-enter-contact-address');
+    if (tourManager.context.voiceOrSms == 'sms')
+      tourManager.goto('step-send-the-message','step-enter-contact-address');
+    else
+      tourManager.goto('step-make-the-call','step-enter-contact-address');
 
     $scope.newContact = {};
     $scope.addContactForm.$setPristine();

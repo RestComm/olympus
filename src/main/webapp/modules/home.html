@@ -3,6 +3,7 @@
   <!-- take a tour step definition -->
   <div tour-step="step-add-contact" tour-name="main" target="#icons-settings" backdrop="tourStep.active" backdrop-selector="#add-contact-icon"></div>
   <div tour-step="step-make-the-call" tour-name="main" target="#phone-button-image" backdrop="tourStep.active" backdrop-selector="#phone-button-image"></div>
+  <div tour-step="step-send-the-message" tour-name="main" target="#send-message-button" backdrop="tourStep.active" backdrop-selector="#send-messsage-area"></div>
 
   <!-- Sidebar -->
   <div id="sidebar-wrapper">
@@ -272,10 +273,10 @@
     </div>
   </div>
 
-  <div class="textbox" ng-show="ac">
+  <div id="send-messsage-area" class="textbox" ng-show="ac">
     <input type="text" class="textbox-in" placeholder="Write something crazy" ng-model="ac.writeText" ng-keydown="$event.which === 13 && sendMessage(ac)">
     <div id="infoToggler" class="chat chat-hover" ng-click="sendMessage(ac)">
-      <img src="resources/images/v2/mp-send-textbox.png" width="25px" height="30px">
+      <img id="send-message-button" src="resources/images/v2/mp-send-textbox.png" width="25px" height="30px">
       <img src="resources/images/v2/mp-search-textbox.png" width="25px" height="30px" style="display:none">
     </div>
     <a href="" class="">
