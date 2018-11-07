@@ -29,7 +29,7 @@ angular.module('mcWebRTC').run(function (tourManager, $rootScope, $location) {
     name: 'step-make-the-call',
     body: 'Call the number and test your application',
     order: 5,
-    placement: 'left',
+    placement: 'top-right',
     done: [{byExpression: "inCall && inCall.intStatus === 'ESTABLISHED'", doNext: 'tourManager.stopTour(); showTourSplash();'}]
   }, "main");
 

@@ -29,7 +29,7 @@
 </div>
 
 <div class="row" ng-if="!predefinedClients || showLoginOther">
-  <div tour-step="step-enter-creds" tour-name="main" target="#creds-section" backdrop="tourStep.active" backdrop-selector="#creds-section"></div>
+  <div tour-step="step-enter-creds" tour-name="main" target="#creds-section" backdrop="tourStep.active" backdrop-selector='input[name="username"]' backdrop-selector2='button[type="submit"]'></div>
   <div class="col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3 col-xs-12">
     <section id="creds-section" class="login-form">
     <form role="login" name="loginForm" shake shakeit="shakeit">

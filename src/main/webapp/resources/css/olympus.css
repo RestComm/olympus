@@ -334,6 +334,7 @@ form[role=login] button:enabled:hover {
     min-width: 226px;
     margin-bottom: 7px;
     padding: 0;
+    font-size: 1.2em;
 }
 .tour-popover .ts-nav {
   text-align: right;

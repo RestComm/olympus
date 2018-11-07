@@ -1,7 +1,7 @@
 <div id="wrapper">
 
   <!-- take a tour step definition -->
-  <div tour-step="step-add-contact" tour-name="main" target="#icons-settings" backdrop="tourStep.active" backdrop-selector="#icons-settings"></div>
+  <div tour-step="step-add-contact" tour-name="main" target="#icons-settings" backdrop="tourStep.active" backdrop-selector="#add-contact-icon"></div>
   <div tour-step="step-make-the-call" tour-name="main" target="#phone-button-image" backdrop="tourStep.active" backdrop-selector="#phone-button-image"></div>
 
   <!-- Sidebar -->
@@ -29,7 +29,7 @@
         <a href="" class="action-disabled"><img src="resources/images/v2/mp-icon-mentions.png"></a>
         <a href="" class="action-disabled"><img src="resources/images/v2/mp-icon-favorites.png"></a>
         <a href="" class="action-disabled"><img src="resources/images/v2/mp-icon-files.png"></a>
-        <a href="" ng-click="!editingContact && toggleSidebar('addContact') || tourManager.goto('step-enter-contact-address','step-add-contact')" title="Add Contact"><img src="resources/images/v2/mp-icon-add.png"></a>
+        <a href="" ng-click="!editingContact && toggleSidebar('addContact') || tourManager.goto('step-enter-contact-address','step-add-contact')" title="Add Contact"><img id="add-contact-icon" src="resources/images/v2/mp-icon-add.png"></a>
       </div>
 
       <div class="sidebar-brand">
@@ -103,7 +103,7 @@
 
         <div class="sidebar-add-contact" ng-show="sidebarAction === 'addContact'">
           <!-- take a tour step definition -->
-          <div tour-step="step-enter-contact-address" tour-name="main" target=".add-contact-form" backdrop="tourStep.active" backdrop-selector=".add-contact-form"></div>
+          <div tour-step="step-enter-contact-address" tour-name="main" target=".add-contact-form" backdrop="tourStep.active" backdrop-selector="input[name='ncName']" backdrop-selector2="#add-contact-button"></div>
           <h4 class="sidebar-action-title">{{ editingContact ? "Edit" : "Add" }} Contact</h4>
           <hr>
           <form name="addContactForm" class="add-contact-form">
@@ -113,9 +113,9 @@
             <div class="sidebar-action-error" ng-show="addContactForm.ncAddress.$dirty && addContactForm.ncAddress.$error.required">The address is required</div>
             <div class="row">
               <div class="col-lg-12">
-                <button type="button" class="btn btn-default pull-right sidebar-action-button" ng-click="addContact()" ng-hide="editingContact" ng-disabled="duplicateContact || !addContactForm.$valid">Add Contact</button>
+                <button id="add-contact-button" type="button" class="btn btn-default pull-right sidebar-action-button" ng-click="addContact()" ng-hide="editingContact" ng-disabled="duplicateContact || !addContactForm.$valid">Add Contact</button>
                 <button type="button" class="btn btn-default pull-right sidebar-action-button" ng-click="saveEditContact()" ng-show="editingContact" ng-disabled="(addContactForm.ncName.$pristine && addContactForm.ncAddress.$pristine) || duplicateContact || !addContactForm.$valid">Save Changes</button>
-                <button type="button" class="btn btn-default pull-right sidebar-action-button" ng-click="cancelEditContact()">Cancel</button>
+                <button type="button" class="btn btn-default pull-right sidebar-action-button" ng-click="cancelEditContact(); tourManager.stopTour();">Cancel</button>
                 <button type="button" class="btn btn-danger pull-right sidebar-action-button" ng-click="preDeleteContact(curContact)" ng-show="editingContact"><i class="fa fa-trash"></i></button>
                 <button type="button" class="btn btn-danger pull-right sidebar-action-button" ng-click="deleteContact(curContact)" ng-show="curContact.deleteConfirm">Confirm Delete</button>
               </div>
