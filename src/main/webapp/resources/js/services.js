@@ -292,8 +292,10 @@ olyServices.factory('tourManager', function ($compile, $location, $rootScope, $w
     location.search('tour-step', null);
     location.search('tour-context', null);
     if (startupTour || startupStep) {
-      if (tourContext)
-        service.context.voiceOrSms = tourContext; // we only support voiceOrSms variable for tour context. Url encode this if needed to support key-value pairs - TODO
+      if (tourContext) {
+        //service.context.voiceOrSms = tourContext; // we only support voiceOrSms variable for tour context. Url encode this if needed to support key-value pairs - TODO
+        service.context = service.parseContextParam(tourContext);
+      }
       if (startupTour)
         service.selectTour(startupTour);
       else
@@ -338,6 +340,25 @@ olyServices.factory('tourManager', function ($compile, $location, $rootScope, $w
       step.parentScope.$eval(button.click);
     }
   }
+
+  // create the parameter that will be passed in the url fragment
+  service.contextAsParam = function () {
+    if (service.context) {
+      return encodeURIComponent(JSON.stringify(context))
+      //return service.context.voiceOrSms;
+    }
+    else
+      return "";
+  }
+
+  // parses the url encoded json context and returns an object
+  service.parseContextParam = function(fragmentParam) {
+    if (fragmentParam)
+      return JSON.parse(decodeURIComponent(fragmentParam))
+    else
+      return {};
+  }
+
 
   function sortSteps(stepA, stepB) {
     return stepA.order - stepB.order;
