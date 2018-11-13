@@ -174,12 +174,6 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
     var entry = {time: Date.now(), direction: 'out', status: 'pending', from: $rootScope.loggedUser, text: ac.writeText};
     var chatId = ac.id.substr(0, ac.id.indexOf('@') === -1 ? 999 : ac.id.indexOf('@'));
     addEntryToChat(chatId, entry);
-    // if we're touring terminate the tour and show success splash
-    if (tourManager.currentStep() && tourManager.currentStep().name == 'step-send-the-message') {
-      tourManager.stopTour();
-      $scope.showTourSplash();
-    }
-
     $scope.ac.writeText = '';
 
     moveContactToTop($scope.ac.id);
@@ -891,21 +885,61 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
       });
   });
 
-    // take-a-tour splash screen shown upon successfull call
-    $scope.showTourSplash = function() {
-      console.log('IN showTourSplash()');
+  // returns 'true' if we're touring and the address number entered is not in accordance with the phone number in the tour context
+  $scope.wrongPhoneNumberForTour = function(address) {
+    if (tourManager.stepActive('step-enter-contact-address') && tourManager.context.phoneNumber) {
+      if (address != tourManager.context.phoneNumber )
+        return true;
+      else
+        return false;
+    }
+    // return undefined if we're not touring or in other step
+  }
+
+  // Take-a-tour and splash screen stuff
+  $scope.$on('CALL_OPEN_ERROR',handleCallErrorsWhileTouring);
+  $scope.$on('CALL_ERROR',handleCallErrorsWhileTouring);
+  $scope.$on('CALL_OPENED', function () {
+    $scope.showTourSplash('call-success',2000);
+  });
+  $scope.$on('MESSAGE_SENT',function () {
+    if (tourManager.stepActive('step-send-the-message')) {
+      tourManager.stopTour();
+      $scope.showTourSplash('message-success',2000);
+    }
+  });
+  $scope.$on('MESSAGE_FAILED', function () {
+    if (tourManager.stepActive('step-send-the-message')) {
+      tourManager.stopTour();
+      $scope.showTourSplash('message-failure',2000);
+    }
+  });
+
+  function handleCallErrorsWhileTouring(a,b) {
+    if (tourManager.stepActive('step-make-the-call')) {
+      tourManager.stopTour();
+      $scope.showTourSplash('call-failure',2000);
+    }
+  }
+
+  $scope.showTourSplash = function(status, delay) {
+    console.log('IN showTourSplash()');
+    var templatePath = 'modules/templates/tour-splash-' + status + ".html";
+    $timeout(function () {
       $modal({
-          template: "modules/templates/tour-splash-screen.html",
+          template: templatePath,
           show: true,
           prefixEvent: 'splash'
       });
+    },delay ? delay: 0);
+  }
+
+  // when splash is closed redirect to Console
+  $rootScope.$on('splash.hide', function (event, params) {
+    console.log('modal hidden: ', params.$scope.status);
+    if (params.$scope.status == 'ok') {
+      window.location = '/';
     }
-    // when splash is closed redirect to Console
-    $rootScope.$on('splash.hide', function (event, params) {
-      console.log('modal hidden: ', params.$scope.status);
-      if (params.$scope.status == 'ok') {
-        window.location = '/';
-      }
-    });
+  });
 
 });

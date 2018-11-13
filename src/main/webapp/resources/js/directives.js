@@ -161,7 +161,7 @@ olyDirectives.directive('olyConsole', function () {
   };
 });
 
-olyDirectives.directive('tourStep', function($compile, tourManager, $interval, $popover, $rootScope, $timeout) {
+olyDirectives.directive('tourStep', function($compile, tourManager, $interval, $popover, $rootScope, $timeout, $interpolate) {
   var myPopover;
   return {
     restrict: 'A',
@@ -174,6 +174,9 @@ olyDirectives.directive('tourStep', function($compile, tourManager, $interval, $
 
       // start monitoring visibility of step target.Called when tourStep.active turns true
       stepInfo.visible = undefined;
+      // interpollate tip content
+      var exp = $interpolate(stepInfo.body);
+      stepInfo.expandedBody = exp(scope);
       var clearIntervalHandle;
       var myPopover;
       var watchesToClear = [];
@@ -204,8 +207,12 @@ olyDirectives.directive('tourStep', function($compile, tourManager, $interval, $
           angular.forEach(stepInfo.done, function (item) {
             if (item.byExpression && item.doNext) {
               watchesToClear.push(scope.$watch(item.byExpression, function (newVal, oldVal) {
-                if (newVal)
-                  scope.$eval(item.doNext);
+                if (newVal) {
+                  $timeout(function () {
+                    scope.$eval(item.doNext);
+                  }, item.delay ? item.delay : 0);
+
+                }
               }));
             }
           })

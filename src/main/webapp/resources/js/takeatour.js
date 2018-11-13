@@ -20,7 +20,7 @@ angular.module('mcWebRTC').run(function (tourManager, $rootScope, $location) {
 
   tourManager.registerStep('step-enter-contact-address', {
     name: 'step-enter-contact-address',
-    body: "Paste your number here and give a name. Then add your contact.'",
+    body: "Paste your number here and give a name. Then add your contact. If you don't remember your number its {{tourManager.context.phoneNumber}}",
     order: 4,
     placement: 'right'
   }, "main");
@@ -30,7 +30,7 @@ angular.module('mcWebRTC').run(function (tourManager, $rootScope, $location) {
     body: 'Call the number and test your application',
     order: 5,
     placement: 'top-right',
-    done: [{byExpression: "inCall && inCall.intStatus === 'ESTABLISHED'", doNext: 'tourManager.stopTour(); showTourSplash();'}]
+    //done: [{byExpression: "inCall && inCall.intStatus === 'ESTABLISHED'", doNext: 'tourManager.stopTour(); showTourSplash();', delay: 2000}]
   }, "main");
 
   tourManager.registerStep('step-send-the-message', {

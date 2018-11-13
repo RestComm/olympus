@@ -114,7 +114,7 @@
             <div class="sidebar-action-error" ng-show="addContactForm.ncAddress.$dirty && addContactForm.ncAddress.$error.required">The address is required</div>
             <div class="row">
               <div class="col-lg-12">
-                <button id="add-contact-button" type="button" class="btn btn-default pull-right sidebar-action-button" ng-click="addContact()" ng-hide="editingContact" ng-disabled="duplicateContact || !addContactForm.$valid">Add Contact</button>
+                <button id="add-contact-button" type="button" class="btn btn-default pull-right sidebar-action-button" ng-click="addContact()" ng-hide="editingContact" ng-disabled="duplicateContact || !addContactForm.$valid || wrongPhoneNumberForTour(newContact.address)">Add Contact</button>
                 <button type="button" class="btn btn-default pull-right sidebar-action-button" ng-click="saveEditContact()" ng-show="editingContact" ng-disabled="(addContactForm.ncName.$pristine && addContactForm.ncAddress.$pristine) || duplicateContact || !addContactForm.$valid">Save Changes</button>
                 <button type="button" class="btn btn-default pull-right sidebar-action-button" ng-click="cancelEditContact(); tourManager.stopTour();">Cancel</button>
                 <button type="button" class="btn btn-danger pull-right sidebar-action-button" ng-click="preDeleteContact(curContact)" ng-show="editingContact"><i class="fa fa-trash"></i></button>
