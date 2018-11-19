@@ -291,6 +291,11 @@ form[role=login] button:enabled:hover {
   background-color: var(--takeatour-bg-color);
   color: var(--takeatour-text-color);
   padding: 24px;
+  max-width: 370px;
+}
+.tour-popover.popover.popover-medium {
+  width: 400px;
+  max-width: none;
 }
 .tour-popover.popover.right .arrow:after {
   border-right-color: var(--takeatour-bg-color);

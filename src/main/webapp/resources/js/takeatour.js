@@ -6,28 +6,29 @@ angular.module('mcWebRTC').run(function (tourManager, $rootScope, $location) {
   tourManager.addTour("main");
   tourManager.registerStep("step-enter-creds", {
     name:'step-enter-creds',
-    body:"Add your credentials and click 'Sign-in'",
+    body:"<p>This is the WebRTC Demo sign page.</p> <p>For Username type the <em>user</em>  part of your account email. For example, for <em><strong>alice</strong>@company.com</em> just type <em><strong>alice</strong></em>.</p> <p>The account password will work as it is.</p>",
     order: 1,
-    placement: 'right'
+    placement: 'right',
+    customClasses: "popover-medium"
   }, "main");
 
   tourManager.registerStep('step-add-contact',{
     name: 'step-add-contact',
-    body: 'Click here to add you new number and test your application.',
+    body: "<p>You will need a contact to {{tourManager.context.voiceOrSms == 'sms' ? 'send messages to' : 'call'}} your application's number.</p> <p>Click here to add one.</p>",
     placement: 'right',
     order: 3
   },"main");
 
   tourManager.registerStep('step-enter-contact-address', {
     name: 'step-enter-contact-address',
-    body: "Paste your number here and give a name. Then add your contact. If you don't remember your number its {{tourManager.context.phoneNumber}}",
+    body: "<p>Paste your number here and optionally give it a name. Then click 'Add contact'.</p> <p><strong>Hint</strong>: If you don't remember it, your number its {{tourManager.context.phoneNumber}}.</p>",
     order: 4,
     placement: 'right'
   }, "main");
 
   tourManager.registerStep('step-make-the-call', {
     name: 'step-make-the-call',
-    body: 'Call the number and test your application',
+    body: '<p>Finally! Time to call your number and test your application.</p> <p>Click on the phone button bellow to initiate the call.</p>',
     order: 5,
     placement: 'top-right',
     //done: [{byExpression: "inCall && inCall.intStatus === 'ESTABLISHED'", doNext: 'tourManager.stopTour(); showTourSplash();', delay: 2000}]
@@ -35,7 +36,7 @@ angular.module('mcWebRTC').run(function (tourManager, $rootScope, $location) {
 
   tourManager.registerStep('step-send-the-message', {
     name: 'step-send-the-message',
-    body: 'Send the message and test your application',
+    body: '<p>Finally! Time to send a message to your application.</p> <p>Type a messsage and click on the button below to send it.</p>',
     order: 5,
     placement: 'top-left',
   }, "main");
