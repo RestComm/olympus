@@ -410,6 +410,11 @@ form[role=login] button:enabled:hover {
     height: 200px;
     margin-top: 35px;
 }
+.tour-modal .sorry-guy {
+    background: no-repeat center url(../images/v2/sorry-guy.svg);
+    height: 200px;
+    margin-top: 35px;
+}
 .tour-modal .message {
   margin-top: 16px;
   margin-bottom: 10px;

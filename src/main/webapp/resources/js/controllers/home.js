@@ -900,6 +900,7 @@ olyMod.controller('HomeCtrl', function ($scope, $rootScope, $filter, $location, 
   $scope.$on('CALL_OPEN_ERROR',handleCallErrorsWhileTouring);
   $scope.$on('CALL_ERROR',handleCallErrorsWhileTouring);
   $scope.$on('CALL_OPENED', function () {
+    tourManager.stopTour();
     $scope.showTourSplash('call-success',2000);
   });
   $scope.$on('MESSAGE_SENT',function () {

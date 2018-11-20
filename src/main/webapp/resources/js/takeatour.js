@@ -14,21 +14,21 @@ angular.module('mcWebRTC').run(function (tourManager, $rootScope, $location) {
 
   tourManager.registerStep('step-add-contact',{
     name: 'step-add-contact',
-    body: "<p>You will need a contact to {{tourManager.context.voiceOrSms == 'sms' ? 'send messages to' : 'call'}} your application's number.</p> <p>Click here to add one.</p>",
+    body: "<p>You will need to add your new number as a contact in order to test your application.</p> <p>Click here to add it.</p>",
     placement: 'right',
     order: 3
   },"main");
 
   tourManager.registerStep('step-enter-contact-address', {
     name: 'step-enter-contact-address',
-    body: "<p>Paste your number here and optionally give it a name. Then click 'Add contact'.</p> <p><strong>Hint</strong>: If you don't remember it, your number its {{tourManager.context.phoneNumber}}.</p>",
+    body: "<p>Paste your number here and optionally give it a name. Then click 'Add contact'.</p> <p><strong>Hint</strong>: If you don't remember it, your number is {{tourManager.context.phoneNumber}}.</p>",
     order: 4,
     placement: 'right'
   }, "main");
 
   tourManager.registerStep('step-make-the-call', {
     name: 'step-make-the-call',
-    body: '<p>Finally! Time to call your number and test your application.</p> <p>Click on the phone button bellow to initiate the call.</p>',
+    body: '<p>Time to call your number and test your application.</p> <p>Click on the phone button bellow to initiate the call.</p>',
     order: 5,
     placement: 'top-right',
     //done: [{byExpression: "inCall && inCall.intStatus === 'ESTABLISHED'", doNext: 'tourManager.stopTour(); showTourSplash();', delay: 2000}]
@@ -36,7 +36,7 @@ angular.module('mcWebRTC').run(function (tourManager, $rootScope, $location) {
 
   tourManager.registerStep('step-send-the-message', {
     name: 'step-send-the-message',
-    body: '<p>Finally! Time to send a message to your application.</p> <p>Type a messsage and click on the button below to send it.</p>',
+    body: '<p>Time to send a message to your application.</p> <p>Type a messsage and click on the button below to send it.</p>',
     order: 5,
     placement: 'top-left',
   }, "main");
