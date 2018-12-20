@@ -169,8 +169,8 @@ olyDirectives.directive('tourStep', function($compile, tourManager, $interval, $
     link: function postLink(scope, element,attrs) {
       var stepInfo = tourManager.getStep(attrs.tourStep, attrs.tourName);
       scope.tourStep = stepInfo;
-      console.log('creating tour step', attrs.tourStep );
-      console.log('visibility: ', attrs.tourStep, elementIsVisible(element), element.length);
+      //console.log('creating tour step', attrs.tourStep );
+      //console.log('visibility: ', attrs.tourStep, elementIsVisible(element), element.length);
 
       // start monitoring visibility of step target.Called when tourStep.active turns true
       stepInfo.visible = undefined;
@@ -181,7 +181,7 @@ olyDirectives.directive('tourStep', function($compile, tourManager, $interval, $
       var myPopover;
       var watchesToClear = [];
       function activate() {
-        console.log('will start monitoring visibility for ', attrs.tourStep)
+        //console.log('will start monitoring visibility for ', attrs.tourStep)
         clearIntervalHandle = $interval(function () {
           if (elementIsVisible(element)) {
             if (!stepInfo.visible) {
@@ -191,14 +191,12 @@ olyDirectives.directive('tourStep', function($compile, tourManager, $interval, $
               }
               myPopover.show();
               stepInfo.visible = true;
-              console.log('set visibility to ', stepInfo.visible);
             }
           } else {
             if (myPopover && stepInfo.visible) {
               myPopover.hide();
               myPopover.destroy();
               stepInfo.visible = false;
-              console.log('set visibility to ', stepInfo.visible);
             }
           }
         },500);
@@ -256,7 +254,7 @@ olyDirectives.directive('touring', function($compile, tourManager) {
       scope.tourManager = tourManager;
 
       scope.$watch("tourManager.countActiveSteps()", function (newVal, oldVal) {
-        console.warn('active step count: ', newVal)
+        //console.warn('active step count: ', newVal)
         if (newVal === 0) {
           tourManager.onTourAborted()
         }
@@ -294,7 +292,7 @@ olyDirectives.directive('backdrop', function($interval, backdropService) {
        if (!rectPadding.bottom) rectPadding.bottom = 0;
 
        scope.$watch(attrs.backdrop, function (newVal, oldVal) {
-         console.log((scope.tourStep.name ? (scope.tourStep.name+" "): "") + 'backdrop: ', newVal)
+         //console.log((scope.tourStep.name ? (scope.tourStep.name+" "): "") + 'backdrop: ', newVal)
          if (newVal && !scope.backdropActive) {
            // we need to activate backdrop
            activateBackdrop();

@@ -399,6 +399,9 @@ form[role=login] button:enabled:hover {
 .tour-modal .modal-body {
   text-align: center;
 }
+.tour-modal .modal-body a {
+  color: #23527c;
+}
 .tour-modal .modal-header .close {
   color: var(--takeatour-text-color);
 }
