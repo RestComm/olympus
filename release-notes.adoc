@@ -1,5 +1,15 @@
 = Restcomm WebRTC Demo Release Notes
 
+== 1.1.2 (docker tag 1.1.2-231)
+
+=== New Features
+
+* Added take-a-tour support.
+
+=== Dependencies
+
+NA
+
 == 1.1.1 (docker tag 1.1.1-212)
 
 === New Features
