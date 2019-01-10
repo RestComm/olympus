@@ -1,5 +1,16 @@
 = Restcomm WebRTC Demo Release Notes
 
+== 1.1.2 (docker tag 1.1.2-231)
+
+=== New Features
+
+* Added take-a-tour support (FS-568).
+* Added AS size rotaging logging.
+
+=== Dependencies
+
+NA
+
 == 1.1.1 (docker tag 1.1.1-212)
 
 === New Features
